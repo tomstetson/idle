@@ -4,7 +4,7 @@ import { resolve, dirname } from 'path';
 import { fileURLToPath } from 'url';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const binPath = resolve(__dirname, '..', 'bin', 'happy-agent.mjs');
+const binPath = resolve(__dirname, '..', 'bin', 'idle-agent.mjs');
 
 function runCli(...args: string[]): { stdout: string; stderr: string; exitCode: number } {
     try {
@@ -13,7 +13,7 @@ function runCli(...args: string[]): { stdout: string; stderr: string; exitCode: 
             '--no-deprecation',
             binPath,
             ...args,
-        ], { encoding: 'utf-8', env: { ...process.env, HAPPY_HOME_DIR: '/tmp/nonexistent-happy-test' } });
+        ], { encoding: 'utf-8', env: { ...process.env, IDLE_HOME_DIR: '/tmp/nonexistent-idle-test' } });
         return { stdout, stderr: '', exitCode: 0 };
     } catch (err: unknown) {
         const e = err as { stdout?: string; stderr?: string; status?: number };
@@ -25,11 +25,11 @@ function runCli(...args: string[]): { stdout: string; stderr: string; exitCode: 
     }
 }
 
-describe('happy-agent CLI', () => {
+describe('idle-agent CLI', () => {
     it('should display help output', () => {
         const { stdout } = runCli('--help');
-        expect(stdout).toContain('happy-agent');
-        expect(stdout).toContain('CLI client for controlling Happy Coder agents remotely');
+        expect(stdout).toContain('idle-agent');
+        expect(stdout).toContain('CLI client for controlling Idle Coder agents remotely');
     });
 
     it('should display version', () => {
@@ -60,7 +60,7 @@ describe('happy-agent CLI', () => {
         it('should fail with auth error when not authenticated', () => {
             const { stderr, exitCode } = runCli('list');
             expect(exitCode).not.toBe(0);
-            expect(stderr).toContain('happy-agent auth login');
+            expect(stderr).toContain('idle-agent auth login');
         });
     });
 
@@ -74,7 +74,7 @@ describe('happy-agent CLI', () => {
         it('should fail with auth error when not authenticated', () => {
             const { stderr, exitCode } = runCli('status', 'fake-session-id');
             expect(exitCode).not.toBe(0);
-            expect(stderr).toContain('happy-agent auth login');
+            expect(stderr).toContain('idle-agent auth login');
         });
     });
 
@@ -96,7 +96,7 @@ describe('happy-agent CLI', () => {
         it('should fail with auth error when not authenticated', () => {
             const { stderr, exitCode } = runCli('create', '--tag', 'my-tag');
             expect(exitCode).not.toBe(0);
-            expect(stderr).toContain('happy-agent auth login');
+            expect(stderr).toContain('idle-agent auth login');
         });
     });
 
@@ -113,7 +113,7 @@ describe('happy-agent CLI', () => {
         it('should fail with auth error when not authenticated', () => {
             const { stderr, exitCode } = runCli('send', 'fake-id', 'hello');
             expect(exitCode).not.toBe(0);
-            expect(stderr).toContain('happy-agent auth login');
+            expect(stderr).toContain('idle-agent auth login');
         });
     });
 
@@ -129,7 +129,7 @@ describe('happy-agent CLI', () => {
         it('should fail with auth error when not authenticated', () => {
             const { stderr, exitCode } = runCli('history', 'fake-id');
             expect(exitCode).not.toBe(0);
-            expect(stderr).toContain('happy-agent auth login');
+            expect(stderr).toContain('idle-agent auth login');
         });
     });
 
@@ -143,7 +143,7 @@ describe('happy-agent CLI', () => {
         it('should fail with auth error when not authenticated', () => {
             const { stderr, exitCode } = runCli('stop', 'fake-id');
             expect(exitCode).not.toBe(0);
-            expect(stderr).toContain('happy-agent auth login');
+            expect(stderr).toContain('idle-agent auth login');
         });
     });
 
@@ -158,7 +158,7 @@ describe('happy-agent CLI', () => {
         it('should fail with auth error when not authenticated', () => {
             const { stderr, exitCode } = runCli('wait', 'fake-id');
             expect(exitCode).not.toBe(0);
-            expect(stderr).toContain('happy-agent auth login');
+            expect(stderr).toContain('idle-agent auth login');
         });
     });
 });

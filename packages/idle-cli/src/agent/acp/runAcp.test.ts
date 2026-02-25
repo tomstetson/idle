@@ -46,8 +46,8 @@ const mocks = vi.hoisted(() => {
     mockGetOrCreateSession: vi.fn(async () => ({ id: 'session-1' })),
     mockSetupOfflineReconnection: vi.fn(),
     mockNotifyDaemonSessionStarted: vi.fn(async () => ({ error: null })),
-    mockStartHappyServer: vi.fn(),
-    mockProjectPath: vi.fn(() => '/tmp/happy'),
+    mockStartIdleServer: vi.fn(),
+    mockProjectPath: vi.fn(() => '/tmp/idle'),
     mockSetBackend: vi.fn(),
     mockKillRegister: vi.fn((_rpc: unknown, handler: () => Promise<void>) => {
       killHandler = handler;
@@ -83,7 +83,7 @@ vi.mock('@/api/api', () => ({
 }));
 
 vi.mock('@/daemon/run', () => ({
-  initialMachineMetadata: { host: 'host', platform: 'darwin', happyCliVersion: 'test', homeDir: '/tmp', happyHomeDir: '/tmp/.happy', happyLibDir: '/tmp/happy' },
+  initialMachineMetadata: { host: 'host', platform: 'darwin', idleCliVersion: 'test', homeDir: '/tmp', idleHomeDir: '/tmp/.idle', idleLibDir: '/tmp/idle' },
 }));
 
 vi.mock('@/utils/setupOfflineReconnection', () => ({
@@ -98,8 +98,8 @@ vi.mock('@/claude/registerKillSessionHandler', () => ({
   registerKillSessionHandler: mocks.mockKillRegister,
 }));
 
-vi.mock('@/claude/utils/startHappyServer', () => ({
-  startHappyServer: mocks.mockStartHappyServer,
+vi.mock('@/claude/utils/startIdleServer', () => ({
+  startIdleServer: mocks.mockStartIdleServer,
 }));
 
 vi.mock('@/projectPath', () => ({
@@ -215,7 +215,7 @@ describe('runAcp', () => {
       reconnectionHandle: { cancel: vi.fn() },
       isOffline: false,
     }));
-    mocks.mockStartHappyServer.mockResolvedValue({
+    mocks.mockStartIdleServer.mockResolvedValue({
       url: 'http://127.0.0.1:9876',
       stop: vi.fn(),
     });
@@ -257,7 +257,7 @@ describe('runAcp', () => {
     expect(mocks.mockSession.sendSessionEvent).toHaveBeenCalledWith({ type: 'ready' });
     expect(mocks.mockSession.close).toHaveBeenCalled();
     expect(consoleLines()).toEqual(expect.arrayContaining([
-      'Happy Session ID: session-1',
+      'Idle Session ID: session-1',
       'Incoming prompt: Build a test plan',
       'Status: running',
       'Outgoing message: "hello"',
@@ -496,9 +496,9 @@ describe('runAcp', () => {
       path: '/repo',
       host: 'host',
       homeDir: '/home/user',
-      happyHomeDir: '/home/user/.happy',
-      happyLibDir: '/repo/.happy/lib',
-      happyToolsDir: '/repo/.happy/tools',
+      idleHomeDir: '/home/user/.idle',
+      idleLibDir: '/repo/.idle/lib',
+      idleToolsDir: '/repo/.idle/tools',
     };
     const appliedMetadata = metadataHandlers.map((handler) => handler(baseMetadata));
 

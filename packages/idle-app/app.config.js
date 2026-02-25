@@ -1,24 +1,24 @@
 const variant = process.env.APP_ENV || 'development';
 const name = {
-    development: "Happy (dev)",
-    preview: "Happy (preview)",
-    production: "Happy"
+    development: "Idle (dev)",
+    preview: "Idle (preview)",
+    production: "Idle"
 }[variant];
 const bundleId = {
-    development: "com.slopus.happy.dev",
-    preview: "com.slopus.happy.preview",
-    production: "com.ex3ndr.happy"
+    development: "com.northglass.idle.dev",
+    preview: "com.northglass.idle.preview",
+    production: "com.northglass.idle"
 }[variant];
 
 export default {
     expo: {
         name,
-        slug: "happy",
+        slug: "idle",
         version: "1.6.2",
         runtimeVersion: "20",
         orientation: "default",
         icon: "./sources/assets/images/icon.png",
-        scheme: "happy",
+        scheme: "idle",
         userInterfaceStyle: "automatic",
         newArchEnabled: true,
         notification: {
@@ -36,7 +36,7 @@ export default {
                 NSLocalNetworkUsageDescription: "Allow $(PRODUCT_NAME) to find and connect to local devices on your network.",
                 NSBonjourServices: ["_http._tcp", "_https._tcp"]
             },
-            associatedDomains: variant === 'production' ? ["applinks:app.happy.engineering"] : []
+            associatedDomains: variant === 'production' ? ["applinks:idle.northglass.io"] : []
         },
         android: {
             adaptiveIcon: {
@@ -63,7 +63,7 @@ export default {
                     "data": [
                         {
                             "scheme": "https",
-                            "host": "app.happy.engineering",
+                            "host": "idle.northglass.io",
                             "pathPrefix": "/"
                         }
                     ],

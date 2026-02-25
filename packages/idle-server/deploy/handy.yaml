@@ -32,7 +32,7 @@ spec:
         - name: PORT
           value: "3005"
         - name: REDIS_URL
-          value: redis://happy-redis:6379
+          value: redis://idle-redis:6379
         - name: S3_PUBLIC_URL
           value: https://files.cluster-fluster.com/happy
         envFrom:

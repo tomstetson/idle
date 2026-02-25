@@ -20,8 +20,8 @@ import { ProjectGitStatus } from './ProjectGitStatus';
 import { t } from '@/text';
 import { useNavigateToSession } from '@/hooks/useNavigateToSession';
 import { useIsTablet } from '@/utils/responsive';
-import { useHappyAction } from '@/hooks/useHappyAction';
-import { HappyError } from '@/utils/errors';
+import { useIdleAction } from '@/hooks/useIdleAction';
+import { IdleError } from '@/utils/errors';
 
 const stylesheet = StyleSheet.create((theme, runtime) => ({
     container: {
@@ -370,10 +370,10 @@ const CompactSessionRow = React.memo(({ session, machineName, selected, showBord
     const swipeableRef = React.useRef<Swipeable | null>(null);
     const swipeEnabled = Platform.OS !== 'web';
 
-    const [archivingSession, performArchive] = useHappyAction(async () => {
+    const [archivingSession, performArchive] = useIdleAction(async () => {
         const result = await sessionKill(session.id);
         if (!result.success) {
-            throw new HappyError(result.message || t('sessionInfo.failedToArchiveSession'), false);
+            throw new IdleError(result.message || t('sessionInfo.failedToArchiveSession'), false);
         }
     });
 

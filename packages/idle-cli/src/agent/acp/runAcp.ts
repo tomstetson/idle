@@ -6,7 +6,7 @@ import type { AgentMessage } from '@/agent/core';
 import { AcpBackend, type AcpPermissionHandler } from './AcpBackend';
 import { DefaultTransport } from '@/agent/transport';
 import { AcpSessionManager } from './AcpSessionManager';
-import type { SessionEnvelope } from '@slopus/happy-wire';
+import type { SessionEnvelope } from '@northglass/idle-wire';
 import { logger } from '@/ui/logger';
 import { MessageQueue2 } from '@/utils/MessageQueue2';
 import { hashObject } from '@/utils/deterministicJson';
@@ -16,7 +16,7 @@ import { createSessionMetadata } from '@/utils/createSessionMetadata';
 import { setupOfflineReconnection } from '@/utils/setupOfflineReconnection';
 import { notifyDaemonSessionStarted } from '@/daemon/controlClient';
 import { registerKillSessionHandler } from '@/claude/registerKillSessionHandler';
-import { startHappyServer } from '@/claude/utils/startHappyServer';
+import { startIdleServer } from '@/claude/utils/startIdleServer';
 import { projectPath } from '@/projectPath';
 import { BasePermissionHandler, type PermissionResult } from '@/utils/BasePermissionHandler';
 import { connectionState } from '@/utils/serverConnectionErrors';
@@ -476,7 +476,7 @@ export async function runAcp(opts: {
   });
   const response = await api.getOrCreateSession({ tag: sessionTag, metadata, state });
   if (response) {
-    logAcp('muted', `Happy Session ID: ${response.id}`);
+    logAcp('muted', `Idle Session ID: ${response.id}`);
   }
 
   let session: ApiSessionClient;
@@ -517,11 +517,11 @@ export async function runAcp(opts: {
   let sawModes = false;
   let sawModels = false;
 
-  const happyServer = await startHappyServer(session);
+  const idleServer = await startIdleServer(session);
   const mcpServers = {
-    happy: {
-      command: join(projectPath(), 'bin', 'happy-mcp.mjs'),
-      args: ['--url', happyServer.url],
+    idle: {
+      command: join(projectPath(), 'bin', 'idle-mcp.mjs'),
+      args: ['--url', idleServer.url],
     },
   };
 
@@ -939,9 +939,9 @@ export async function runAcp(opts: {
     await backend.dispose();
 
     try {
-      happyServer.stop();
+      idleServer.stop();
     } catch (error) {
-      logger.debug(`[${opts.agentName}] Failed to stop Happy MCP server:`, error);
+      logger.debug(`[${opts.agentName}] Failed to stop Idle MCP server:`, error);
     }
 
     try {

@@ -1,5 +1,5 @@
 import { z } from 'zod'
-import type { Update, UpdateMachineBody } from '@slopus/happy-wire';
+import type { Update, UpdateMachineBody } from '@northglass/idle-wire';
 import { UsageSchema } from '@/claude/types'
 import type { SandboxConfig } from '@/persistence'
 
@@ -10,7 +10,7 @@ export {
   UpdateMachineBodySchema,
   UpdateSchema,
   UpdateSessionBodySchema,
-} from '@slopus/happy-wire';
+} from '@northglass/idle-wire';
 export type {
   SessionMessage,
   SessionMessageContent,
@@ -18,7 +18,7 @@ export type {
   UpdateBody,
   UpdateMachineBody,
   UpdateSessionBody,
-} from '@slopus/happy-wire';
+} from '@northglass/idle-wire';
 
 /**
  * Permission mode type - includes both Claude and Codex modes
@@ -130,10 +130,10 @@ export type Session = {
 export const MachineMetadataSchema = z.object({
   host: z.string(),
   platform: z.string(),
-  happyCliVersion: z.string(),
+  idleCliVersion: z.string(),
   homeDir: z.string(),
-  happyHomeDir: z.string(),
-  happyLibDir: z.string()
+  idleHomeDir: z.string(),
+  idleLibDir: z.string()
 })
 
 export type MachineMetadata = z.infer<typeof MachineMetadataSchema>
@@ -256,9 +256,9 @@ export type Metadata = {
   tools?: string[],
   slashCommands?: string[],
   homeDir: string,
-  happyHomeDir: string,
-  happyLibDir: string,
-  happyToolsDir: string,
+  idleHomeDir: string,
+  idleLibDir: string,
+  idleToolsDir: string,
   startedFromDaemon?: boolean,
   hostPid?: number,
   startedBy?: 'daemon' | 'terminal',

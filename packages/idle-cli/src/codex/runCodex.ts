@@ -18,7 +18,7 @@ import { projectPath } from '@/projectPath';
 import { resolve, join } from 'node:path';
 import { createSessionMetadata } from '@/utils/createSessionMetadata';
 import fs from 'node:fs';
-import { startHappyServer } from '@/claude/utils/startHappyServer';
+import { startIdleServer } from '@/claude/utils/startIdleServer';
 import { MessageBuffer } from "@/ui/ink/messageBuffer";
 import { CodexDisplay } from "@/ui/ink/CodexDisplay";
 import { trimIdent } from "@/utils/trimIdent";
@@ -99,7 +99,7 @@ export async function runCodex(opts: {
     let machineId = settings?.machineId;
     const sandboxConfig = opts.noSandbox ? undefined : settings?.sandboxConfig;
     if (!machineId) {
-        console.error(`[START] No machine ID found in settings, which is unexpected since authAndSetupMachineIfNeeded should have created it. Please report this issue on https://github.com/slopus/happy-cli/issues`);
+        console.error(`[START] No machine ID found in settings, which is unexpected since authAndSetupMachineIfNeeded should have created it. Please report this issue on https://github.com/tomstetson/idle/issues`);
         process.exit(1);
     }
     logger.debug(`Using machineId: ${machineId}`);
@@ -308,8 +308,8 @@ export async function runCodex(opts: {
             // Stop caffeinate
             stopCaffeinate();
 
-            // Stop Happy MCP server
-            happyServer.stop();
+            // Stop Idle MCP server
+            idleServer.stop();
 
             logger.debug('[Codex] Session termination complete, exiting');
             process.exit(0);
@@ -523,13 +523,13 @@ export async function runCodex(opts: {
         }
     });
 
-    // Start Happy MCP server (HTTP) and prepare STDIO bridge config for Codex
-    const happyServer = await startHappyServer(session);
-    const bridgeCommand = join(projectPath(), 'bin', 'happy-mcp.mjs');
+    // Start Idle MCP server (HTTP) and prepare STDIO bridge config for Codex
+    const idleServer = await startIdleServer(session);
+    const bridgeCommand = join(projectPath(), 'bin', 'idle-mcp.mjs');
     const mcpServers = {
-        happy: {
+        idle: {
             command: bridgeCommand,
-            args: ['--url', happyServer.url]
+            args: ['--url', idleServer.url]
         }
     } as const;
     let first = true;
@@ -607,10 +607,10 @@ export async function runCodex(opts: {
 
             try {
                 // Map permission mode to approval policy and sandbox for startSession
-                const sandboxManagedByHappy = client.sandboxEnabled;
+                const sandboxManagedByIdle = client.sandboxEnabled;
                 const executionPolicy = resolveCodexExecutionPolicy(
                     message.mode.permissionMode,
-                    sandboxManagedByHappy,
+                    sandboxManagedByIdle,
                 );
 
                 if (!wasCreated) {
@@ -724,9 +724,9 @@ export async function runCodex(opts: {
         logger.debug('[codex]: client.forceCloseSession begin');
         await client.forceCloseSession();
         logger.debug('[codex]: client.forceCloseSession done');
-        // Stop Happy MCP server
-        logger.debug('[codex]: happyServer.stop');
-        happyServer.stop();
+        // Stop Idle MCP server
+        logger.debug('[codex]: idleServer.stop');
+        idleServer.stop();
 
         // Clean up ink UI
         if (process.stdin.isTTY) {

@@ -45,8 +45,8 @@ function createClient(session: DecryptedSession, creds: Credentials, config: Con
 const program = new Command();
 
 program
-    .name('happy-agent')
-    .description('CLI client for controlling Happy Coder agents remotely')
+    .name('idle-agent')
+    .description('CLI client for controlling Idle Coder agents remotely')
     .version('0.1.0');
 
 program

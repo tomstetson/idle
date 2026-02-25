@@ -133,11 +133,11 @@ switch (command) {
         });
         break;
     default:
-        console.log(`happy-server - portable distribution
+        console.log(`idle-server - portable distribution
 
 Usage:
-  happy-server migrate    Apply database migrations
-  happy-server serve      Start the server
+  idle-server migrate    Apply database migrations
+  idle-server serve      Start the server
 
 Environment variables:
   DATA_DIR          Base data directory (default: ./data)

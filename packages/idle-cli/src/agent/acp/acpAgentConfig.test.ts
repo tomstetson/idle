@@ -52,10 +52,10 @@ describe('resolveAcpAgentConfig', () => {
   });
 
   it('throws with helpful usage when no args are provided', () => {
-    expect(() => resolveAcpAgentConfig([])).toThrow('Usage: happy acp <agent-name> or happy acp -- <command> [args]');
+    expect(() => resolveAcpAgentConfig([])).toThrow('Usage: idle acp <agent-name> or idle acp -- <command> [args]');
   });
 
   it('throws when separator form omits command', () => {
-    expect(() => resolveAcpAgentConfig(['--'])).toThrow('Missing command after "--". Usage: happy acp -- <command> [args]');
+    expect(() => resolveAcpAgentConfig(['--'])).toThrow('Missing command after "--". Usage: idle acp -- <command> [args]');
   });
 });

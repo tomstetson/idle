@@ -64,7 +64,7 @@ export class CodexMcpClient {
     constructor(sandboxConfig?: SandboxConfig) {
         this.sandboxConfig = sandboxConfig;
         this.client = new Client(
-            { name: 'happy-codex-client', version: '1.0.0' },
+            { name: 'idle-codex-client', version: '1.0.0' },
             { capabilities: { elicitation: {} } }
         );
 
@@ -104,7 +104,7 @@ export class CodexMcpClient {
                 '  npm install -g @openai/codex\n' +
                 '\n' +
                 'Alternatively, use Claude:\n' +
-                '  happy claude'
+                '  idle claude'
             );
         }
 

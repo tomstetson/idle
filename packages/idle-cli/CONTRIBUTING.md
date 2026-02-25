@@ -1,4 +1,4 @@
-# Contributing to Happy CLI
+# Contributing to Idle CLI
 
 ## Prerequisites
 
@@ -10,29 +10,29 @@
 ## Getting Started
 
 ```bash
-git clone https://github.com/slopus/happy-cli.git
-cd happy-cli
+git clone https://github.com/tomstetson/idle.git
+cd idle-cli
 yarn install
 yarn build
 ```
 
 ## Development Commands
 
-### Global `happy-dev` Command
+### Global `Idle-dev` Command
 
-Create a global `happy-dev` command that runs your local development build:
+Create a global `Idle-dev` command that runs your local development build:
 
 ```bash
-yarn link:dev      # Create happy-dev symlink
-yarn unlink:dev    # Remove happy-dev symlink
+yarn link:dev      # Create Idle-dev symlink
+yarn unlink:dev    # Remove Idle-dev symlink
 ```
 
-This creates a `happy-dev` command in your PATH pointing to your local build, while leaving any npm-installed `happy` command untouched.
+This creates a `Idle-dev` command in your PATH pointing to your local build, while leaving any npm-installed `Idle` command untouched.
 
 | Command | Runs |
 |---------|------|
-| `happy` | Stable npm version (from `npm install -g happy-coder`) |
-| `happy-dev` | Local development version (from this repo) |
+| `Idle` | Stable npm version (from `npm install -g idle-coder`) |
+| `Idle-dev` | Local development version (from this repo) |
 
 **Note:** Run `yarn build` before `yarn link:dev` to ensure the binary exists.
 
@@ -56,8 +56,8 @@ npm run setup:dev
 ```
 
 This creates:
-- `~/.happy/` - Stable version data (production-ready)
-- `~/.happy-dev/` - Development version data (for testing changes)
+- `~/.idle/` - Stable version data (production-ready)
+- `~/.idle-dev/` - Development version data (for testing changes)
 
 ### Daily Usage
 
@@ -74,8 +74,8 @@ npm run dev:daemon:start
 ## Visual Indicators
 
 You'll always see which version you're using:
-- `✅ STABLE MODE - Data: ~/.happy`
-- `🔧 DEV MODE - Data: ~/.happy-dev`
+- `✅ STABLE MODE - Data: ~/.idle`
+- `🔧 DEV MODE - Data: ~/.idle-dev`
 
 ## Common Tasks
 
@@ -128,11 +128,11 @@ Both versions maintain complete separation:
 
 | Aspect | Stable | Development |
 |--------|--------|-------------|
-| Data Directory | `~/.happy/` | `~/.happy-dev/` |
-| Settings | `~/.happy/settings.json` | `~/.happy-dev/settings.json` |
-| Auth Keys | `~/.happy/access.key` | `~/.happy-dev/access.key` |
-| Daemon State | `~/.happy/daemon.state.json` | `~/.happy-dev/daemon.state.json` |
-| Logs | `~/.happy/logs/` | `~/.happy-dev/logs/` |
+| Data Directory | `~/.idle/` | `~/.idle-dev/` |
+| Settings | `~/.idle/settings.json` | `~/.idle-dev/settings.json` |
+| Auth Keys | `~/.idle/access.key` | `~/.idle-dev/access.key` |
+| Daemon State | `~/.idle/daemon.state.json` | `~/.idle-dev/daemon.state.json` |
+| Logs | `~/.idle/logs/` | `~/.idle-dev/logs/` |
 
 **No conflicts!** Both can run simultaneously with separate:
 - Authentication sessions
@@ -160,7 +160,7 @@ For automatic environment switching when entering directories:
    direnv allow
    ```
 
-3. Now `cd` into the directory automatically sets `HAPPY_VARIANT=dev`!
+3. Now `cd` into the directory automatically sets `IDLE_VARIANT=dev`!
 
 ## Troubleshooting
 
@@ -189,8 +189,8 @@ Look for the visual indicator:
 
 Or check the daemon status:
 ```bash
-npm run stable:daemon:status   # Shows ~/.happy/ data location
-npm run dev:daemon:status       # Shows ~/.happy-dev/ data location
+npm run stable:daemon:status   # Shows ~/.idle/ data location
+npm run dev:daemon:status       # Shows ~/.idle-dev/ data location
 ```
 
 ### `yarn link:dev` fails with permission denied?
@@ -198,18 +198,18 @@ npm run dev:daemon:status       # Shows ~/.happy-dev/ data location
 sudo yarn link:dev
 ```
 
-### `happy-dev` command not found after linking?
+### `Idle-dev` command not found after linking?
 - Ensure your global npm bin is in PATH: `npm bin -g`
 - Try opening a new terminal window
-- Check the symlink was created: `ls -la $(npm bin -g)/happy-dev`
+- Check the symlink was created: `ls -la $(npm bin -g)/Idle-dev`
 
 ## Tips
 
 1. **Use stable for production work** - Your tested, reliable version
 2. **Use dev for testing changes** - Test new features without breaking your workflow
 3. **Run both simultaneously** - Compare behavior side-by-side
-4. **Different accounts** - Use different Happy accounts for dev/stable if needed
-5. **Check logs** - Logs are separated: `~/.happy/logs/` vs `~/.happy-dev/logs/`
+4. **Different accounts** - Use different Idle accounts for dev/stable if needed
+5. **Check logs** - Logs are separated: `~/.idle/logs/` vs `~/.idle-dev/logs/`
 
 ## Example Workflow
 
@@ -241,18 +241,18 @@ npm run stable:daemon:start
 
 ## How It Works
 
-The system uses the built-in `HAPPY_HOME_DIR` environment variable to separate data:
+The system uses the built-in `IDLE_HOME_DIR` environment variable to separate data:
 
-- **Stable scripts** set: `HAPPY_HOME_DIR=~/.happy`
-- **Dev scripts** set: `HAPPY_HOME_DIR=~/.happy-dev`
+- **Stable scripts** set: `IDLE_HOME_DIR=~/.idle`
+- **Dev scripts** set: `IDLE_HOME_DIR=~/.idle-dev`
 
-Everything else (auth, sessions, logs, daemon) automatically follows the `HAPPY_HOME_DIR` setting.
+Everything else (auth, sessions, logs, daemon) automatically follows the `IDLE_HOME_DIR` setting.
 
 Cross-platform via Node.js - works identically on Windows, macOS, and Linux!
 
 ## Testing Profile Sync Between GUI and CLI
 
-Profile synchronization ensures AI backend configurations created in the Happy mobile/web GUI work seamlessly with the CLI daemon.
+Profile synchronization ensures AI backend configurations created in the Idle mobile/web GUI work seamlessly with the CLI daemon.
 
 ### Profile Schema Validation
 
@@ -266,7 +266,7 @@ The profile schema is defined in both repositories:
 
 1. **Create profile in GUI:**
    ```
-   - Open Happy mobile/web app
+   - Open Idle mobile/web app
    - Settings → AI Backend Profiles
    - Create new profile with custom environment variables
    - Note the profile ID
@@ -278,7 +278,7 @@ The profile schema is defined in both repositories:
    npm run dev:daemon:start
 
    # Check daemon logs
-   tail -f ~/.happy-dev/logs/*.log | grep -i profile
+   tail -f ~/.idle-dev/logs/*.log | grep -i profile
    ```
 
 3. **Test profile-based session spawning:**
@@ -325,11 +325,11 @@ Maintainers can publish new versions:
 ```bash
 yarn release       # From repo root: choose library to release
 # or directly:
-yarn workspace happy-coder release
+yarn workspace idle-coder release
 ```
 
 This runs tests, builds, and publishes to npm. The published package includes:
-- `happy` - Main CLI command
-- `happy-mcp` - MCP bridge command
+- `Idle` - Main CLI command
+- `idle-mcp` - MCP bridge command
 
-**Note:** `happy-dev` is intentionally excluded from the npm package - it's for local development only.
+**Note:** `Idle-dev` is intentionally excluded from the npm package - it's for local development only.

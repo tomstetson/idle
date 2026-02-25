@@ -8,8 +8,8 @@ export type Config = {
 };
 
 export function loadConfig(): Config {
-    const serverUrl = (process.env.HAPPY_SERVER_URL ?? 'https://api.cluster-fluster.com').replace(/\/+$/, '');
-    const homeDir = process.env.HAPPY_HOME_DIR ?? join(homedir(), '.happy');
+    const serverUrl = (process.env.IDLE_SERVER_URL ?? 'https://api.cluster-fluster.com').replace(/\/+$/, '');
+    const homeDir = process.env.IDLE_HOME_DIR ?? join(homedir(), '.idle');
     const credentialPath = join(homeDir, 'agent.key');
     return { serverUrl, homeDir, credentialPath };
 }

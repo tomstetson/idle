@@ -1,14 +1,14 @@
-# Contributing to Happy
+# Contributing to Idle
 
 ## Development Workflow: Build Variants
 
-The Happy app supports three build variants across **iOS, Android, and macOS desktop**, each with separate bundle IDs so all three can be installed simultaneously:
+The Idle app supports three build variants across **iOS, Android, and macOS desktop**, each with separate bundle IDs so all three can be installed simultaneously:
 
 | Variant | Bundle ID | App Name | Use Case |
 |---------|-----------|----------|----------|
-| **Development** | `com.slopus.happy.dev` | Happy (dev) | Local development with hot reload |
-| **Preview** | `com.slopus.happy.preview` | Happy (preview) | Beta testing & OTA updates before production |
-| **Production** | `com.ex3ndr.happy` | Happy | Public App Store release |
+| **Development** | `com.northglass.idle.dev` | Idle (dev) | Local development with hot reload |
+| **Preview** | `com.northglass.idle.preview` | Idle (preview) | Beta testing & OTA updates before production |
+| **Production** | `com.northglass.idle` | Idle | Public App Store release |
 
 **Why Preview?**
 - **Development**: Fast iteration, dev server, instant reload
@@ -83,9 +83,9 @@ npm run start:production
 ## Visual Differences
 
 Each variant displays a different app name on your device:
-- **Development**: "Happy (dev)" - Yellow/orange theme
-- **Preview**: "Happy (preview)" - Preview theme
-- **Production**: "Happy" - Standard theme
+- **Development**: "Idle (dev)" - Yellow/orange theme
+- **Preview**: "Idle (preview)" - Preview theme
+- **Production**: "Idle" - Standard theme
 
 This makes it easy to distinguish which version you're testing!
 
@@ -183,7 +183,7 @@ This controls:
 
 Only **production** variant has deep linking configured:
 
-- **Production**: `https://app.happy.engineering/*`
+- **Production**: `https://idle.northglass.io/*`
 - **Development**: No deep linking
 - **Preview**: No deep linking
 
@@ -191,7 +191,7 @@ This prevents dev/preview builds from interfering with production deep links.
 
 ## Testing Connected to Different Servers
 
-You can connect different variants to different Happy CLI instances:
+You can connect different variants to different Idle CLI instances:
 
 ```bash
 # Development app → Dev CLI daemon
@@ -207,14 +207,14 @@ Each app maintains separate authentication and sessions!
 
 ## Local Server Development
 
-To test with a local Happy server:
+To test with a local Idle server:
 
 ```bash
 npm run start:local-server
 ```
 
 This sets:
-- `EXPO_PUBLIC_HAPPY_SERVER_URL=http://localhost:3005`
+- `EXPO_PUBLIC_IDLE_SERVER_URL=http://localhost:3005`
 - `EXPO_PUBLIC_DEBUG=1`
 - Debug logging enabled
 
@@ -247,9 +247,9 @@ This shouldn't happen - each variant has a unique bundle ID. If it does:
 ### All three apps look the same
 
 Check the app name on the home screen:
-- "Happy (dev)"
-- "Happy (preview)"
-- "Happy"
+- "Idle (dev)"
+- "Idle (preview)"
+- "Idle"
 
 If they're all the same name, the variant might not be set correctly. Verify:
 
@@ -258,7 +258,7 @@ If they're all the same name, the variant might not be set correctly. Verify:
 echo $APP_ENV
 
 # Or look at the build output
-npm run ios:dev  # Should show "Happy (dev)" as the name
+npm run ios:dev  # Should show "Idle (dev)" as the name
 ```
 
 ### Connected device not found
@@ -289,9 +289,9 @@ The `app.config.js` file reads the `APP_ENV` environment variable:
 ```javascript
 const variant = process.env.APP_ENV || 'development';
 const bundleId = {
-  development: "com.slopus.happy.dev",
-  preview: "com.slopus.happy.preview",
-  production: "com.ex3ndr.happy"
+  development: "com.northglass.idle.dev",
+  preview: "com.northglass.idle.preview",
+  production: "com.northglass.idle"
 }[variant];
 ```
 

@@ -18,8 +18,8 @@ import { t } from '@/text';
 import { isVersionSupported, MINIMUM_CLI_VERSION } from '@/utils/versionUtils';
 import { CodeView } from '@/components/CodeView';
 import { Session } from '@/sync/storageTypes';
-import { useHappyAction } from '@/hooks/useHappyAction';
-import { HappyError } from '@/utils/errors';
+import { useIdleAction } from '@/hooks/useIdleAction';
+import { IdleError } from '@/utils/errors';
 
 // Animated status dot component
 function StatusDot({ color, isPulsing, size = 8 }: { color: string; isPulsing?: boolean; size?: number }) {
@@ -134,7 +134,7 @@ function SessionInfoContent({ session }: { session: Session }) {
         if (!session) return;
         try {
             await Clipboard.setStringAsync(session.id);
-            Modal.alert(t('common.success'), t('sessionInfo.happySessionIdCopied'));
+            Modal.alert(t('common.success'), t('sessionInfo.idleSessionIdCopied'));
         } catch (error) {
             Modal.alert(t('common.error'), t('sessionInfo.failedToCopySessionId'));
         }
@@ -150,11 +150,11 @@ function SessionInfoContent({ session }: { session: Session }) {
         }
     }, [session]);
 
-    // Use HappyAction for archiving - it handles errors automatically
-    const [archivingSession, performArchive] = useHappyAction(async () => {
+    // Use IdleAction for archiving - it handles errors automatically
+    const [archivingSession, performArchive] = useIdleAction(async () => {
         const result = await sessionKill(session.id);
         if (!result.success) {
-            throw new HappyError(result.message || t('sessionInfo.failedToArchiveSession'), false);
+            throw new IdleError(result.message || t('sessionInfo.failedToArchiveSession'), false);
         }
         // Success - navigate back
         router.back();
@@ -176,11 +176,11 @@ function SessionInfoContent({ session }: { session: Session }) {
         );
     }, [performArchive]);
 
-    // Use HappyAction for deletion - it handles errors automatically
-    const [deletingSession, performDelete] = useHappyAction(async () => {
+    // Use IdleAction for deletion - it handles errors automatically
+    const [deletingSession, performDelete] = useIdleAction(async () => {
         const result = await sessionDelete(session.id);
         if (!result.success) {
-            throw new HappyError(result.message || t('sessionInfo.failedToDeleteSession'), false);
+            throw new IdleError(result.message || t('sessionInfo.failedToDeleteSession'), false);
         }
         // Success - no alert needed, UI will update to show deleted state
     });
@@ -205,7 +205,7 @@ function SessionInfoContent({ session }: { session: Session }) {
     }, []);
 
     const handleCopyUpdateCommand = useCallback(async () => {
-        const updateCommand = 'npm install -g happy-coder@latest';
+        const updateCommand = 'npm install -g idle-coder@latest';
         try {
             await Clipboard.setStringAsync(updateCommand);
             Modal.alert(t('common.success'), updateCommand);
@@ -261,7 +261,7 @@ function SessionInfoContent({ session }: { session: Session }) {
                 {/* Session Details */}
                 <ItemGroup>
                     <Item
-                        title={t('sessionInfo.happySessionId')}
+                        title={t('sessionInfo.idleSessionId')}
                         subtitle={`${session.id.substring(0, 8)}...${session.id.substring(session.id.length - 8)}`}
                         icon={<Ionicons name="finger-print-outline" size={29} color="#007AFF" />}
                         onPress={handleCopySessionId}
@@ -404,10 +404,10 @@ function SessionInfoContent({ session }: { session: Session }) {
                                 showChevron={false}
                             />
                         )}
-                        {session.metadata.happyHomeDir && (
+                        {session.metadata.idleHomeDir && (
                             <Item
-                                title={t('sessionInfo.happyHome')}
-                                subtitle={formatPathRelativeToHome(session.metadata.happyHomeDir, session.metadata.homeDir)}
+                                title={t('sessionInfo.idleHome')}
+                                subtitle={formatPathRelativeToHome(session.metadata.idleHomeDir, session.metadata.homeDir)}
                                 icon={<Ionicons name="home-outline" size={29} color="#5856D6" />}
                                 showChevron={false}
                             />

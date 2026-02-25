@@ -1,4 +1,4 @@
-# Happy
+# Idle
 
 Code on the go — control AI coding agents from your mobile device.
 
@@ -7,7 +7,7 @@ Free. Open source. Code anywhere.
 ## Installation
 
 ```bash
-npm install -g happy-coder
+npm install -g idle-coder
 ```
 
 ## Run From Source
@@ -27,7 +27,7 @@ yarn cli --help
 ### Claude (default)
 
 ```bash
-happy
+Idle
 ```
 
 This will:
@@ -38,7 +38,7 @@ This will:
 ### Gemini
 
 ```bash
-happy gemini
+Idle gemini
 ```
 
 Start a Gemini CLI session with remote control capabilities.
@@ -46,44 +46,44 @@ Start a Gemini CLI session with remote control capabilities.
 **First time setup:**
 ```bash
 # Authenticate with Google
-happy connect gemini
+idle connect gemini
 ```
 
 ## Commands
 
 ### Main Commands
 
-- `happy` – Start Claude Code session (default)
-- `happy gemini` – Start Gemini CLI session
-- `happy codex` – Start Codex mode
-- `happy acp` – Start a generic ACP-compatible agent
+- `Idle` – Start Claude Code session (default)
+- `Idle gemini` – Start Gemini CLI session
+- `Idle codex` – Start Codex mode
+- `Idle acp` – Start a generic ACP-compatible agent
 
 ### Utility Commands
 
-- `happy auth` – Manage authentication
-- `happy connect` – Store AI vendor API keys in Happy cloud
-- `happy sandbox` – Configure sandbox runtime restrictions
-- `happy notify` – Send a push notification to your devices
-- `happy daemon` – Manage background service
-- `happy doctor` – System diagnostics & troubleshooting
+- `Idle auth` – Manage authentication
+- `idle connect` – Store AI vendor API keys in Idle cloud
+- `Idle sandbox` – Configure sandbox runtime restrictions
+- `Idle notify` – Send a push notification to your devices
+- `idle daemon` – Manage background service
+- `Idle doctor` – System diagnostics & troubleshooting
 
 ### Connect Subcommands
 
 ```bash
-happy connect gemini     # Authenticate with Google for Gemini
-happy connect claude     # Authenticate with Anthropic
-happy connect codex      # Authenticate with OpenAI
-happy connect status     # Show connection status for all vendors
+idle connect gemini     # Authenticate with Google for Gemini
+idle connect claude     # Authenticate with Anthropic
+idle connect codex      # Authenticate with OpenAI
+idle connect status     # Show connection status for all vendors
 ```
 
 ### Gemini Subcommands
 
 ```bash
-happy gemini                      # Start Gemini session
-happy gemini model set <model>    # Set default model
-happy gemini model get            # Show current model
-happy gemini project set <id>     # Set Google Cloud Project ID (for Workspace accounts)
-happy gemini project get          # Show current Google Cloud Project ID
+Idle gemini                      # Start Gemini session
+Idle gemini model set <model>    # Set default model
+Idle gemini model get            # Show current model
+Idle gemini project set <id>     # Set Google Cloud Project ID (for Workspace accounts)
+Idle gemini project get          # Show current Google Cloud Project ID
 ```
 
 **Available models:** `gemini-2.5-pro`, `gemini-2.5-flash`, `gemini-2.5-flash-lite`
@@ -91,18 +91,18 @@ happy gemini project get          # Show current Google Cloud Project ID
 ### Generic ACP Commands
 
 ```bash
-happy acp gemini                     # Run built-in Gemini ACP command
-happy acp opencode                   # Run built-in OpenCode ACP command
-happy acp opencode --verbose         # Include raw backend/envelope logs
-happy acp -- custom-agent --flag     # Run any ACP-compatible command directly
+Idle acp gemini                     # Run built-in Gemini ACP command
+Idle acp opencode                   # Run built-in OpenCode ACP command
+Idle acp opencode --verbose         # Include raw backend/envelope logs
+Idle acp -- custom-agent --flag     # Run any ACP-compatible command directly
 ```
 
 ### Sandbox Subcommands
 
 ```bash
-happy sandbox configure  # Interactive sandbox setup wizard
-happy sandbox status     # Show current sandbox configuration
-happy sandbox disable    # Disable sandboxing
+Idle sandbox configure  # Interactive sandbox setup wizard
+Idle sandbox status     # Show current sandbox configuration
+Idle sandbox disable    # Disable sandboxing
 ```
 
 ## Options
@@ -122,11 +122,11 @@ happy sandbox disable    # Disable sandboxing
 
 ## Environment Variables
 
-### Happy Configuration
+### Idle Configuration
 
-- `HAPPY_SERVER_URL` - Custom server URL (default: https://api.cluster-fluster.com)
-- `HAPPY_WEBAPP_URL` - Custom web app URL (default: https://app.happy.engineering)
-- `HAPPY_HOME_DIR` - Custom home directory for Happy data (default: ~/.happy)
+- `IDLE_SERVER_URL` - Custom server URL (default: https://api.cluster-fluster.com)
+- `IDLE_WEBAPP_URL` - Custom web app URL (default: https://idle.northglass.io)
+- `IDLE_HOME_DIR` - Custom home directory for Idle data (default: ~/.idle)
 - `HAPPY_DISABLE_CAFFEINATE` - Disable macOS sleep prevention (set to `true`, `1`, or `yes`)
 - `HAPPY_EXPERIMENTAL` - Enable experimental features (set to `true`, `1`, or `yes`)
 
@@ -142,8 +142,8 @@ happy sandbox disable    # Disable sandboxing
 Personal Gmail accounts work out of the box:
 
 ```bash
-happy connect gemini
-happy gemini
+idle connect gemini
+Idle gemini
 ```
 
 ### Google Workspace Account
@@ -155,12 +155,12 @@ Google Workspace (organization) accounts require a Google Cloud Project:
 3. Set the project ID:
 
 ```bash
-happy gemini project set your-project-id
+Idle gemini project set your-project-id
 ```
 
 Or use environment variable:
 ```bash
-GOOGLE_CLOUD_PROJECT=your-project-id happy gemini
+GOOGLE_CLOUD_PROJECT=your-project-id Idle gemini
 ```
 
 **Guide:** https://goo.gle/gemini-cli-auth-docs#workspace-gca
@@ -180,7 +180,7 @@ Interested in contributing? See [CONTRIBUTING.md](CONTRIBUTING.md) for developme
 ### For Gemini
 
 - Gemini CLI installed (`npm install -g @google/gemini-cli`)
-- Google account authenticated via `happy connect gemini`
+- Google account authenticated via `idle connect gemini`
 
 ## License
 

@@ -1,17 +1,17 @@
-# happy-wire
+# idle-wire
 
-This document describes the shared wire package: `@slopus/happy-wire`.
+This document describes the shared wire package: `@northglass/idle-wire`.
 
 ## Why this package exists
 
-Before `happy-wire`, wire-level message and session-protocol schemas were duplicated across packages (CLI, app, server, and agent). That caused drift risk and made protocol evolution harder.
+Before `idle-wire`, wire-level message and session-protocol schemas were duplicated across packages (CLI, app, server, and agent). That caused drift risk and made protocol evolution harder.
 
-`@slopus/happy-wire` centralizes those shared schemas and types so all clients and services agree on the same wire contract.
+`@northglass/idle-wire` centralizes those shared schemas and types so all clients and services agree on the same wire contract.
 
 ## Package identity
 
-- npm name: `@slopus/happy-wire`
-- workspace path: `packages/happy-wire`
+- npm name: `@northglass/idle-wire`
+- workspace path: `packages/idle-wire`
 - package type: publishable library (not private)
 - versioned dependency in consumers: `^0.1.0`
 
@@ -19,7 +19,7 @@ Before `happy-wire`, wire-level message and session-protocol schemas were duplic
 
 ### 1. Wire message schemas
 
-Shared from `@slopus/happy-wire`:
+Shared from `@northglass/idle-wire`:
 - from `messages.ts`: `SessionMessageContentSchema`, `SessionMessageSchema`, `MessageMetaSchema`, `SessionProtocolMessageSchema`, `MessageContentSchema` (top-level `role` union: `user|agent|session`), `UpdateNewMessageBodySchema`, `UpdateSessionBodySchema`, `UpdateMachineBodySchema`, `CoreUpdateContainerSchema`
 - from `legacyProtocol.ts`: `UserMessageSchema` (`role: 'user'`), `AgentMessageSchema` (`role: 'agent'`), `LegacyMessageContentSchema` (`role`-discriminated union for legacy only)
 
@@ -27,7 +27,7 @@ These are used for encrypted message/update contracts (`new-message`, `update-se
 
 ### 2. Session protocol schema
 
-Shared from `@slopus/happy-wire`:
+Shared from `@northglass/idle-wire`:
 - `sessionEventSchema`
 - `sessionEnvelopeSchema`
 - `createEnvelope(...)`
@@ -56,38 +56,38 @@ User text rollout toggle:
 
 ## Migration in this repository
 
-### CLI (`packages/happy-cli`)
+### CLI (`packages/idle-cli`)
 
-- Session protocol imports now reference `@slopus/happy-wire` directly.
-- `src/sessionProtocol/types.ts` now re-exports from `@slopus/happy-wire` as compatibility shim.
-- API wire schemas in `src/api/types.ts` now source shared message/update schemas from `@slopus/happy-wire`.
+- Session protocol imports now reference `@northglass/idle-wire` directly.
+- `src/sessionProtocol/types.ts` now re-exports from `@northglass/idle-wire` as compatibility shim.
+- API wire schemas in `src/api/types.ts` now source shared message/update schemas from `@northglass/idle-wire`.
 
-### App (`packages/happy-app`)
+### App (`packages/idle-app`)
 
-- Shared API message/update schemas in `sources/sync/apiTypes.ts` now import these from `@slopus/happy-wire`:
+- Shared API message/update schemas in `sources/sync/apiTypes.ts` now import these from `@northglass/idle-wire`:
   - `ApiMessageSchema`
   - `ApiUpdateNewMessageSchema`
   - `ApiUpdateSessionStateSchema`
   - `ApiUpdateMachineStateSchema`
 
-### Server (`packages/happy-server`)
+### Server (`packages/idle-server`)
 
-- Prisma JSON message content type now references `SessionMessageContent` from `@slopus/happy-wire`.
+- Prisma JSON message content type now references `SessionMessageContent` from `@northglass/idle-wire`.
 - Event router uses shared `SessionMessageContent` type for `new-message` payload typing.
 
-### Agent (`packages/happy-agent`)
+### Agent (`packages/idle-agent`)
 
-- `RawMessage` now aliases `SessionMessage` from `@slopus/happy-wire`.
+- `RawMessage` now aliases `SessionMessage` from `@northglass/idle-wire`.
 
 ## Versioning model
 
-All other workspace packages now declare a versioned dependency on `@slopus/happy-wire`.
+All other workspace packages now declare a versioned dependency on `@northglass/idle-wire`.
 
 This intentionally mirrors post-publish consumption and reduces hidden coupling to workspace-local files.
 
 ## Build and release
 
-`@slopus/happy-wire` is configured the same way as existing publishable libraries in this repo:
+`@northglass/idle-wire` is configured the same way as existing publishable libraries in this repo:
 
 - ESM/CJS/types outputs via `pkgroll`
 - `build`: typecheck + bundle
@@ -100,27 +100,27 @@ Use the same release entrypoint as other publishable packages:
 
 ```bash
 yarn release
-# choose happy-wire
+# choose idle-wire
 ```
 
 or:
 
 ```bash
-yarn workspace @slopus/happy-wire release
+yarn workspace @northglass/idle-wire release
 ```
 
-When building workspaces from a clean checkout, build `@slopus/happy-wire` first so dependent packages can resolve generated `dist` outputs.
+When building workspaces from a clean checkout, build `@northglass/idle-wire` first so dependent packages can resolve generated `dist` outputs.
 
 ## Publish checklist (maintainer)
 
 1. Ensure all workspace builds/tests are green.
 2. Confirm wire schema changes are backward-compatible or documented.
-3. Bump and release `@slopus/happy-wire`.
+3. Bump and release `@northglass/idle-wire`.
 4. Update downstream package versions if needed.
-5. Publish dependent package updates only after the new `happy-wire` version is available.
+5. Publish dependent package updates only after the new `idle-wire` version is available.
 
 ## Notes
 
-- `happy-wire` should stay focused on wire contracts only (types + Zod schemas + small helpers).
+- `idle-wire` should stay focused on wire contracts only (types + Zod schemas + small helpers).
 - Domain/business logic should remain in consumer packages.
 - Keep schema additions additive where possible to minimize client breakage.

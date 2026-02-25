@@ -58,7 +58,7 @@ import { logger } from '@/ui/logger';
  * Uses dependency injection for testability.
  */
 export interface OfflineReconnectionConfig<TSession> {
-    /** Server URL to health-check against (e.g., 'https://api.happy-servers.com') */
+    /** Server URL to health-check against (e.g., 'https://api.idle.northglass.io') */
     serverUrl: string;
 
     /**
@@ -194,7 +194,7 @@ export function startOfflineReconnection<TSession>(
             // 401 = auth token invalid, user needs to re-authenticate
             if (axios.isAxiosError(e) && e.response?.status === 401) {
                 logger.debug('[OfflineReconnection] Authentication error, stopping retries');
-                config.onNotify('❌ Authentication failed. Please re-authenticate with `happy auth`.');
+                config.onNotify('❌ Authentication failed. Please re-authenticate with `idle auth`.');
                 return; // Don't schedule retry - this is a permanent failure
             }
 
@@ -254,7 +254,7 @@ export const ERROR_DESCRIPTIONS: Record<string, string> = {
     EHOSTUNREACH: 'server host unreachable',
     ENETUNREACH: 'network unreachable',
     // HTTP errors
-    '401': 'authentication failed - run `happy auth`',
+    '401': 'authentication failed - run `idle auth`',
     '403': 'access forbidden',
     '404': 'endpoint not found, check server deployment',
     '500': 'server internal error',
@@ -322,7 +322,7 @@ class OfflineState {
                 return `${f.operation} failed: ${desc}${url}`;
             })
             .join('; ');
-        console.log(`⚠️  Happy server unreachable, offline mode with auto-reconnect enabled - error details: ${summary}`);
+        console.log(`⚠️  Idle server unreachable, offline mode with auto-reconnect enabled - error details: ${summary}`);
 
         // Print detail lines if present - consistent 3-space indent with arrow
         const allDetails = [...this.failures.values()]

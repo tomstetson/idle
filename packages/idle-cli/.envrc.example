@@ -1,4 +1,4 @@
-# Happy CLI Development Environment
+# Idle CLI Development Environment
 #
 # This file is for direnv users who want automatic environment switching
 # when entering this directory.
@@ -10,8 +10,8 @@
 #
 # The .envrc file is gitignored, so each developer can customize it.
 
-export HAPPY_HOME_DIR="$HOME/.happy-dev"
-export HAPPY_VARIANT="dev"
-export HAPPY_SERVER_URL="${HAPPY_SERVER_URL:-https://api.cluster-fluster.com}"
+export IDLE_HOME_DIR="$HOME/.idle-dev"
+export IDLE_VARIANT="dev"
+export IDLE_SERVER_URL="${IDLE_SERVER_URL:-https://api.cluster-fluster.com}"
 
-echo "🔧 DEV environment activated (data: $HAPPY_HOME_DIR)"
+echo "🔧 DEV environment activated (data: $IDLE_HOME_DIR)"

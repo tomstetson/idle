@@ -93,9 +93,9 @@ function selectAuthenticationMethod(): Promise<AuthMethod | null> {
 async function doMobileAuth(keypair: tweetnacl.BoxKeyPair): Promise<Credentials | null> {
     console.clear();
     console.log('\nMobile Authentication\n');
-    console.log('Scan this QR code with your Happy mobile app:\n');
+    console.log('Scan this QR code with your Idle mobile app:\n');
 
-    const authUrl = 'happy://terminal?' + encodeBase64Url(keypair.publicKey);
+    const authUrl = 'idle://terminal?' + encodeBase64Url(keypair.publicKey);
     displayQRCode(authUrl);
 
     console.log('\nOr manually enter this URL:');
@@ -125,9 +125,9 @@ async function doWebAuth(keypair: tweetnacl.BoxKeyPair): Promise<Credentials | n
     }
 
     // I changed this to always show the URL because we got a report from
-    // someone running happy inside a devcontainer that they saw the
+    // someone running idle inside a devcontainer that they saw the
     // "Complete authentication in your browser window." but nothing opened.
-    // https://github.com/slopus/happy/issues/19
+    // https://github.com/tomstetson/idle/issues/19
     console.log('\nIf the browser did not open, please copy and paste this URL:');
     console.log(webUrl);
     console.log('');

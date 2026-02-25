@@ -1,20 +1,20 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: happy-app
+  name: idle-app
 spec:
   replicas: 3
   selector:
     matchLabels:
-      app: happy-app
+      app: idle-app
   template:
     metadata:
       labels:
-        app: happy-app
+        app: idle-app
     spec:
       containers:
-      - name: happy-app
-        image: docker.korshakov.com/happy-app:{version}
+      - name: idle-app
+        image: docker.korshakov.com/idle-app:{version}
         ports:
         - containerPort: 80
         livenessProbe:
@@ -41,10 +41,10 @@ spec:
 apiVersion: v1
 kind: Service
 metadata:
-  name: happy-app
+  name: idle-app
 spec:
   selector:
-    app: happy-app
+    app: idle-app
   ports:
   - port: 3000
     targetPort: 80

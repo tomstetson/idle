@@ -2,8 +2,8 @@
  * Gemini CLI Entry Point
  * 
  * This module provides the main entry point for running the Gemini agent
- * through Happy CLI. It manages the agent lifecycle, session state, and
- * communication with the Happy server and mobile app.
+ * through Idle CLI. It manages the agent lifecycle, session state, and
+ * communication with the Idle server and mobile app.
  */
 
 import { render } from 'ink';
@@ -22,7 +22,7 @@ import packageJson from '../../package.json';
 import { MessageQueue2 } from '@/utils/MessageQueue2';
 import { hashObject } from '@/utils/deterministicJson';
 import { projectPath } from '@/projectPath';
-import { startHappyServer } from '@/claude/utils/startHappyServer';
+import { startIdleServer } from '@/claude/utils/startIdleServer';
 import { MessageBuffer } from '@/ui/ink/messageBuffer';
 import { notifyDaemonSessionStarted } from '@/daemon/controlClient';
 import { registerKillSessionHandler } from '@/claude/registerKillSessionHandler';
@@ -81,7 +81,7 @@ export async function runGemini(opts: {
   const machineId = settings?.machineId;
   const sandboxConfig = settings?.sandboxConfig;
   if (!machineId) {
-    console.error(`[START] No machine ID found in settings, which is unexpected since authAndSetupMachineIfNeeded should have created it. Please report this issue on https://github.com/slopus/happy-cli/issues`);
+    console.error(`[START] No machine ID found in settings, which is unexpected since authAndSetupMachineIfNeeded should have created it. Please report this issue on https://github.com/tomstetson/idle/issues`);
     process.exit(1);
   }
   logger.debug(`Using machineId: ${machineId}`);
@@ -91,7 +91,7 @@ export async function runGemini(opts: {
   });
 
   //
-  // Fetch Gemini cloud token (from 'happy connect gemini')
+  // Fetch Gemini cloud token (from 'idle connect gemini')
   //
   let cloudToken: string | undefined = undefined;
   let currentUserEmail: string | undefined = undefined;
@@ -99,7 +99,7 @@ export async function runGemini(opts: {
     const vendorToken = await api.getVendorToken('gemini');
     if (vendorToken?.oauth?.access_token) {
       cloudToken = vendorToken.oauth.access_token;
-      logger.debug('[Gemini] Using OAuth token from Happy cloud');
+      logger.debug('[Gemini] Using OAuth token from Idle cloud');
       
       // Extract email from id_token for per-account project matching
       if (vendorToken.oauth.id_token) {
@@ -136,7 +136,7 @@ export async function runGemini(opts: {
   // Handle server unreachable case - create offline stub with hot reconnection
   let session: ApiSessionClient;
   // Permission handler declared here so it can be updated in onSessionSwap callback
-  // (assigned later after Happy server setup)
+  // (assigned later after Idle server setup)
   let permissionHandler: GeminiPermissionHandler;
 
   // Session swap synchronization to prevent race conditions during message processing
@@ -387,7 +387,7 @@ export async function runGemini(opts: {
       }
 
       stopCaffeinate();
-      happyServer.stop();
+      idleServer.stop();
 
       if (geminiBackend) {
         await geminiBackend.dispose();
@@ -490,15 +490,15 @@ export async function runGemini(opts: {
   }
 
   //
-  // Start Happy MCP server and create Gemini backend
+  // Start Idle MCP server and create Gemini backend
   //
 
-  const happyServer = await startHappyServer(session);
-  const bridgeCommand = join(projectPath(), 'bin', 'happy-mcp.mjs');
+  const idleServer = await startIdleServer(session);
+  const bridgeCommand = join(projectPath(), 'bin', 'idle-mcp.mjs');
   const mcpServers = {
-    happy: {
+    idle: {
       command: bridgeCommand,
-      args: ['--url', happyServer.url]
+      args: ['--url', idleServer.url]
     }
   };
 
@@ -633,8 +633,8 @@ export async function runGemini(opts: {
           // Check for authentication error and provide helpful message
           if (errorMessage.includes('Authentication required')) {
             errorMessage = `Authentication required.\n` +
-              `For Google Workspace accounts, run: happy gemini project set <project-id>\n` +
-              `Or use a different Google account: happy connect gemini\n` +
+              `For Google Workspace accounts, run: idle gemini project set <project-id>\n` +
+              `Or use a different Google account: idle connect gemini\n` +
               `Guide: https://goo.gle/gemini-cli-auth-docs#workspace-gca`;
           }
           
@@ -676,7 +676,7 @@ export async function runGemini(opts: {
         // Track change_title completion
         if (msg.toolName === 'change_title' || 
             msg.callId?.includes('change_title') ||
-            msg.toolName === 'happy__change_title') {
+            msg.toolName === 'idle__change_title') {
           changeTitleCompleted = true;
           logger.debug('[gemini] change_title completed');
         }
@@ -1052,7 +1052,7 @@ export async function runGemini(opts: {
         // Track if this prompt contains change_title instruction
         // If so, don't send task_complete until change_title is completed
         pendingChangeTitle = message.message.includes('change_title') || 
-                             message.message.includes('happy__change_title');
+                             message.message.includes('idle__change_title');
         changeTitleCompleted = false;
         
         if (!geminiBackend || !acpSessionId) {
@@ -1199,8 +1199,8 @@ export async function runGemini(opts: {
                      errorDetails.includes('Authentication required') ||
                      errorCode === -32000) {
               errorMsg = `Authentication required. For Google Workspace accounts, you need to set a Google Cloud Project:\n` +
-                         `  happy gemini project set <your-project-id>\n` +
-                         `Or use a different Google account: happy connect gemini\n` +
+                         `  idle gemini project set <your-project-id>\n` +
+                         `Or use a different Google account: idle connect gemini\n` +
                          `Guide: https://goo.gle/gemini-cli-auth-docs#workspace-gca`;
             }
             // Check for empty error (command not found)
@@ -1308,7 +1308,7 @@ export async function runGemini(opts: {
       await geminiBackend.dispose();
     }
 
-    happyServer.stop();
+    idleServer.stop();
 
     if (process.stdin.isTTY) {
       try { process.stdin.setRawMode(false); } catch { /* ignore */ }

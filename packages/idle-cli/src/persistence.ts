@@ -1,7 +1,7 @@
 /**
- * Minimal persistence functions for happy CLI
+ * Minimal persistence functions for idle CLI
  * 
- * Handles settings and private key storage in ~/.happy/ or local .happy/
+ * Handles settings and private key storage in ~/.idle/ or local .idle/
  */
 
 import { FileHandle } from 'node:fs/promises'
@@ -13,7 +13,7 @@ import * as z from 'zod';
 import { encodeBase64 } from '@/api/encryption';
 import { logger } from '@/ui/logger';
 
-// AI backend profile schema - MUST match happy app exactly
+// AI backend profile schema - MUST match idle app exactly
 // Using same Zod schema as GUI for runtime validation consistency
 
 // Environment variable schemas for different AI providers (matching GUI exactly)
@@ -121,7 +121,7 @@ export const AIBackendProfileSchema = z.object({
 
 export type AIBackendProfile = z.infer<typeof AIBackendProfileSchema>;
 
-// Helper functions matching the happy app exactly
+// Helper functions matching the idle app exactly
 export function validateProfileForAgent(profile: AIBackendProfile, agent: 'claude' | 'codex' | 'gemini'): boolean {
   return profile.compatibility[agent];
 }
@@ -218,9 +218,9 @@ interface Settings {
   // All machine operations use this ID
   machineId?: string
   machineIdConfirmedByServer?: boolean
-  daemonAutoStartWhenRunningHappy?: boolean
+  daemonAutoStartWhenRunningIdle?: boolean
   chromeMode?: boolean  // Default Chrome mode setting for Claude
-  // Profile management settings (synced with happy app)
+  // Profile management settings (synced with idle app)
   activeProfileId?: string
   profiles: AIBackendProfile[]
   sandboxConfig?: SandboxConfig
@@ -293,7 +293,7 @@ export async function readSettings(): Promise<Settings> {
     if (schemaVersion > SUPPORTED_SCHEMA_VERSION) {
       logger.warn(
         `⚠️ Settings schema v${schemaVersion} > supported v${SUPPORTED_SCHEMA_VERSION}. ` +
-        'Update happy-cli for full functionality.'
+        'Update idle-cli for full functionality.'
       );
     }
 
@@ -337,8 +337,8 @@ export async function readSettings(): Promise<Settings> {
 }
 
 export async function writeSettings(settings: Settings): Promise<void> {
-  if (!existsSync(configuration.happyHomeDir)) {
-    await mkdir(configuration.happyHomeDir, { recursive: true })
+  if (!existsSync(configuration.idleHomeDir)) {
+    await mkdir(configuration.idleHomeDir, { recursive: true })
   }
 
   // Ensure schema version is set before writing
@@ -405,8 +405,8 @@ export async function updateSettings(
     const updated = await updater(current);
 
     // Ensure directory exists
-    if (!existsSync(configuration.happyHomeDir)) {
-      await mkdir(configuration.happyHomeDir, { recursive: true });
+    if (!existsSync(configuration.idleHomeDir)) {
+      await mkdir(configuration.idleHomeDir, { recursive: true });
     }
 
     // Write atomically using rename
@@ -475,8 +475,8 @@ export async function readCredentials(): Promise<Credentials | null> {
 }
 
 export async function writeCredentialsLegacy(credentials: { secret: Uint8Array, token: string }): Promise<void> {
-  if (!existsSync(configuration.happyHomeDir)) {
-    await mkdir(configuration.happyHomeDir, { recursive: true })
+  if (!existsSync(configuration.idleHomeDir)) {
+    await mkdir(configuration.idleHomeDir, { recursive: true })
   }
   await writeFile(configuration.privateKeyFile, JSON.stringify({
     secret: encodeBase64(credentials.secret),
@@ -485,8 +485,8 @@ export async function writeCredentialsLegacy(credentials: { secret: Uint8Array, 
 }
 
 export async function writeCredentialsDataKey(credentials: { publicKey: Uint8Array, machineKey: Uint8Array, token: string }): Promise<void> {
-  if (!existsSync(configuration.happyHomeDir)) {
-    await mkdir(configuration.happyHomeDir, { recursive: true })
+  if (!existsSync(configuration.idleHomeDir)) {
+    await mkdir(configuration.idleHomeDir, { recursive: true })
   }
   await writeFile(configuration.privateKeyFile, JSON.stringify({
     encryption: { publicKey: encodeBase64(credentials.publicKey), machineKey: encodeBase64(credentials.machineKey) },
@@ -651,7 +651,7 @@ export async function setActiveProfile(profileId: string): Promise<void> {
 }
 
 /**
- * Update profiles (synced from happy app) with validation
+ * Update profiles (synced from idle app) with validation
  */
 export async function updateProfiles(profiles: unknown[]): Promise<void> {
   // Validate all profiles using Zod schema

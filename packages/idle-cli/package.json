@@ -1,16 +1,16 @@
 {
-  "name": "happy-coder",
+  "name": "idle-coder",
   "version": "0.14.0-0",
   "description": "Mobile and Web client for Claude Code and Codex",
   "author": "Kirill Dubovitskiy",
   "license": "MIT",
   "type": "module",
-  "homepage": "https://github.com/slopus/happy-cli",
-  "bugs": "https://github.com/slopus/happy-cli/issues",
-  "repository": "slopus/happy-cli",
+  "homepage": "https://github.com/tomstetson/idle",
+  "bugs": "https://github.com/tomstetson/idle/issues",
+  "repository": "tomstetson/idle",
   "bin": {
-    "happy": "./bin/happy.mjs",
-    "happy-mcp": "./bin/happy-mcp.mjs"
+    "idle": "./bin/idle.mjs",
+    "idle-mcp": "./bin/idle-mcp.mjs"
   },
   "main": "./dist/index.cjs",
   "module": "./dist/index.mjs",
@@ -36,14 +36,14 @@
         "default": "./dist/lib.mjs"
       }
     },
-    "./codex/happyMcpStdioBridge": {
+    "./codex/idleMcpStdioBridge": {
       "require": {
-        "types": "./dist/codex/happyMcpStdioBridge.d.cts",
-        "default": "./dist/codex/happyMcpStdioBridge.cjs"
+        "types": "./dist/codex/idleMcpStdioBridge.d.cts",
+        "default": "./dist/codex/idleMcpStdioBridge.cjs"
       },
       "import": {
-        "types": "./dist/codex/happyMcpStdioBridge.d.mts",
-        "default": "./dist/codex/happyMcpStdioBridge.mjs"
+        "types": "./dist/codex/idleMcpStdioBridge.d.mts",
+        "default": "./dist/codex/idleMcpStdioBridge.mjs"
       }
     }
   },
@@ -55,11 +55,11 @@
     "package.json"
   ],
   "scripts": {
-    "why do we need to build before running tests / dev?": "We need the binary to be built so we run daemon commands which directly run the binary - we don't want them to go out of sync or have custom spawn logic depending how we started happy",
+    "why do we need to build before running tests / dev?": "We need the binary to be built so we run daemon commands which directly run the binary - we don't want them to go out of sync or have custom spawn logic depending how we started idle",
     "typecheck": "tsc --noEmit",
     "build": "shx rm -rf dist && npx tsc --noEmit && pkgroll",
     "test": "$npm_execpath run build && vitest run",
-    "start": "$npm_execpath run build && node ./bin/happy.mjs",
+    "start": "$npm_execpath run build && node ./bin/idle.mjs",
     "cli": "tsx src/index.ts",
     "dev": "tsx src/index.ts",
     "dev:local-server": "$npm_execpath run build && tsx --env-file .env.dev-local-server src/index.ts",
@@ -92,7 +92,7 @@
     "@anthropic-ai/sandbox-runtime": "^0.0.37",
     "@modelcontextprotocol/sdk": "^1.25.3",
     "@paralleldrive/cuid2": "^2.2.2",
-    "@slopus/happy-wire": "^0.1.0",
+    "@northglass/idle-wire": "^0.1.0",
     "@stablelib/base64": "^2.0.1",
     "@stablelib/hex": "^2.0.1",
     "@types/cross-spawn": "^6.0.6",

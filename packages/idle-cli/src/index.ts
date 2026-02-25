@@ -1,7 +1,7 @@
 #!/usr/bin/env node
 
 /**
- * CLI entry point for happy command
+ * CLI entry point for idle command
  * 
  * Simple argument parsing without any CLI framework dependencies
  */
@@ -15,9 +15,9 @@ import { authAndSetupMachineIfNeeded } from './ui/auth'
 import packageJson from '../package.json'
 import { z } from 'zod'
 import { startDaemon } from './daemon/run'
-import { checkIfDaemonRunningAndCleanupStaleState, isDaemonRunningCurrentlyInstalledHappyVersion, stopDaemon } from './daemon/controlClient'
+import { checkIfDaemonRunningAndCleanupStaleState, isDaemonRunningCurrentlyInstalledIdleVersion, stopDaemon } from './daemon/controlClient'
 import { getLatestDaemonLog } from './ui/logger'
-import { killRunawayHappyProcesses } from './daemon/doctor'
+import { killRunawayIdleProcesses } from './daemon/doctor'
 import { install } from './daemon/install'
 import { uninstall } from './daemon/uninstall'
 import { ApiClient } from './api/api'
@@ -26,7 +26,7 @@ import { listDaemonSessions, stopDaemonSession } from './daemon/controlClient'
 import { handleAuthCommand } from './commands/auth'
 import { handleConnectCommand } from './commands/connect'
 import { handleSandboxCommand } from './commands/sandbox'
-import { spawnHappyCLI } from './utils/spawnHappyCLI'
+import { spawnIdleCLI } from './utils/spawnIdleCLI'
 import { claudeCliPath } from './claude/claudeLocal'
 import { execFileSync } from 'node:child_process'
 import { extractNoSandboxFlag } from './utils/sandboxFlags'
@@ -37,7 +37,7 @@ import { extractNoSandboxFlag } from './utils/sandboxFlags'
 
   // If --version is passed - do not log, its likely daemon inquiring about our version
   if (!args.includes('--version')) {
-    logger.debug('Starting happy CLI with args: ', process.argv)
+    logger.debug('Starting idle CLI with args: ', process.argv)
   }
 
   // Check if first argument is a subcommand
@@ -50,7 +50,7 @@ import { extractNoSandboxFlag } from './utils/sandboxFlags'
   if (subcommand === 'doctor') {
     // Check for clean subcommand
     if (args[1] === 'clean') {
-      const result = await killRunawayHappyProcesses()
+      const result = await killRunawayIdleProcesses()
       console.log(`Cleaned up ${result.killed} runaway processes`)
       if (result.errors.length > 0) {
         console.log('Errors:', result.errors)
@@ -128,7 +128,7 @@ import { extractNoSandboxFlag } from './utils/sandboxFlags'
     // Handle gemini subcommands
     const geminiSubcommand = args[1];
     
-    // Handle "happy gemini model set <model>" command
+    // Handle "idle gemini model set <model>" command
     if (geminiSubcommand === 'model' && args[2] === 'set' && args[3]) {
       const modelName = args[3];
       const validModels = ['gemini-2.5-pro', 'gemini-2.5-flash', 'gemini-2.5-flash-lite'];
@@ -178,7 +178,7 @@ import { extractNoSandboxFlag } from './utils/sandboxFlags'
       }
     }
     
-    // Handle "happy gemini model get" command
+    // Handle "idle gemini model get" command
     if (geminiSubcommand === 'model' && args[2] === 'get') {
       try {
         const { existsSync, readFileSync } = require('fs');
@@ -217,7 +217,7 @@ import { extractNoSandboxFlag } from './utils/sandboxFlags'
       }
     }
     
-    // Handle "happy gemini project set <project-id>" command
+    // Handle "idle gemini project set <project-id>" command
     if (geminiSubcommand === 'project' && args[2] === 'set' && args[3]) {
       const projectId = args[3];
       
@@ -226,7 +226,7 @@ import { extractNoSandboxFlag } from './utils/sandboxFlags'
         const { readCredentials } = await import('@/persistence');
         const { ApiClient } = await import('@/api/api');
         
-        // Try to get current user email from Happy cloud token
+        // Try to get current user email from Idle cloud token
         let userEmail: string | undefined = undefined;
         try {
           const credentials = await readCredentials();
@@ -258,7 +258,7 @@ import { extractNoSandboxFlag } from './utils/sandboxFlags'
       }
     }
     
-    // Handle "happy gemini project get" command
+    // Handle "idle gemini project get" command
     if (geminiSubcommand === 'project' && args[2] === 'get') {
       try {
         const { readGeminiLocalConfig } = await import('@/gemini/utils/config');
@@ -277,7 +277,7 @@ import { extractNoSandboxFlag } from './utils/sandboxFlags'
           console.log('No Google Cloud Project configured.');
           console.log('');
           console.log('If you see "Authentication required" error, you may need to set a project:');
-          console.log('  happy gemini project set <your-project-id>');
+          console.log('  idle gemini project set <your-project-id>');
           console.log('');
           console.log('This is required for Google Workspace accounts.');
           console.log('Guide: https://goo.gle/gemini-cli-auth-docs#workspace-gca');
@@ -289,9 +289,9 @@ import { extractNoSandboxFlag } from './utils/sandboxFlags'
       }
     }
     
-    // Handle "happy gemini project" (no subcommand) - show help
+    // Handle "idle gemini project" (no subcommand) - show help
     if (geminiSubcommand === 'project' && !args[2]) {
-      console.log('Usage: happy gemini project <command>');
+      console.log('Usage: idle gemini project <command>');
       console.log('');
       console.log('Commands:');
       console.log('  set <project-id>   Set Google Cloud Project ID');
@@ -321,10 +321,10 @@ import { extractNoSandboxFlag } from './utils/sandboxFlags'
       } = await authAndSetupMachineIfNeeded();
 
       // Auto-start daemon for gemini (same as claude)
-      logger.debug('Ensuring Happy background service is running & matches our version...');
-      if (!(await isDaemonRunningCurrentlyInstalledHappyVersion())) {
-        logger.debug('Starting Happy background service...');
-        const daemonProcess = spawnHappyCLI(['daemon', 'start-sync'], {
+      logger.debug('Ensuring Idle background service is running & matches our version...');
+      if (!(await isDaemonRunningCurrentlyInstalledIdleVersion())) {
+        logger.debug('Starting Idle background service...');
+        const daemonProcess = spawnIdleCLI(['daemon', 'start-sync'], {
           detached: true,
           stdio: 'ignore',
           env: process.env
@@ -368,10 +368,10 @@ import { extractNoSandboxFlag } from './utils/sandboxFlags'
       const resolved = resolveAcpAgentConfig(acpArgs);
       const { credentials } = await authAndSetupMachineIfNeeded();
 
-      logger.debug('Ensuring Happy background service is running & matches our version...');
-      if (!(await isDaemonRunningCurrentlyInstalledHappyVersion())) {
-        logger.debug('Starting Happy background service...');
-        const daemonProcess = spawnHappyCLI(['daemon', 'start-sync'], {
+      logger.debug('Ensuring Idle background service is running & matches our version...');
+      if (!(await isDaemonRunningCurrentlyInstalledIdleVersion())) {
+        logger.debug('Starting Idle background service...');
+        const daemonProcess = spawnIdleCLI(['daemon', 'start-sync'], {
           detached: true,
           stdio: 'ignore',
           env: process.env
@@ -398,7 +398,7 @@ import { extractNoSandboxFlag } from './utils/sandboxFlags'
     return;
   } else if (subcommand === 'logout') {
     // Keep for backward compatibility - redirect to auth logout
-    console.log(chalk.yellow('Note: "happy logout" is deprecated. Use "happy auth logout" instead.\n'));
+    console.log(chalk.yellow('Note: "idle logout" is deprecated. Use "idle auth logout" instead.\n'));
     try {
       await handleAuthCommand(['logout']);
     } catch (error) {
@@ -457,7 +457,7 @@ import { extractNoSandboxFlag } from './utils/sandboxFlags'
 
     } else if (daemonSubcommand === 'start') {
       // Spawn detached daemon process
-      const child = spawnHappyCLI(['daemon', 'start-sync'], {
+      const child = spawnIdleCLI(['daemon', 'start-sync'], {
         detached: true,
         stdio: 'ignore',
         env: process.env
@@ -516,20 +516,20 @@ import { extractNoSandboxFlag } from './utils/sandboxFlags'
       }
     } else {
       console.log(`
-${chalk.bold('happy daemon')} - Daemon management
+${chalk.bold('idle daemon')} - Daemon management
 
 ${chalk.bold('Usage:')}
-  happy daemon start              Start the daemon (detached)
-  happy daemon stop               Stop the daemon (sessions stay alive)
-  happy daemon status             Show daemon status
-  happy daemon list               List active sessions
+  idle daemon start              Start the daemon (detached)
+  idle daemon stop               Stop the daemon (sessions stay alive)
+  idle daemon status             Show daemon status
+  idle daemon list               List active sessions
 
-  If you want to kill all happy related processes run 
-  ${chalk.cyan('happy doctor clean')}
+  If you want to kill all idle related processes run 
+  ${chalk.cyan('idle doctor clean')}
 
 ${chalk.bold('Note:')} The daemon runs in the background and manages Claude sessions.
 
-${chalk.bold('To clean up runaway processes:')} Use ${chalk.cyan('happy doctor clean')}
+${chalk.bold('To clean up runaway processes:')} Use ${chalk.cyan('idle doctor clean')}
 `)
     }
     return;
@@ -562,7 +562,7 @@ ${chalk.bold('To clean up runaway processes:')} Use ${chalk.cyan('happy doctor c
         showVersion = true
         // Also pass through to claude (will show after our version)
         unknownArgs.push(arg)
-      } else if (arg === '--happy-starting-mode') {
+      } else if (arg === '--idle-starting-mode') {
         options.startingMode = z.enum(['local', 'remote']).parse(args[++i])
       } else if (arg === '--yolo') {
         // Shortcut for --dangerously-skip-permissions
@@ -594,11 +594,11 @@ ${chalk.bold('To clean up runaway processes:')} Use ${chalk.cyan('happy doctor c
         // We'll add --chrome to claudeArgs after resolving settings default
       } else if (arg === '--no-chrome') {
         chromeOverride = false
-        // Happy-specific flag to disable chrome even if default is on
+        // Idle-specific flag to disable chrome even if default is on
       } else if (arg === '--settings') {
-        // Intercept --settings flag - Happy uses this internally for session hooks
+        // Intercept --settings flag - Idle uses this internally for session hooks
         const settingsValue = args[++i] // consume the value
-        console.warn(chalk.yellow(`⚠️  Warning: --settings is used internally by Happy for session tracking.`))
+        console.warn(chalk.yellow(`⚠️  Warning: --settings is used internally by Idle for session tracking.`))
         console.warn(chalk.yellow(`   Your settings file "${settingsValue}" will be ignored.`))
         console.warn(chalk.yellow(`   To configure Claude, edit ~/.claude/settings.json instead.`))
         // Don't pass through to claudeArgs
@@ -627,43 +627,43 @@ ${chalk.bold('To clean up runaway processes:')} Use ${chalk.cyan('happy doctor c
     // Show help
     if (showHelp) {
       console.log(`
-${chalk.bold('happy')} - Claude Code On the Go
+${chalk.bold('idle')} - Claude Code On the Go
 
 ${chalk.bold('Usage:')}
-  happy [options]         Start Claude with mobile control
-  happy auth              Manage authentication
-  happy codex             Start Codex mode
-  happy gemini            Start Gemini mode (ACP)
-  happy acp               Start a generic ACP-compatible agent
-  happy connect           Connect AI vendor API keys
-  happy sandbox           Configure and manage OS-level sandboxing
-  happy notify            Send push notification
-  happy daemon            Manage background service that allows
+  idle [options]         Start Claude with mobile control
+  idle auth              Manage authentication
+  idle codex             Start Codex mode
+  idle gemini            Start Gemini mode (ACP)
+  idle acp               Start a generic ACP-compatible agent
+  idle connect           Connect AI vendor API keys
+  idle sandbox           Configure and manage OS-level sandboxing
+  idle notify            Send push notification
+  idle daemon            Manage background service that allows
                             to spawn new sessions away from your computer
-  happy doctor            System diagnostics & troubleshooting
+  idle doctor            System diagnostics & troubleshooting
 
 ${chalk.bold('Examples:')}
-  happy                    Start session
-  happy --yolo             Start with bypassing permissions
-                            happy sugar for --dangerously-skip-permissions
-  happy --chrome           Enable Chrome browser access for this session
-  happy --no-chrome        Disable Chrome even if default is on
-  happy --no-sandbox       Disable Happy sandbox for this session
-  happy --js-runtime bun   Use bun instead of node to spawn Claude Code
-  happy --claude-env ANTHROPIC_BASE_URL=http://127.0.0.1:3456
+  idle                    Start session
+  idle --yolo             Start with bypassing permissions
+                            idle sugar for --dangerously-skip-permissions
+  idle --chrome           Enable Chrome browser access for this session
+  idle --no-chrome        Disable Chrome even if default is on
+  idle --no-sandbox       Disable Idle sandbox for this session
+  idle --js-runtime bun   Use bun instead of node to spawn Claude Code
+  idle --claude-env ANTHROPIC_BASE_URL=http://127.0.0.1:3456
                            Use a custom API endpoint (e.g., claude-code-router)
-  happy acp gemini         Start Gemini via generic ACP runner
-  happy acp -- opencode --acp
+  idle acp gemini         Start Gemini via generic ACP runner
+  idle acp -- opencode --acp
                            Start a custom ACP command
-  happy acp opencode --verbose
+  idle acp opencode --verbose
                            Print raw ACP backend/envelope events
-  happy auth login --force Authenticate
-  happy doctor             Run diagnostics
+  idle auth login --force Authenticate
+  idle doctor             Run diagnostics
 
-${chalk.bold('Happy supports ALL Claude options!')}
-  Use any claude flag with happy as you would with claude. Our favorite:
+${chalk.bold('Idle supports ALL Claude options!')}
+  Use any claude flag with idle as you would with claude. Our favorite:
 
-  happy --resume
+  idle --resume
 
 ${chalk.gray('─'.repeat(60))}
 ${chalk.bold.cyan('Claude Code Options (from `claude --help`):')}
@@ -683,7 +683,7 @@ ${chalk.bold.cyan('Claude Code Options (from `claude --help`):')}
 
     // Show version
     if (showVersion) {
-      console.log(`happy version: ${packageJson.version}`)
+      console.log(`idle version: ${packageJson.version}`)
       // Don't exit - continue to pass --version to Claude Code
     }
 
@@ -693,13 +693,13 @@ ${chalk.bold.cyan('Claude Code Options (from `claude --help`):')}
     } = await authAndSetupMachineIfNeeded();
 
     // Always auto-start daemon for simplicity
-    logger.debug('Ensuring Happy background service is running & matches our version...');
+    logger.debug('Ensuring Idle background service is running & matches our version...');
 
-    if (!(await isDaemonRunningCurrentlyInstalledHappyVersion())) {
-      logger.debug('Starting Happy background service...');
+    if (!(await isDaemonRunningCurrentlyInstalledIdleVersion())) {
+      logger.debug('Starting Idle background service...');
 
       // Use the built binary to spawn daemon
-      const daemonProcess = spawnHappyCLI(['daemon', 'start-sync'], {
+      const daemonProcess = spawnIdleCLI(['daemon', 'start-sync'], {
         detached: true,
         stdio: 'ignore',
         env: process.env
@@ -750,34 +750,34 @@ async function handleNotifyCommand(args: string[]): Promise<void> {
 
   if (showHelp) {
     console.log(`
-${chalk.bold('happy notify')} - Send notification
+${chalk.bold('idle notify')} - Send notification
 
 ${chalk.bold('Usage:')}
-  happy notify -p <message> [-t <title>]    Send notification with custom message and optional title
-  happy notify -h, --help                   Show this help
+  idle notify -p <message> [-t <title>]    Send notification with custom message and optional title
+  idle notify -h, --help                   Show this help
 
 ${chalk.bold('Options:')}
   -p <message>    Notification message (required)
-  -t <title>      Notification title (optional, defaults to "Happy")
+  -t <title>      Notification title (optional, defaults to "Idle")
 
 ${chalk.bold('Examples:')}
-  happy notify -p "Deployment complete!"
-  happy notify -p "System update complete" -t "Server Status"
-  happy notify -t "Alert" -p "Database connection restored"
+  idle notify -p "Deployment complete!"
+  idle notify -p "System update complete" -t "Server Status"
+  idle notify -t "Alert" -p "Database connection restored"
 `)
     return
   }
 
   if (!message) {
     console.error(chalk.red('Error: Message is required. Use -p "your message" to specify the notification text.'))
-    console.log(chalk.gray('Run "happy notify --help" for usage information.'))
+    console.log(chalk.gray('Run "idle notify --help" for usage information.'))
     process.exit(1)
   }
 
   // Load credentials
   let credentials = await readCredentials()
   if (!credentials) {
-    console.error(chalk.red('Error: Not authenticated. Please run "happy auth login" first.'))
+    console.error(chalk.red('Error: Not authenticated. Please run "idle auth login" first.'))
     process.exit(1)
   }
 
@@ -787,8 +787,8 @@ ${chalk.bold('Examples:')}
     // Create API client and send push notification
     const api = await ApiClient.create(credentials);
 
-    // Use custom title or default to "Happy"
-    const notificationTitle = title || 'Happy'
+    // Use custom title or default to "Idle"
+    const notificationTitle = title || 'Idle'
 
     // Send the push notification
     api.push().sendToAllDevices(

@@ -1,11 +1,11 @@
 /**
- * Acceptance tests for happy-agent CLI — Task 10 verification.
+ * Acceptance tests for idle-agent CLI — Task 10 verification.
  *
  * Verifies:
  * 1. All 8 operations work: auth, create, send, stop, history, wait, status, list
  * 2. --json flag works on all applicable commands
  * 3. Error handling: no credentials, server unreachable, invalid session ID
- * 4. Interop: sessions with dataKey encryption (happy-agent) and legacy encryption (happy-cli)
+ * 4. Interop: sessions with dataKey encryption (idle-agent) and legacy encryption (idle-cli)
  */
 
 import { describe, it, expect, beforeEach, vi } from 'vitest';
@@ -36,7 +36,7 @@ import { resolveSessionEncryption } from './api';
 import { formatSessionTable, formatSessionStatus, formatMessageHistory, formatJson } from './output';
 
 const __dirname = dirname(fileURLToPath(import.meta.url));
-const binPath = resolve(__dirname, '..', 'bin', 'happy-agent.mjs');
+const binPath = resolve(__dirname, '..', 'bin', 'idle-agent.mjs');
 
 // --- CLI runner ---
 
@@ -47,7 +47,7 @@ function runCli(...args: string[]): { stdout: string; stderr: string; exitCode: 
             '--no-deprecation',
             binPath,
             ...args,
-        ], { encoding: 'utf-8', env: { ...process.env, HAPPY_HOME_DIR: '/tmp/nonexistent-happy-acceptance' } });
+        ], { encoding: 'utf-8', env: { ...process.env, IDLE_HOME_DIR: '/tmp/nonexistent-idle-acceptance' } });
         return { stdout, stderr: '', exitCode: 0 };
     } catch (err: unknown) {
         const e = err as { stdout?: string; stderr?: string; status?: number };
@@ -164,7 +164,7 @@ describe('Acceptance: All 8 CLI operations', () => {
         it('fails with auth error when not authenticated', () => {
             const { stderr, exitCode } = runCli('list');
             expect(exitCode).not.toBe(0);
-            expect(stderr).toContain('happy-agent auth login');
+            expect(stderr).toContain('idle-agent auth login');
         });
     });
 
@@ -178,7 +178,7 @@ describe('Acceptance: All 8 CLI operations', () => {
         it('fails with auth error when not authenticated', () => {
             const { stderr, exitCode } = runCli('status', 'abc');
             expect(exitCode).not.toBe(0);
-            expect(stderr).toContain('happy-agent auth login');
+            expect(stderr).toContain('idle-agent auth login');
         });
     });
 
@@ -199,7 +199,7 @@ describe('Acceptance: All 8 CLI operations', () => {
         it('fails with auth error when not authenticated', () => {
             const { stderr, exitCode } = runCli('create', '--tag', 'test');
             expect(exitCode).not.toBe(0);
-            expect(stderr).toContain('happy-agent auth login');
+            expect(stderr).toContain('idle-agent auth login');
         });
     });
 
@@ -215,7 +215,7 @@ describe('Acceptance: All 8 CLI operations', () => {
         it('fails with auth error when not authenticated', () => {
             const { stderr, exitCode } = runCli('send', 'abc', 'hello');
             expect(exitCode).not.toBe(0);
-            expect(stderr).toContain('happy-agent auth login');
+            expect(stderr).toContain('idle-agent auth login');
         });
     });
 
@@ -230,7 +230,7 @@ describe('Acceptance: All 8 CLI operations', () => {
         it('fails with auth error when not authenticated', () => {
             const { stderr, exitCode } = runCli('history', 'abc');
             expect(exitCode).not.toBe(0);
-            expect(stderr).toContain('happy-agent auth login');
+            expect(stderr).toContain('idle-agent auth login');
         });
     });
 
@@ -243,7 +243,7 @@ describe('Acceptance: All 8 CLI operations', () => {
         it('fails with auth error when not authenticated', () => {
             const { stderr, exitCode } = runCli('stop', 'abc');
             expect(exitCode).not.toBe(0);
-            expect(stderr).toContain('happy-agent auth login');
+            expect(stderr).toContain('idle-agent auth login');
         });
     });
 
@@ -257,7 +257,7 @@ describe('Acceptance: All 8 CLI operations', () => {
         it('fails with auth error when not authenticated', () => {
             const { stderr, exitCode } = runCli('wait', 'abc');
             expect(exitCode).not.toBe(0);
-            expect(stderr).toContain('happy-agent auth login');
+            expect(stderr).toContain('idle-agent auth login');
         });
     });
 });
@@ -316,7 +316,7 @@ describe('Acceptance: Error handling', () => {
             for (const args of commands) {
                 const { stderr, exitCode } = runCli(...args);
                 expect(exitCode).not.toBe(0);
-                expect(stderr).toContain('happy-agent auth login');
+                expect(stderr).toContain('idle-agent auth login');
             }
         });
     });
@@ -352,8 +352,8 @@ describe('Acceptance: Error handling', () => {
     describe('server error handling (via API error mapper)', () => {
         it('HTTP 401 maps to re-authenticate message', async () => {
             // This is tested in api.test.ts but we verify the error message format here
-            const errorMsg = 'Authentication expired. Run `happy-agent auth login` to re-authenticate.';
-            expect(errorMsg).toContain('happy-agent auth login');
+            const errorMsg = 'Authentication expired. Run `idle-agent auth login` to re-authenticate.';
+            expect(errorMsg).toContain('idle-agent auth login');
         });
 
         it('HTTP 404 maps to not found message', () => {
@@ -389,7 +389,7 @@ describe('Acceptance: Interop — dataKey vs legacy encryption', () => {
         expect(decryptedState).toEqual(agentState);
     });
 
-    it('session created with legacy encryption (happy-cli style) can be decrypted', () => {
+    it('session created with legacy encryption (idle-cli style) can be decrypted', () => {
         const creds = makeCredentials();
         const metadata = { tag: 'cli-session', path: '/home/user/old-project' };
         const agentState = { controlledByUser: true, requests: [{ id: 'req-1' }] };
@@ -411,7 +411,7 @@ describe('Acceptance: Interop — dataKey vs legacy encryption', () => {
 
     it('messages encrypted with dataKey can be round-tripped', () => {
         const sessionKey = getRandomBytes(32);
-        const messageContent = { role: 'user', content: { type: 'text', text: 'Hello from happy-agent' } };
+        const messageContent = { role: 'user', content: { type: 'text', text: 'Hello from idle-agent' } };
 
         const encrypted = encrypt(sessionKey, 'dataKey', messageContent);
         const decrypted = decrypt(sessionKey, 'dataKey', encrypted);
@@ -548,19 +548,19 @@ describe('Acceptance: Full test suite runs', () => {
     });
 
     it('config loads with correct defaults', () => {
-        const origUrl = process.env.HAPPY_SERVER_URL;
-        const origHome = process.env.HAPPY_HOME_DIR;
-        delete process.env.HAPPY_SERVER_URL;
-        delete process.env.HAPPY_HOME_DIR;
+        const origUrl = process.env.IDLE_SERVER_URL;
+        const origHome = process.env.IDLE_HOME_DIR;
+        delete process.env.IDLE_SERVER_URL;
+        delete process.env.IDLE_HOME_DIR;
 
         try {
             const config = loadConfig();
             expect(config.serverUrl).toBe('https://api.cluster-fluster.com');
-            expect(config.homeDir).toContain('.happy');
+            expect(config.homeDir).toContain('.idle');
             expect(config.credentialPath).toContain('agent.key');
         } finally {
-            if (origUrl !== undefined) process.env.HAPPY_SERVER_URL = origUrl;
-            if (origHome !== undefined) process.env.HAPPY_HOME_DIR = origHome;
+            if (origUrl !== undefined) process.env.IDLE_SERVER_URL = origUrl;
+            if (origHome !== undefined) process.env.IDLE_HOME_DIR = origHome;
         }
     });
 });

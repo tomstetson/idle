@@ -1,4 +1,4 @@
-# Standalone happy-server: single container, no external dependencies
+# Standalone idle-server: single container, no external dependencies
 # Uses PGlite (embedded Postgres), local filesystem storage, no Redis
 
 # Stage 1: install dependencies
@@ -11,30 +11,30 @@ WORKDIR /repo
 COPY package.json yarn.lock ./
 COPY scripts ./scripts
 
-RUN mkdir -p packages/happy-app packages/happy-server packages/happy-cli packages/happy-agent packages/happy-wire
+RUN mkdir -p packages/idle-app packages/idle-server packages/idle-cli packages/idle-agent packages/idle-wire
 
-COPY packages/happy-app/package.json packages/happy-app/
-COPY packages/happy-server/package.json packages/happy-server/
-COPY packages/happy-cli/package.json packages/happy-cli/
-COPY packages/happy-agent/package.json packages/happy-agent/
-COPY packages/happy-wire/package.json packages/happy-wire/
+COPY packages/idle-app/package.json packages/idle-app/
+COPY packages/idle-server/package.json packages/idle-server/
+COPY packages/idle-cli/package.json packages/idle-cli/
+COPY packages/idle-agent/package.json packages/idle-agent/
+COPY packages/idle-wire/package.json packages/idle-wire/
 
 # Workspace postinstall requirements
-COPY packages/happy-app/patches packages/happy-app/patches
-COPY packages/happy-server/prisma packages/happy-server/prisma
-COPY packages/happy-cli/scripts packages/happy-cli/scripts
-COPY packages/happy-cli/tools packages/happy-cli/tools
+COPY packages/idle-app/patches packages/idle-app/patches
+COPY packages/idle-server/prisma packages/idle-server/prisma
+COPY packages/idle-cli/scripts packages/idle-cli/scripts
+COPY packages/idle-cli/tools packages/idle-cli/tools
 
-RUN SKIP_HAPPY_WIRE_BUILD=1 yarn install --frozen-lockfile --ignore-engines
+RUN SKIP_IDLE_WIRE_BUILD=1 yarn install --frozen-lockfile --ignore-engines
 
 # Stage 2: copy source and type-check
 FROM deps AS builder
 
-COPY packages/happy-wire ./packages/happy-wire
-COPY packages/happy-server ./packages/happy-server
+COPY packages/idle-wire ./packages/idle-wire
+COPY packages/idle-server ./packages/idle-server
 
-RUN yarn workspace @slopus/happy-wire build
-RUN yarn workspace happy-server build
+RUN yarn workspace @northglass/idle-wire build
+RUN yarn workspace idle-server build
 
 # Stage 3: runtime
 FROM node:20-slim AS runner
@@ -48,10 +48,10 @@ ENV DATA_DIR=/data
 ENV PGLITE_DIR=/data/pglite
 
 COPY --from=builder /repo/node_modules /repo/node_modules
-COPY --from=builder /repo/packages/happy-wire /repo/packages/happy-wire
-COPY --from=builder /repo/packages/happy-server /repo/packages/happy-server
+COPY --from=builder /repo/packages/idle-wire /repo/packages/idle-wire
+COPY --from=builder /repo/packages/idle-server /repo/packages/idle-server
 
 VOLUME /data
 EXPOSE 3005
 
-CMD ["sh", "-c", "node_modules/.bin/tsx packages/happy-server/sources/standalone.ts migrate && exec node_modules/.bin/tsx packages/happy-server/sources/standalone.ts serve"]
+CMD ["sh", "-c", "node_modules/.bin/tsx packages/idle-server/sources/standalone.ts migrate && exec node_modules/.bin/tsx packages/idle-server/sources/standalone.ts serve"]

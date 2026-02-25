@@ -16,13 +16,13 @@ export type ResolvedAcpAgentConfig = {
 
 export function resolveAcpAgentConfig(cliArgs: string[]): ResolvedAcpAgentConfig {
   if (cliArgs.length === 0) {
-    throw new Error('Usage: happy acp <agent-name> or happy acp -- <command> [args]');
+    throw new Error('Usage: idle acp <agent-name> or idle acp -- <command> [args]');
   }
 
   if (cliArgs[0] === '--') {
     const command = cliArgs[1];
     if (!command) {
-      throw new Error('Missing command after "--". Usage: happy acp -- <command> [args]');
+      throw new Error('Missing command after "--". Usage: idle acp -- <command> [args]');
     }
     return {
       agentName: command,

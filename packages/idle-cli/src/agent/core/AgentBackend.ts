@@ -3,7 +3,7 @@
  * 
  * This module defines the core abstraction for different agent backends
  * (Claude, Codex, Gemini, OpenCode, etc.) that can be controlled through
- * the Happy CLI and mobile app.
+ * the Idle CLI and mobile app.
  * 
  * The AgentBackend interface provides a unified way to:
  * - Start and manage agent sessions
@@ -20,7 +20,7 @@ export type ToolCallId = string;
 
 /**
  * Messages emitted by an agent backend during a session.
- * These messages are forwarded to the Happy server and mobile app.
+ * These messages are forwarded to the Idle server and mobile app.
  */
 export type AgentMessage =
   | { type: 'model-output'; textDelta?: string; fullText?: string }
@@ -99,7 +99,7 @@ export type AgentMessageHandler = (msg: AgentMessage) => void;
  * Universal interface for agent backends.
  * 
  * All agent implementations (Claude, Codex, Gemini, etc.) should implement
- * this interface to be usable through the Happy CLI and mobile app.
+ * this interface to be usable through the Idle CLI and mobile app.
  */
 export interface AgentBackend {
   /**

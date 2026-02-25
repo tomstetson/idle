@@ -1,9 +1,9 @@
 /**
  * MobileMessageFormat - Types for messages sent to the mobile app
  *
- * This module defines the message format expected by the Happy mobile app.
+ * This module defines the message format expected by the Idle mobile app.
  * Messages from any agent (Gemini, Codex, Claude, etc.) are transformed
- * to this format before being sent through the Happy server.
+ * to this format before being sent through the Idle server.
  *
  * @module MobileMessageFormat
  */

@@ -25,9 +25,9 @@ import { t } from '@/text';
 import { useRouter } from 'expo-router';
 import { Item } from './Item';
 import { ItemGroup } from './ItemGroup';
-import { useHappyAction } from '@/hooks/useHappyAction';
+import { useIdleAction } from '@/hooks/useIdleAction';
 import { sessionDelete } from '@/sync/ops';
-import { HappyError } from '@/utils/errors';
+import { IdleError } from '@/utils/errors';
 import { Modal } from '@/modal';
 
 const stylesheet = StyleSheet.create((theme) => ({
@@ -339,10 +339,10 @@ const SessionItem = React.memo(({ session, selected, isFirst, isLast, isSingle }
     const swipeableRef = React.useRef<Swipeable | null>(null);
     const swipeEnabled = Platform.OS !== 'web';
 
-    const [deletingSession, performDelete] = useHappyAction(async () => {
+    const [deletingSession, performDelete] = useIdleAction(async () => {
         const result = await sessionDelete(session.id);
         if (!result.success) {
-            throw new HappyError(result.message || t('sessionInfo.failedToDeleteSession'), false);
+            throw new IdleError(result.message || t('sessionInfo.failedToDeleteSession'), false);
         }
     });
 

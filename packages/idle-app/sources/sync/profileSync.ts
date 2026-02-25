@@ -122,8 +122,8 @@ class ProfileSyncService {
     }
 
     /**
-     * Sync profiles from GUI to CLI using proper Happy infrastructure
-     * SECURITY NOTE: Direct file access is PROHIBITED - use Happy RPC infrastructure
+     * Sync profiles from GUI to CLI using proper Idle infrastructure
+     * SECURITY NOTE: Direct file access is PROHIBITED - use Idle RPC infrastructure
      */
     public async syncGuiToCli(profiles: AIBackendProfile[]): Promise<void> {
         if (this.syncStatus === 'syncing') {
@@ -138,10 +138,10 @@ class ProfileSyncService {
         });
 
         try {
-            // Profiles are stored in GUI settings and available through existing Happy sync system
+            // Profiles are stored in GUI settings and available through existing Idle sync system
             // CLI daemon reads profiles from GUI settings via existing channels
             // TODO: Implement machine RPC endpoints for profile management in CLI daemon
-            console.log(`[ProfileSync] GUI profiles stored in Happy settings. CLI access via existing infrastructure.`);
+            console.log(`[ProfileSync] GUI profiles stored in Idle settings. CLI access via existing infrastructure.`);
 
             this.lastSyncTime = Date.now();
             this.syncStatus = 'success';
@@ -151,7 +151,7 @@ class ProfileSyncService {
                 status: 'success',
                 profilesSynced: profiles.length,
                 timestamp: Date.now(),
-                message: 'Profiles available through Happy settings system'
+                message: 'Profiles available through Idle settings system'
             });
         } catch (error) {
             this.syncStatus = 'error';
@@ -169,8 +169,8 @@ class ProfileSyncService {
     }
 
     /**
-     * Sync profiles from CLI to GUI using proper Happy infrastructure
-     * SECURITY NOTE: Direct file access is PROHIBITED - use Happy RPC infrastructure
+     * Sync profiles from CLI to GUI using proper Idle infrastructure
+     * SECURITY NOTE: Direct file access is PROHIBITED - use Idle RPC infrastructure
      */
     public async syncCliToGui(): Promise<AIBackendProfile[]> {
         if (this.syncStatus === 'syncing') {
@@ -185,11 +185,11 @@ class ProfileSyncService {
         });
 
         try {
-            // CLI profiles are accessed through Happy settings system, not direct file access
+            // CLI profiles are accessed through Idle settings system, not direct file access
             // Return profiles from current GUI settings
             const currentProfiles = storage.getState().settings.profiles || [];
 
-            console.log(`[ProfileSync] Retrieved ${currentProfiles.length} profiles from Happy settings`);
+            console.log(`[ProfileSync] Retrieved ${currentProfiles.length} profiles from Idle settings`);
 
             this.lastSyncTime = Date.now();
             this.syncStatus = 'success';
@@ -199,7 +199,7 @@ class ProfileSyncService {
                 status: 'success',
                 profilesSynced: currentProfiles.length,
                 timestamp: Date.now(),
-                message: 'Profiles retrieved from Happy settings system'
+                message: 'Profiles retrieved from Idle settings system'
             });
 
             return currentProfiles;
@@ -374,17 +374,17 @@ class ProfileSyncService {
     }
 
     /**
-     * Set active profile using Happy settings infrastructure
-     * SECURITY NOTE: Direct file access is PROHIBITED - use Happy settings system
+     * Set active profile using Idle settings infrastructure
+     * SECURITY NOTE: Direct file access is PROHIBITED - use Idle settings system
      */
     public async setActiveProfile(profileId: string): Promise<void> {
         try {
-            // Store in GUI settings using Happy's settings system
+            // Store in GUI settings using Idle's settings system
             sync.applySettings({ lastUsedProfile: profileId });
 
-            console.log(`[ProfileSync] Set active profile ${profileId} in Happy settings`);
+            console.log(`[ProfileSync] Set active profile ${profileId} in Idle settings`);
 
-            // Note: CLI daemon accesses active profile through Happy settings system
+            // Note: CLI daemon accesses active profile through Idle settings system
             // TODO: Implement machine RPC endpoint for setting active profile in CLI daemon
         } catch (error) {
             console.error('[ProfileSync] Failed to set active profile:', error);
@@ -393,12 +393,12 @@ class ProfileSyncService {
     }
 
     /**
-     * Get active profile using Happy settings infrastructure
-     * SECURITY NOTE: Direct file access is PROHIBITED - use Happy settings system
+     * Get active profile using Idle settings infrastructure
+     * SECURITY NOTE: Direct file access is PROHIBITED - use Idle settings system
      */
     public async getActiveProfile(): Promise<AIBackendProfile | null> {
         try {
-            // Get active profile from Happy settings system
+            // Get active profile from Idle settings system
             const lastUsedProfileId = storage.getState().settings.lastUsedProfile;
 
             if (!lastUsedProfileId) {
@@ -409,7 +409,7 @@ class ProfileSyncService {
             const activeProfile = profiles.find((p: AIBackendProfile) => p.id === lastUsedProfileId);
 
             if (activeProfile) {
-                console.log(`[ProfileSync] Retrieved active profile ${activeProfile.name} from Happy settings`);
+                console.log(`[ProfileSync] Retrieved active profile ${activeProfile.name} from Idle settings`);
                 return activeProfile;
             }
 

@@ -11,7 +11,7 @@ function plural({ count, singular, plural }: { count: number; singular: string; 
 }
 
 /**
- * Italian translations for the Happy app
+ * Italian translations for the Idle app
  * Must match the exact structure of the English translations
  */
 export const it: TranslationStructure = {
@@ -146,7 +146,7 @@ export const it: TranslationStructure = {
         developer: 'Sviluppatore',
         developerTools: 'Strumenti sviluppatore',
         about: 'Informazioni',
-        aboutFooter: 'Happy Coder è un client mobile per Codex e Claude Code. È completamente cifrato end-to-end e il tuo account è memorizzato solo sul tuo dispositivo. Non affiliato con Anthropic.',
+        aboutFooter: 'Idle Coder è un client mobile per Codex e Claude Code. È completamente cifrato end-to-end e il tuo account è memorizzato solo sul tuo dispositivo. Non affiliato con Anthropic.',
         whatsNew: 'Novità',
         whatsNewSubtitle: 'Scopri gli ultimi aggiornamenti e miglioramenti',
         reportIssue: 'Segnala un problema',
@@ -289,7 +289,7 @@ export const it: TranslationStructure = {
     newSession: {
         // Used by new-session screen and launch flows
         title: 'Avvia nuova sessione',
-        noMachinesFound: 'Nessuna macchina trovata. Avvia prima una sessione Happy sul tuo computer.',
+        noMachinesFound: 'Nessuna macchina trovata. Avvia prima una sessione Idle sul tuo computer.',
         allMachinesOffline: 'Tutte le macchine sembrano offline',
         machineDetails: 'Visualizza dettagli macchina →',
         directoryDoesNotExist: 'Directory non trovata',
@@ -341,7 +341,7 @@ export const it: TranslationStructure = {
         // Used by Server Configuration screen (app/(app)/server.tsx)
         serverConfiguration: 'Configurazione server',
         enterServerUrl: 'Inserisci un URL del server',
-        notValidHappyServer: 'Non è un Happy Server valido',
+        notValidIdleServer: 'Non è un Idle Server valido',
         changeServer: 'Cambia server',
         continueWithServer: 'Continuare con questo server?',
         resetToDefault: 'Ripristina predefinito',
@@ -361,9 +361,9 @@ export const it: TranslationStructure = {
         killSessionConfirm: 'Sei sicuro di voler terminare questa sessione?',
         archiveSession: 'Archivia sessione',
         archiveSessionConfirm: 'Sei sicuro di voler archiviare questa sessione?',
-        happySessionIdCopied: 'ID sessione Happy copiato negli appunti',
-        failedToCopySessionId: 'Impossibile copiare l\'ID sessione Happy',
-        happySessionId: 'ID sessione Happy',
+        idleSessionIdCopied: 'ID sessione Idle copiato negli appunti',
+        failedToCopySessionId: 'Impossibile copiare l\'ID sessione Idle',
+        idleSessionId: 'ID sessione Idle',
         claudeCodeSessionId: 'ID sessione Claude Code',
         claudeCodeSessionIdCopied: 'ID sessione Claude Code copiato negli appunti',
         aiProvider: 'Provider IA',
@@ -386,7 +386,7 @@ export const it: TranslationStructure = {
         path: 'Percorso',
         operatingSystem: 'Sistema operativo',
         processId: 'ID processo',
-        happyHome: 'Happy Home',
+        idleHome: 'Idle Home',
         copyMetadata: 'Copia metadati',
         agentState: 'Stato agente',
         controlledByUser: 'Controllato dall\'utente',
@@ -398,7 +398,7 @@ export const it: TranslationStructure = {
         cliVersionOutdated: 'Aggiornamento CLI richiesto',
         cliVersionOutdatedMessage: ({ currentVersion, requiredVersion }: { currentVersion: string; requiredVersion: string }) =>
             `Versione ${currentVersion} installata. Aggiorna a ${requiredVersion} o successiva`,
-        updateCliInstructions: 'Esegui npm install -g happy-coder@latest',
+        updateCliInstructions: 'Esegui npm install -g idle-coder@latest',
         deleteSession: 'Elimina sessione',
         deleteSessionSubtitle: 'Rimuovi definitivamente questa sessione',
         deleteSessionConfirm: 'Eliminare definitivamente la sessione?',
@@ -412,7 +412,7 @@ export const it: TranslationStructure = {
         emptyMainScreen: {
             // Used by EmptyMainScreen component
             readyToCode: 'Pronto a programmare?',
-            installCli: 'Installa la CLI Happy',
+            installCli: 'Installa la CLI Idle',
             runIt: 'Avviala',
             scanQrCode: 'Scansiona il codice QR',
             openCamera: 'Apri fotocamera',
@@ -487,7 +487,7 @@ export const it: TranslationStructure = {
     },
 
     sidebar: {
-        sessionsTitle: 'Happy',
+        sessionsTitle: 'Idle',
     },
 
     toolView: {
@@ -676,7 +676,7 @@ export const it: TranslationStructure = {
         invalidConnectionLink: 'Link di connessione non valido',
         invalidConnectionLinkDescription: 'Il link di connessione è mancante o non valido. Controlla l\'URL e riprova.',
         connectTerminal: 'Connetti terminale',
-        terminalRequestDescription: 'Un terminale richiede di connettersi al tuo account Happy Coder. Questo consentirà al terminale di inviare e ricevere messaggi in modo sicuro.',
+        terminalRequestDescription: 'Un terminale richiede di connettersi al tuo account Idle Coder. Questo consentirà al terminale di inviare e ricevere messaggi in modo sicuro.',
         connectionDetails: 'Dettagli connessione',
         publicKey: 'Chiave pubblica',
         encryption: 'Cifratura',
@@ -749,7 +749,7 @@ export const it: TranslationStructure = {
     machine: {
         launchNewSessionInDirectory: 'Avvia nuova sessione nella directory',
         offlineUnableToSpawn: 'Avvio disabilitato quando la macchina è offline',
-        offlineHelp: '• Assicurati che il tuo computer sia online\n• Esegui `happy daemon status` per diagnosticare\n• Stai usando l\'ultima versione della CLI? Aggiorna con `npm install -g happy-coder@latest`',
+        offlineHelp: '• Assicurati che il tuo computer sia online\n• Esegui `idle daemon status` per diagnosticare\n• Stai usando l\'ultima versione della CLI? Aggiorna con `npm install -g idle-coder@latest`',
         daemon: 'Daemon',
         status: 'Stato',
         stopDaemon: 'Arresta daemon',

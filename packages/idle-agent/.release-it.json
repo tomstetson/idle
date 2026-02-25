@@ -1,7 +1,7 @@
 {
   "git": {
-    "commitMessage": "Release happy-agent ${version}",
-    "tagName": "happy-agent-v${version}",
+    "commitMessage": "Release idle-agent ${version}",
+    "tagName": "idle-agent-v${version}",
     "push": true,
     "requireCleanWorkingDir": true,
     "requireBranch": "main",
@@ -9,7 +9,7 @@
   },
   "github": {
     "release": true,
-    "releaseName": "happy-agent-v${version}",
+    "releaseName": "idle-agent-v${version}",
     "releaseNotes": "node .release-it.notes.js ${version}"
   },
   "npm": {

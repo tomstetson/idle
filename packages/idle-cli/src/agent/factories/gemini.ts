@@ -32,7 +32,7 @@ export interface GeminiBackendOptions extends AgentFactoryOptions {
   /** API key for Gemini (defaults to GEMINI_API_KEY or GOOGLE_API_KEY env var) */
   apiKey?: string;
   
-  /** OAuth token from Happy cloud (via 'happy connect gemini') - highest priority */
+  /** OAuth token from Idle cloud (via 'idle connect gemini') - highest priority */
   cloudToken?: string;
   
   /** Current user email (from OAuth id_token) - used to match per-account project ID */
@@ -74,7 +74,7 @@ export interface GeminiBackendResult {
 export function createGeminiBackend(options: GeminiBackendOptions): GeminiBackendResult {
 
   // Resolve API key from multiple sources (in priority order):
-  // 1. Happy cloud OAuth token (via 'happy connect gemini') - highest priority
+  // 1. Idle cloud OAuth token (via 'idle connect gemini') - highest priority
   // 2. Local Gemini CLI config files (~/.gemini/)
   // 3. GEMINI_API_KEY environment variable
   // 4. GOOGLE_API_KEY environment variable - lowest priority
@@ -82,14 +82,14 @@ export function createGeminiBackend(options: GeminiBackendOptions): GeminiBacken
   // Try reading from local Gemini CLI config (token and model)
   const localConfig = readGeminiLocalConfig();
   
-  let apiKey = options.cloudToken       // 1. Happy cloud token (passed from runGemini)
+  let apiKey = options.cloudToken       // 1. Idle cloud token (passed from runGemini)
     || localConfig.token                // 2. Local config (~/.gemini/)
     || process.env[GEMINI_API_KEY_ENV]  // 3. GEMINI_API_KEY env var
     || process.env[GOOGLE_API_KEY_ENV]  // 4. GOOGLE_API_KEY env var
     || options.apiKey;                  // 5. Explicit apiKey option (fallback)
 
   if (!apiKey) {
-    logger.warn(`[Gemini] No API key found. Run 'happy connect gemini' to authenticate via Google OAuth, or set ${GEMINI_API_KEY_ENV} environment variable.`);
+    logger.warn(`[Gemini] No API key found. Run 'idle connect gemini' to authenticate via Google OAuth, or set ${GEMINI_API_KEY_ENV} environment variable.`);
   }
 
   // Command to run gemini
@@ -150,7 +150,7 @@ export function createGeminiBackend(options: GeminiBackendOptions): GeminiBacken
       return lower.includes('change_title') ||
              lower.includes('change title') ||
              lower.includes('set title') ||
-             lower.includes('mcp__happy__change_title');
+             lower.includes('mcp__idle__change_title');
     },
   };
 

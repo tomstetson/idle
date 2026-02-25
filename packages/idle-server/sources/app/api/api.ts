@@ -42,7 +42,7 @@ export async function startApi() {
         methods: ['GET', 'POST', 'DELETE']
     });
     app.get('/', function (request, reply) {
-        reply.send('Welcome to Happy Server!');
+        reply.send('Welcome to Idle Server!');
     });
 
     // Create typed provider

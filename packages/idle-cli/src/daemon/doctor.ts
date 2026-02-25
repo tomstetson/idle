@@ -9,9 +9,9 @@ import psList from 'ps-list';
 import spawn from 'cross-spawn';
 
 /**
- * Find all Happy CLI processes (including current process)
+ * Find all Idle CLI processes (including current process)
  */
-export async function findAllHappyProcesses(): Promise<Array<{ pid: number, command: string, type: string }>> {
+export async function findAllIdleProcesses(): Promise<Array<{ pid: number, command: string, type: string }>> {
   try {
     const processes = await psList();
     const allProcesses: Array<{ pid: number, command: string, type: string }> = [];
@@ -20,14 +20,14 @@ export async function findAllHappyProcesses(): Promise<Array<{ pid: number, comm
       const cmd = proc.cmd || '';
       const name = proc.name || '';
       
-      // Check if it's a Happy process
-      const isHappy = name.includes('happy') || 
-                      name === 'node' && (cmd.includes('happy-cli') || cmd.includes('dist/index.mjs')) ||
-                      cmd.includes('happy.mjs') ||
-                      cmd.includes('happy-coder') ||
-                      (cmd.includes('tsx') && cmd.includes('src/index.ts') && cmd.includes('happy-cli'));
+      // Check if it's a Idle process
+      const isIdle = name.includes('idle') || 
+                      name === 'node' && (cmd.includes('idle-cli') || cmd.includes('dist/index.mjs')) ||
+                      cmd.includes('idle.mjs') ||
+                      cmd.includes('idle-coder') ||
+                      (cmd.includes('tsx') && cmd.includes('src/index.ts') && cmd.includes('idle-cli'));
       
-      if (!isHappy) continue;
+      if (!isIdle) continue;
 
       // Classify process type
       let type = 'unknown';
@@ -57,10 +57,10 @@ export async function findAllHappyProcesses(): Promise<Array<{ pid: number, comm
 }
 
 /**
- * Find all runaway Happy CLI processes that should be killed
+ * Find all runaway Idle CLI processes that should be killed
  */
-export async function findRunawayHappyProcesses(): Promise<Array<{ pid: number, command: string }>> {
-  const allProcesses = await findAllHappyProcesses();
+export async function findRunawayIdleProcesses(): Promise<Array<{ pid: number, command: string }>> {
+  const allProcesses = await findAllIdleProcesses();
   
   // Filter to just runaway processes (excluding current process)
   return allProcesses
@@ -78,10 +78,10 @@ export async function findRunawayHappyProcesses(): Promise<Array<{ pid: number, 
 }
 
 /**
- * Kill all runaway Happy CLI processes
+ * Kill all runaway Idle CLI processes
  */
-export async function killRunawayHappyProcesses(): Promise<{ killed: number, errors: Array<{ pid: number, error: string }> }> {
-  const runawayProcesses = await findRunawayHappyProcesses();
+export async function killRunawayIdleProcesses(): Promise<{ killed: number, errors: Array<{ pid: number, error: string }> }> {
+  const runawayProcesses = await findRunawayIdleProcesses();
   const errors: Array<{ pid: number, error: string }> = [];
   let killed = 0;
   

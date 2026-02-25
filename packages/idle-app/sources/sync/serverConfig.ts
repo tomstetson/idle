@@ -8,7 +8,7 @@ const DEFAULT_SERVER_URL = 'https://api.cluster-fluster.com';
 
 export function getServerUrl(): string {
     return serverConfigStorage.getString(SERVER_KEY) || 
-           process.env.EXPO_PUBLIC_HAPPY_SERVER_URL || 
+           process.env.EXPO_PUBLIC_IDLE_SERVER_URL || 
            DEFAULT_SERVER_URL;
 }
 

@@ -331,7 +331,7 @@ export function ProfileEditForm({
                         marginBottom: 8,
                         ...Typography.default()
                     }}>
-                        Leave empty to use first existing tmux session (or create "happy" if none exist). Specify name (e.g., "my-work") for specific session.
+                        Leave empty to use first existing tmux session (or create "idle" if none exist). Specify name (e.g., "my-work") for specific session.
                     </Text>
                     <TextInput
                         style={{

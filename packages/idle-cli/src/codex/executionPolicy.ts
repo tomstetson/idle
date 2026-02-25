@@ -5,9 +5,9 @@ type CodexSandboxMode = NonNullable<CodexSessionConfig['sandbox']>;
 
 export function resolveCodexExecutionPolicy(
     permissionMode: import('@/api/types').PermissionMode,
-    sandboxManagedByHappy: boolean,
+    sandboxManagedByIdle: boolean,
 ): { approvalPolicy: CodexApprovalPolicy; sandbox: CodexSandboxMode } {
-    if (sandboxManagedByHappy) {
+    if (sandboxManagedByIdle) {
         return {
             approvalPolicy: 'never',
             sandbox: 'danger-full-access',

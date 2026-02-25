@@ -11,9 +11,9 @@ function createBaseMetadata(): Metadata {
     path: '/repo',
     host: 'host',
     homeDir: '/home/user',
-    happyHomeDir: '/home/user/.happy',
-    happyLibDir: '/repo/.happy/lib',
-    happyToolsDir: '/repo/.happy/tools',
+    idleHomeDir: '/home/user/.idle',
+    idleLibDir: '/repo/.idle/lib',
+    idleToolsDir: '/repo/.idle/tools',
   };
 }
 

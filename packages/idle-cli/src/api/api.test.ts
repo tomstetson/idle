@@ -48,18 +48,18 @@ const testMetadata = {
     path: '/tmp',
     host: 'localhost',
     homeDir: '/home/user',
-    happyHomeDir: '/home/user/.happy',
-    happyLibDir: '/home/user/.happy/lib',
-    happyToolsDir: '/home/user/.happy/tools'
+    idleHomeDir: '/home/user/.idle',
+    idleLibDir: '/home/user/.idle/lib',
+    idleToolsDir: '/home/user/.idle/tools'
 };
 
 const testMachineMetadata = {
     host: 'localhost',
     platform: 'darwin',
-    happyCliVersion: '1.0.0',
+    idleCliVersion: '1.0.0',
     homeDir: '/home/user',
-    happyHomeDir: '/home/user/.happy',
-    happyLibDir: '/home/user/.happy/lib'
+    idleHomeDir: '/home/user/.idle',
+    idleLibDir: '/home/user/.idle/lib'
 };
 
 describe('Api server error handling', () => {
@@ -82,7 +82,7 @@ describe('Api server error handling', () => {
     });
 
     describe('getOrCreateSession', () => {
-        it('should return null when Happy server is unreachable (ECONNREFUSED)', async () => {
+        it('should return null when Idle server is unreachable (ECONNREFUSED)', async () => {
             const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
             // Mock axios to throw connection refused error
@@ -96,13 +96,13 @@ describe('Api server error handling', () => {
 
             expect(result).toBeNull();
             expect(consoleSpy).toHaveBeenCalledWith(
-                expect.stringContaining('⚠️  Happy server unreachable')
+                expect.stringContaining('⚠️  Idle server unreachable')
             );
 
             consoleSpy.mockRestore();
         });
 
-        it('should return null when Happy server cannot be found (ENOTFOUND)', async () => {
+        it('should return null when Idle server cannot be found (ENOTFOUND)', async () => {
             connectionState.reset();
             const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
@@ -117,13 +117,13 @@ describe('Api server error handling', () => {
 
             expect(result).toBeNull();
             expect(consoleSpy).toHaveBeenCalledWith(
-                expect.stringContaining('⚠️  Happy server unreachable')
+                expect.stringContaining('⚠️  Idle server unreachable')
             );
 
             consoleSpy.mockRestore();
         });
 
-        it('should return null when Happy server times out (ETIMEDOUT)', async () => {
+        it('should return null when Idle server times out (ETIMEDOUT)', async () => {
             connectionState.reset();
             const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
 
@@ -138,7 +138,7 @@ describe('Api server error handling', () => {
 
             expect(result).toBeNull();
             expect(consoleSpy).toHaveBeenCalledWith(
-                expect.stringContaining('⚠️  Happy server unreachable')
+                expect.stringContaining('⚠️  Idle server unreachable')
             );
 
             consoleSpy.mockRestore();
@@ -163,7 +163,7 @@ describe('Api server error handling', () => {
             expect(result).toBeNull();
             // New unified format via connectionState.fail()
             expect(consoleSpy).toHaveBeenCalledWith(
-                expect.stringContaining('⚠️  Happy server unreachable')
+                expect.stringContaining('⚠️  Idle server unreachable')
             );
             expect(consoleSpy).toHaveBeenCalledWith(
                 expect.stringContaining('Session creation failed: 404')
@@ -190,7 +190,7 @@ describe('Api server error handling', () => {
 
             expect(result).toBeNull();
             expect(consoleSpy).toHaveBeenCalledWith(
-                expect.stringContaining('⚠️  Happy server unreachable')
+                expect.stringContaining('⚠️  Idle server unreachable')
             );
             consoleSpy.mockRestore();
         });
@@ -213,7 +213,7 @@ describe('Api server error handling', () => {
 
             expect(result).toBeNull();
             expect(consoleSpy).toHaveBeenCalledWith(
-                expect.stringContaining('⚠️  Happy server unreachable')
+                expect.stringContaining('⚠️  Idle server unreachable')
             );
             consoleSpy.mockRestore();
         });
@@ -231,7 +231,7 @@ describe('Api server error handling', () => {
             // Should not show the offline mode message
             const consoleSpy = vi.spyOn(console, 'log').mockImplementation(() => {});
             expect(consoleSpy).not.toHaveBeenCalledWith(
-                expect.stringContaining('⚠️  Happy server unreachable')
+                expect.stringContaining('⚠️  Idle server unreachable')
             );
             consoleSpy.mockRestore();
         });
@@ -268,7 +268,7 @@ describe('Api server error handling', () => {
             });
 
             expect(consoleSpy).toHaveBeenCalledWith(
-                expect.stringContaining('⚠️  Happy server unreachable')
+                expect.stringContaining('⚠️  Idle server unreachable')
             );
 
             consoleSpy.mockRestore();
@@ -301,7 +301,7 @@ describe('Api server error handling', () => {
 
             // New unified format via connectionState.fail()
             expect(consoleSpy).toHaveBeenCalledWith(
-                expect.stringContaining('⚠️  Happy server unreachable')
+                expect.stringContaining('⚠️  Idle server unreachable')
             );
             expect(consoleSpy).toHaveBeenCalledWith(
                 expect.stringContaining('Machine registration failed: 404')

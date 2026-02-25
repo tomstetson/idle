@@ -721,7 +721,7 @@ export class AcpBackend implements AgentBackend {
           },
         },
         clientInfo: {
-          name: 'happy-cli',
+          name: 'idle-cli',
           version: packageJson.version,
         },
       };

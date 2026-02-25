@@ -3,7 +3,7 @@
  *
  * This module provides the core abstraction layer for different AI agents
  * (Claude, Codex, Gemini, OpenCode, etc.) that can be controlled through
- * the Happy CLI and mobile app.
+ * the Idle CLI and mobile app.
  */
 
 // Core types, interfaces, and registry - re-export from core/

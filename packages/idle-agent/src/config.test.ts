@@ -7,8 +7,8 @@ describe('config', () => {
     const originalEnv = { ...process.env };
 
     beforeEach(() => {
-        delete process.env.HAPPY_SERVER_URL;
-        delete process.env.HAPPY_HOME_DIR;
+        delete process.env.IDLE_SERVER_URL;
+        delete process.env.IDLE_HOME_DIR;
     });
 
     afterEach(() => {
@@ -23,41 +23,41 @@ describe('config', () => {
 
         it('uses default home directory', () => {
             const config = loadConfig();
-            expect(config.homeDir).toBe(join(homedir(), '.happy'));
+            expect(config.homeDir).toBe(join(homedir(), '.idle'));
         });
 
         it('derives credential path from home directory', () => {
             const config = loadConfig();
-            expect(config.credentialPath).toBe(join(homedir(), '.happy', 'agent.key'));
+            expect(config.credentialPath).toBe(join(homedir(), '.idle', 'agent.key'));
         });
     });
 
     describe('env var overrides', () => {
-        it('overrides server URL with HAPPY_SERVER_URL', () => {
-            process.env.HAPPY_SERVER_URL = 'https://custom-server.example.com';
+        it('overrides server URL with IDLE_SERVER_URL', () => {
+            process.env.IDLE_SERVER_URL = 'https://custom-server.example.com';
             const config = loadConfig();
             expect(config.serverUrl).toBe('https://custom-server.example.com');
         });
 
-        it('overrides home directory with HAPPY_HOME_DIR', () => {
-            process.env.HAPPY_HOME_DIR = '/tmp/custom-happy';
+        it('overrides home directory with IDLE_HOME_DIR', () => {
+            process.env.IDLE_HOME_DIR = '/tmp/custom-idle';
             const config = loadConfig();
-            expect(config.homeDir).toBe('/tmp/custom-happy');
+            expect(config.homeDir).toBe('/tmp/custom-idle');
         });
 
         it('derives credential path from overridden home directory', () => {
-            process.env.HAPPY_HOME_DIR = '/tmp/custom-happy';
+            process.env.IDLE_HOME_DIR = '/tmp/custom-idle';
             const config = loadConfig();
-            expect(config.credentialPath).toBe('/tmp/custom-happy/agent.key');
+            expect(config.credentialPath).toBe('/tmp/custom-idle/agent.key');
         });
 
         it('allows both overrides simultaneously', () => {
-            process.env.HAPPY_SERVER_URL = 'https://other.example.com';
-            process.env.HAPPY_HOME_DIR = '/opt/happy';
+            process.env.IDLE_SERVER_URL = 'https://other.example.com';
+            process.env.IDLE_HOME_DIR = '/opt/idle';
             const config = loadConfig();
             expect(config.serverUrl).toBe('https://other.example.com');
-            expect(config.homeDir).toBe('/opt/happy');
-            expect(config.credentialPath).toBe('/opt/happy/agent.key');
+            expect(config.homeDir).toBe('/opt/idle');
+            expect(config.credentialPath).toBe('/opt/idle/agent.key');
         });
     });
 });

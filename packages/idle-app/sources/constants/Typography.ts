@@ -1,7 +1,7 @@
 import { Platform } from 'react-native';
 
 /**
- * Typography system for Happy Coder app
+ * Typography system for Idle Coder app
  * 
  * Default typography: IBM Plex Sans
  * Monospace typography: IBM Plex Mono  

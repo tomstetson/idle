@@ -21,7 +21,7 @@ import { useAllMachines } from '@/sync/storage';
 import { isMachineOnline } from '@/utils/machineUtils';
 import { useUnistyles } from 'react-native-unistyles';
 import { layout } from '@/components/layout';
-import { useHappyAction } from '@/hooks/useHappyAction';
+import { useIdleAction } from '@/hooks/useIdleAction';
 import { getGitHubOAuthParams, disconnectGitHub } from '@/sync/apiGithub';
 import { disconnectService } from '@/sync/apiServices';
 import { useProfile } from '@/sync/storage';
@@ -47,7 +47,7 @@ export const SettingsView = React.memo(function SettingsView() {
     const { connectTerminal, connectWithUrl, isLoading } = useConnectTerminal();
 
     const handleGitHub = async () => {
-        const url = 'https://github.com/slopus/happy';
+        const url = 'https://github.com/tomstetson/idle';
         const supported = await Linking.canOpenURL(url);
         if (supported) {
             await Linking.openURL(url);
@@ -55,7 +55,7 @@ export const SettingsView = React.memo(function SettingsView() {
     };
 
     const handleReportIssue = async () => {
-        const url = 'https://github.com/slopus/happy/issues';
+        const url = 'https://github.com/tomstetson/idle/issues';
         const supported = await Linking.canOpenURL(url);
         if (supported) {
             await Linking.openURL(url);
@@ -91,13 +91,13 @@ export const SettingsView = React.memo(function SettingsView() {
     const isAnthropicConnected = profile.connectedServices?.includes('anthropic') || false;
 
     // GitHub connection
-    const [connectingGitHub, connectGitHub] = useHappyAction(async () => {
+    const [connectingGitHub, connectGitHub] = useIdleAction(async () => {
         const params = await getGitHubOAuthParams(auth.credentials!);
         await Linking.openURL(params.url);
     });
 
     // GitHub disconnection
-    const [disconnectingGitHub, handleDisconnectGitHub] = useHappyAction(async () => {
+    const [disconnectingGitHub, handleDisconnectGitHub] = useIdleAction(async () => {
         const confirmed = await Modal.confirm(
             t('modals.disconnectGithub'),
             t('modals.disconnectGithubConfirm'),
@@ -109,12 +109,12 @@ export const SettingsView = React.memo(function SettingsView() {
     });
 
     // Anthropic connection
-    const [connectingAnthropic, connectAnthropic] = useHappyAction(async () => {
+    const [connectingAnthropic, connectAnthropic] = useIdleAction(async () => {
         router.push('/settings/connect/claude');
     });
 
     // Anthropic disconnection
-    const [disconnectingAnthropic, handleDisconnectAnthropic] = useHappyAction(async () => {
+    const [disconnectingAnthropic, handleDisconnectAnthropic] = useIdleAction(async () => {
         const confirmed = await Modal.confirm(
             t('modals.disconnectService', { service: 'Claude' }),
             t('modals.disconnectServiceConfirm', { service: 'Claude' }),
@@ -184,7 +184,7 @@ export const SettingsView = React.memo(function SettingsView() {
                                 t('modals.authenticateTerminal'),
                                 t('modals.pasteUrlFromTerminal'),
                                 {
-                                    placeholder: 'happy://terminal?...',
+                                    placeholder: 'idle://terminal?...',
                                     confirmText: t('common.authenticate')
                                 }
                             );
@@ -363,7 +363,7 @@ export const SettingsView = React.memo(function SettingsView() {
                 <Item
                     title={t('settings.github')}
                     icon={<Ionicons name="logo-github" size={29} color={theme.colors.text} />}
-                    detail="slopus/happy"
+                    detail="tomstetson/idle"
                     onPress={handleGitHub}
                 />
                 <Item
@@ -375,7 +375,7 @@ export const SettingsView = React.memo(function SettingsView() {
                     title={t('settings.privacyPolicy')}
                     icon={<Ionicons name="shield-checkmark-outline" size={29} color="#007AFF" />}
                     onPress={async () => {
-                        const url = 'https://happy.engineering/privacy/';
+                        const url = 'https://northglass.io/privacy/';
                         const supported = await Linking.canOpenURL(url);
                         if (supported) {
                             await Linking.openURL(url);
@@ -386,7 +386,7 @@ export const SettingsView = React.memo(function SettingsView() {
                     title={t('settings.termsOfService')}
                     icon={<Ionicons name="document-text-outline" size={29} color="#007AFF" />}
                     onPress={async () => {
-                        const url = 'https://github.com/slopus/happy/blob/main/TERMS.md';
+                        const url = 'https://github.com/tomstetson/idle/blob/main/TERMS.md';
                         const supported = await Linking.canOpenURL(url);
                         if (supported) {
                             await Linking.openURL(url);

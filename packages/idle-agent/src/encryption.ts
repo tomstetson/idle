@@ -72,7 +72,7 @@ export function deriveKey(master: Uint8Array, usage: string, path: string[]): Ui
 }
 
 export function deriveContentKeyPair(secret: Uint8Array): { publicKey: Uint8Array; secretKey: Uint8Array } {
-    const seed = deriveKey(secret, 'Happy EnCoder', ['content']);
+    const seed = deriveKey(secret, 'Idle EnCoder', ['content']);
     // libsodium's crypto_box_seed_keypair does SHA-512(seed)[0:32] internally
     const hashedSeed = new Uint8Array(createHash('sha512').update(seed).digest());
     const boxSecretKey = hashedSeed.slice(0, 32);

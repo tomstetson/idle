@@ -1,5 +1,5 @@
 /**
- * Chinese (Simplified) translations for the Happy app
+ * Chinese (Simplified) translations for the Idle app
  * Values can be:
  * - String constants for static text
  * - Functions with typed object parameters for dynamic text
@@ -119,7 +119,7 @@ export const zhHans: TranslationStructure = {
         developer: '开发者',
         developerTools: '开发者工具',
         about: '关于',
-        aboutFooter: 'Happy Coder 是一个 Codex 和 Claude Code 移动客户端。它采用端到端加密，您的账户仅存储在本地设备上。与 Anthropic 无关联。',
+        aboutFooter: 'Idle Coder 是一个 Codex 和 Claude Code 移动客户端。它采用端到端加密，您的账户仅存储在本地设备上。与 Anthropic 无关联。',
         whatsNew: '更新日志',
         whatsNewSubtitle: '查看最新更新和改进',
         reportIssue: '报告问题',
@@ -262,7 +262,7 @@ export const zhHans: TranslationStructure = {
     newSession: {
         // Used by new-session screen and launch flows
         title: '启动新会话',
-        noMachinesFound: '未找到设备。请先在您的计算机上启动 Happy 会话。',
+        noMachinesFound: '未找到设备。请先在您的计算机上启动 Idle 会话。',
         allMachinesOffline: '所有设备似乎都已离线',
         machineDetails: '查看设备详情 →',
         directoryDoesNotExist: '目录不存在',
@@ -314,7 +314,7 @@ export const zhHans: TranslationStructure = {
         // Used by Server Configuration screen (app/(app)/server.tsx)
         serverConfiguration: '服务器配置',
         enterServerUrl: '请输入服务器 URL',
-        notValidHappyServer: '不是有效的 Happy 服务器',
+        notValidIdleServer: '不是有效的 Idle 服务器',
         changeServer: '更改服务器',
         continueWithServer: '继续使用此服务器？',
         resetToDefault: '重置为默认',
@@ -334,9 +334,9 @@ export const zhHans: TranslationStructure = {
         killSessionConfirm: '您确定要终止此会话吗？',
         archiveSession: '归档会话',
         archiveSessionConfirm: '您确定要归档此会话吗？',
-        happySessionIdCopied: 'Happy 会话 ID 已复制到剪贴板',
-        failedToCopySessionId: '复制 Happy 会话 ID 失败',
-        happySessionId: 'Happy 会话 ID',
+        idleSessionIdCopied: 'Idle 会话 ID 已复制到剪贴板',
+        failedToCopySessionId: '复制 Idle 会话 ID 失败',
+        idleSessionId: 'Idle 会话 ID',
         claudeCodeSessionId: 'Claude Code 会话 ID',
         claudeCodeSessionIdCopied: 'Claude Code 会话 ID 已复制到剪贴板',
         aiProvider: 'AI 提供商',
@@ -359,7 +359,7 @@ export const zhHans: TranslationStructure = {
         path: '路径',
         operatingSystem: '操作系统',
         processId: '进程 ID',
-        happyHome: 'Happy 主目录',
+        idleHome: 'Idle 主目录',
         copyMetadata: '复制元数据',
         agentState: 'Agent 状态',
         controlledByUser: '用户控制',
@@ -371,7 +371,7 @@ export const zhHans: TranslationStructure = {
         cliVersionOutdated: '需要更新 CLI',
         cliVersionOutdatedMessage: ({ currentVersion, requiredVersion }: { currentVersion: string; requiredVersion: string }) =>
             `已安装版本 ${currentVersion}。请更新到 ${requiredVersion} 或更高版本`,
-        updateCliInstructions: '请运行 npm install -g happy-coder@latest',
+        updateCliInstructions: '请运行 npm install -g idle-coder@latest',
         deleteSession: '删除会话',
         deleteSessionSubtitle: '永久删除此会话',
         deleteSessionConfirm: '永久删除会话？',
@@ -385,7 +385,7 @@ export const zhHans: TranslationStructure = {
         emptyMainScreen: {
             // Used by EmptyMainScreen component
             readyToCode: '准备开始编程？',
-            installCli: '安装 Happy CLI',
+            installCli: '安装 Idle CLI',
             runIt: '运行它',
             scanQrCode: '扫描二维码',
             openCamera: '打开相机',
@@ -460,7 +460,7 @@ export const zhHans: TranslationStructure = {
     },
 
     sidebar: {
-        sessionsTitle: 'Happy',
+        sessionsTitle: 'Idle',
     },
 
     toolView: {
@@ -649,7 +649,7 @@ export const zhHans: TranslationStructure = {
         invalidConnectionLink: '无效的连接链接',
         invalidConnectionLinkDescription: '连接链接缺失或无效。请检查 URL 并重试。',
         connectTerminal: '连接终端',
-        terminalRequestDescription: '有终端正在请求连接到您的 Happy Coder 账户。这将允许终端安全地发送和接收消息。',
+        terminalRequestDescription: '有终端正在请求连接到您的 Idle Coder 账户。这将允许终端安全地发送和接收消息。',
         connectionDetails: '连接详情',
         publicKey: '公钥',
         encryption: '加密',
@@ -722,7 +722,7 @@ export const zhHans: TranslationStructure = {
     machine: {
         launchNewSessionInDirectory: '在目录中启动新会话',
         offlineUnableToSpawn: '设备离线时无法启动',
-        offlineHelp: '• 确保您的计算机在线\n• 运行 `happy daemon status` 进行诊断\n• 您是否在运行最新的 CLI 版本？请使用 `npm install -g happy-coder@latest` 升级',
+        offlineHelp: '• 确保您的计算机在线\n• 运行 `idle daemon status` 进行诊断\n• 您是否在运行最新的 CLI 版本？请使用 `npm install -g idle-coder@latest` 升级',
         daemon: '守护进程',
         status: '状态',
         stopDaemon: '停止守护进程',

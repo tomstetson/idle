@@ -1,6 +1,6 @@
 /**
- * Happy MCP server
- * Provides Happy CLI specific tools including chat session title management
+ * Idle MCP server
+ * Provides Idle CLI specific tools including chat session title management
  */
 
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
@@ -12,12 +12,12 @@ import { logger } from "@/ui/logger";
 import { ApiSessionClient } from "@/api/apiSession";
 import { randomUUID } from "node:crypto";
 
-export async function startHappyServer(client: ApiSessionClient) {
-    logger.debug(`[happyMCP] server:start sessionId=${client.sessionId}`);
+export async function startIdleServer(client: ApiSessionClient) {
+    logger.debug(`[idleMCP] server:start sessionId=${client.sessionId}`);
 
     // Handler that sends title updates via the client
     const handler = async (title: string) => {
-        logger.debug('[happyMCP] Changing title to:', title);
+        logger.debug('[idleMCP] Changing title to:', title);
         try {
             // Send title as a summary message, similar to title generator
             client.sendClaudeSessionMessage({
@@ -37,7 +37,7 @@ export async function startHappyServer(client: ApiSessionClient) {
     //
 
     const mcp = new McpServer({
-        name: "Happy MCP",
+        name: "Idle MCP",
         version: "1.0.0",
     });
 
@@ -49,7 +49,7 @@ export async function startHappyServer(client: ApiSessionClient) {
         },
     }, async (args) => {
         const response = await handler(args.title);
-        logger.debug('[happyMCP] Response:', response);
+        logger.debug('[idleMCP] Response:', response);
         
         if (response.success) {
             return {
@@ -103,13 +103,13 @@ export async function startHappyServer(client: ApiSessionClient) {
         });
     });
 
-    logger.debug(`[happyMCP] server:ready sessionId=${client.sessionId} url=${baseUrl.toString()}`);
+    logger.debug(`[idleMCP] server:ready sessionId=${client.sessionId} url=${baseUrl.toString()}`);
 
     return {
         url: baseUrl.toString(),
         toolNames: ['change_title'],
         stop: () => {
-            logger.debug(`[happyMCP] server:stop sessionId=${client.sessionId}`);
+            logger.debug(`[idleMCP] server:stop sessionId=${client.sessionId}`);
             mcp.close();
             server.close();
         }

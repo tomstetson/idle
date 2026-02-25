@@ -33,13 +33,13 @@ export async function authLogin(config: Config): Promise<void> {
     }
 
     // 3. Generate and display QR code
-    const qrData = `happy:///account?${encodeBase64Url(keypair.publicKey)}`;
+    const qrData = `idle:///account?${encodeBase64Url(keypair.publicKey)}`;
     console.log('');
     qrcode.generate(qrData, { small: true }, (code: string) => {
         console.log(code);
     });
     console.log('## Authentication');
-    console.log('- Action: Scan this QR code with the Happy app');
+    console.log('- Action: Scan this QR code with the Idle app');
     console.log('- Path: Settings -> Account -> Link New Device');
     console.log('');
 
@@ -96,7 +96,7 @@ export async function authStatus(config: Config): Promise<void> {
         console.log(`- Public Key: \`${encodeBase64(creds.contentKeyPair.publicKey)}\``);
     } else {
         console.log('- Status: Not authenticated');
-        console.log('- Action: Run `happy-agent auth login` to authenticate.');
+        console.log('- Action: Run `idle-agent auth login` to authenticate.');
     }
 }
 

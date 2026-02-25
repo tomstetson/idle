@@ -13,6 +13,6 @@ dist
 
 # Standalone build artifacts
 data/
-happy-server
+idle-server
 pglite.wasm
 pglite.data

@@ -3,8 +3,8 @@
  *
  * This module defines the message types that flow between:
  * - Agent backends (Gemini, Codex, Claude, etc.)
- * - Happy CLI
- * - Mobile app (via Happy server)
+ * - Idle CLI
+ * - Mobile app (via Idle server)
  *
  * These types are backend-agnostic and work with any agent that
  * implements the AgentBackend interface.
@@ -152,7 +152,7 @@ export interface PatchApplyEndMessage {
  * Union type of all agent messages.
  *
  * These messages are emitted by agent backends and forwarded
- * to the Happy server and mobile app.
+ * to the Idle server and mobile app.
  */
 export type AgentMessage =
   | ModelOutputMessage

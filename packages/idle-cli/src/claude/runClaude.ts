@@ -17,7 +17,7 @@ import { getEnvironmentInfo } from '@/ui/doctor';
 import { configuration } from '@/configuration';
 import { notifyDaemonSessionStarted } from '@/daemon/controlClient';
 import { initialMachineMetadata } from '@/daemon/run';
-import { startHappyServer } from '@/claude/utils/startHappyServer';
+import { startIdleServer } from '@/claude/utils/startIdleServer';
 import { startHookServer } from '@/claude/utils/startHookServer';
 import { generateHookSettingsFile, cleanupHookSettingsFile } from '@/claude/utils/generateHookSettings';
 import { registerKillSessionHandler } from './registerKillSessionHandler';
@@ -53,12 +53,12 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
     const sessionTag = randomUUID();
 
     // Log environment info at startup
-    logger.debugLargeJson('[START] Happy process started', getEnvironmentInfo());
+    logger.debugLargeJson('[START] Idle process started', getEnvironmentInfo());
     logger.debug(`[START] Options: startedBy=${options.startedBy}, startingMode=${options.startingMode}`);
 
     // Validate daemon spawn requirements - fail fast on invalid config
     if (options.startedBy === 'daemon' && options.startingMode === 'local') {
-        throw new Error('Daemon-spawned sessions cannot use local/interactive mode. Use --happy-starting-mode remote or spawn sessions directly from terminal.');
+        throw new Error('Daemon-spawned sessions cannot use local/interactive mode. Use --idle-starting-mode remote or spawn sessions directly from terminal.');
     }
 
     // Set backend for offline warnings (before any API calls)
@@ -85,7 +85,7 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
         sandboxEnabled ||
         Boolean(options.claudeArgs?.includes('--dangerously-skip-permissions'));
     if (!machineId) {
-        console.error(`[START] No machine ID found in settings, which is unexpected since authAndSetupMachineIfNeeded should have created it. Please report this issue on https://github.com/slopus/happy-cli/issues`);
+        console.error(`[START] No machine ID found in settings, which is unexpected since authAndSetupMachineIfNeeded should have created it. Please report this issue on https://github.com/tomstetson/idle/issues`);
         process.exit(1);
     }
     logger.debug(`Using machineId: ${machineId}`);
@@ -103,9 +103,9 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
         os: os.platform(),
         machineId: machineId,
         homeDir: os.homedir(),
-        happyHomeDir: configuration.happyHomeDir,
-        happyLibDir: projectPath(),
-        happyToolsDir: resolve(projectPath(), 'tools', 'unpacked'),
+        idleHomeDir: configuration.idleHomeDir,
+        idleLibDir: projectPath(),
+        idleToolsDir: resolve(projectPath(), 'tools', 'unpacked'),
         startedFromDaemon: options.startedBy === 'daemon',
         hostPid: process.pid,
         startedBy: options.startedBy || 'terminal',
@@ -197,9 +197,9 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
     // Create realtime session
     const session = api.sessionSyncClient(response);
 
-    // Start Happy MCP server
-    const happyServer = await startHappyServer(session);
-    logger.debug(`[START] Happy MCP server started at ${happyServer.url}`);
+    // Start Idle MCP server
+    const idleServer = await startIdleServer(session);
+    logger.debug(`[START] Idle MCP server started at ${idleServer.url}`);
 
     // Variable to track current session instance (updated via onSessionReady callback)
     // Used by hook server to notify Session when Claude changes session ID
@@ -411,8 +411,8 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
             // Stop caffeinate
             stopCaffeinate();
 
-            // Stop Happy MCP server
-            happyServer.stop();
+            // Stop Idle MCP server
+            idleServer.stop();
 
             // Stop Hook server and cleanup settings file
             hookServer.stop();
@@ -451,7 +451,7 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
         startingMode: options.startingMode,
         messageQueue,
         api,
-        allowedTools: happyServer.toolNames.map(toolName => `mcp__happy__${toolName}`),
+        allowedTools: idleServer.toolNames.map(toolName => `mcp__idle__${toolName}`),
         onModeChange: (newMode) => {
             session.sendSessionEvent({ type: 'switch', mode: newMode });
             session.updateAgentState((currentState) => ({
@@ -464,9 +464,9 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
             currentSession = sessionInstance;
         },
         mcpServers: {
-            'happy': {
+            'idle': {
                 type: 'http' as const,
-                url: happyServer.url,
+                url: idleServer.url,
             }
         },
         session,
@@ -496,9 +496,9 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
     stopCaffeinate();
     logger.debug('Stopped sleep prevention');
 
-    // Stop Happy MCP server
-    happyServer.stop();
-    logger.debug('Stopped Happy MCP server');
+    // Stop Idle MCP server
+    idleServer.stop();
+    logger.debug('Stopped Idle MCP server');
 
     // Stop Hook server and cleanup settings file
     hookServer.stop();

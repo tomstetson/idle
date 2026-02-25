@@ -2,18 +2,18 @@
     "name": "monorepo",
     "private": true,
     "scripts": {
-        "cli": "yarn workspace happy-coder cli",
+        "cli": "yarn workspace idle-coder cli",
         "release": "node ./scripts/release.cjs",
-        "web": "yarn workspace happy-app web",
+        "web": "yarn workspace idle-app web",
         "postinstall": "node ./scripts/postinstall.cjs"
     },
     "workspaces": {
         "packages": [
-            "packages/happy-app",
-            "packages/happy-agent",
-            "packages/happy-cli",
-            "packages/happy-server",
-            "packages/happy-wire"
+            "packages/idle-app",
+            "packages/idle-agent",
+            "packages/idle-cli",
+            "packages/idle-server",
+            "packages/idle-wire"
         ],
         "nohoist": [
             "**/zod",

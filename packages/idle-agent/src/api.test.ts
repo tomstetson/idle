@@ -54,8 +54,8 @@ const mockedAxios = axios as any as {
 function makeConfig(): Config {
     return {
         serverUrl: 'https://test-server.example.com',
-        homeDir: '/tmp/happy-test',
-        credentialPath: '/tmp/happy-test/agent.key',
+        homeDir: '/tmp/idle-test',
+        credentialPath: '/tmp/idle-test/agent.key',
     };
 }
 
@@ -271,7 +271,7 @@ describe('api', () => {
             mockedAxios.get.mockRejectedValueOnce(err);
 
             await expect(listSessions(config, creds)).rejects.toThrow(
-                'Authentication expired. Run `happy-agent auth login` to re-authenticate.',
+                'Authentication expired. Run `idle-agent auth login` to re-authenticate.',
             );
         });
 
