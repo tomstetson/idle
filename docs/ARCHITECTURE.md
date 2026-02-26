@@ -84,4 +84,4 @@ graph TD
 | Database | PostgreSQL | IONOS VPS (local) |
 | Cache | Redis | IONOS VPS (local) |
 | DNS/CDN | Cloudflare | Proxied |
-| Domains | idle.northglass.io (app), api.idle.northglass.io (server) | Cloudflare |
+| Domains | idle.northglass.io (app), idle-api.northglass.io (server) | Cloudflare |

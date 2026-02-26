@@ -24,7 +24,7 @@ Your Claude Code clients generate encryption keys locally and use Idle Server as
 
 ## Hosting
 
-**You don't need to self-host!** Our free cloud Idle Server at `api.idle.northglass.io` is just as secure as running your own. Since all data is end-to-end encrypted before it reaches our servers, we literally cannot read your messages even if we wanted to. The encryption happens on your device, and only you have the keys.
+**You don't need to self-host!** Our free cloud Idle Server at `idle-api.northglass.io` is just as secure as running your own. Since all data is end-to-end encrypted before it reaches our servers, we literally cannot read your messages even if we wanted to. The encryption happens on your device, and only you have the keys.
 
 That said, Idle Server is open source and self-hostable if you prefer running your own infrastructure. The security model is identical whether you use our servers or your own.
 

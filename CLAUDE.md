@@ -62,7 +62,7 @@ scripts/            # Build and release scripts
 - **npm scope**: `@northglass`
 - **App bundle**: `com.northglass.idle`
 - **Web app**: `idle.northglass.io`
-- **API server**: `api.idle.northglass.io`
+- **API server**: `idle-api.northglass.io`
 - **CLI command**: `idle` (npm package: `idle-coder`)
 - **Home dir**: `~/.idle/` (dev: `~/.idle-dev/`)
 

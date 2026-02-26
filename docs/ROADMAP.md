@@ -6,7 +6,7 @@
 - [x] Write server deployment runbook
 - [ ] Replace logo/icon assets
 - [ ] Deploy server to IONOS VPS
-- [ ] Configure DNS (idle.northglass.io, api.idle.northglass.io)
+- [ ] Configure DNS (idle.northglass.io, idle-api.northglass.io)
 - [ ] Create @northglass npm org
 - [ ] Verify `yarn install && yarn web` works end-to-end
 - [ ] Apple Developer setup + first TestFlight build

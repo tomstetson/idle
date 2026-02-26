@@ -29,7 +29,7 @@ class Configuration {
 
   constructor() {
     // Server configuration - priority: parameter > environment > default
-    this.serverUrl = process.env.IDLE_SERVER_URL || 'https://api.idle.northglass.io'
+    this.serverUrl = process.env.IDLE_SERVER_URL || 'https://idle-api.northglass.io'
     this.webappUrl = process.env.IDLE_WEBAPP_URL || 'https://idle.northglass.io'
 
     // Check if we're running as daemon based on process args

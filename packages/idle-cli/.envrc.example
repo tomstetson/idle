@@ -12,6 +12,6 @@
 
 export IDLE_HOME_DIR="$HOME/.idle-dev"
 export IDLE_VARIANT="dev"
-export IDLE_SERVER_URL="${IDLE_SERVER_URL:-https://api.idle.northglass.io}"
+export IDLE_SERVER_URL="${IDLE_SERVER_URL:-https://idle-api.northglass.io}"
 
 echo "🔧 DEV environment activated (data: $IDLE_HOME_DIR)"

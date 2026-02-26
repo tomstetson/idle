@@ -18,7 +18,7 @@ Fork Happy under the Idle brand, maintained by Northglass LLC. Rebrand the full 
 Key choices:
 - **Name**: Idle (simple, memorable, vibe-coding energy)
 - **npm scope**: `@northglass` (LLC brand, not project-specific)
-- **Domains**: `idle.northglass.io` (app), `api.idle.northglass.io` (server) — subdomains under LLC domain rather than standalone domain
+- **Domains**: `idle.northglass.io` (app), `idle-api.northglass.io` (server) — subdomains under LLC domain rather than standalone domain
 - **Server**: IONOS VPS (198.71.58.100) — already provisioned, $5/mo
 - **License**: MIT (inherited from upstream)
 

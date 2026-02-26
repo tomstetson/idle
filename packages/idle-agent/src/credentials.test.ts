@@ -9,7 +9,7 @@ import type { Config } from './config';
 function makeTestConfig(): Config {
     const homeDir = mkdtempSync(join(tmpdir(), 'idle-agent-test-'));
     return {
-        serverUrl: 'https://api.idle.northglass.io',
+        serverUrl: 'https://idle-api.northglass.io',
         homeDir,
         credentialPath: join(homeDir, 'agent.key'),
     };

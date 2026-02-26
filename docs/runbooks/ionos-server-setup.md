@@ -83,7 +83,7 @@ cat > /var/www/idle-server/.env.production <<'EOF'
 # === Required ===
 IDLE_MASTER_SECRET=PASTE_YOUR_SECRET_HERE
 PORT=3005
-PUBLIC_URL=https://api.idle.northglass.io
+PUBLIC_URL=https://idle-api.northglass.io
 
 # === Data storage ===
 DATA_DIR=/var/www/idle-server/data
@@ -164,7 +164,7 @@ ssh releasingphish-root
 cat > /etc/nginx/sites-available/idle-api <<'NGINX'
 server {
     listen 80;
-    server_name api.idle.northglass.io;
+    server_name idle-api.northglass.io;
 
     location / {
         proxy_pass http://127.0.0.1:3005;
@@ -209,11 +209,11 @@ Wait 1-2 minutes for propagation.
 
 ```bash
 # From your Mac:
-curl -s https://api.idle.northglass.io/health | python3 -m json.tool
+curl -s https://idle-api.northglass.io/health | python3 -m json.tool
 # Expected: {"status": "ok"}
 
 # Test WebSocket upgrade (Socket.IO handshake):
-curl -s "https://api.idle.northglass.io/socket.io/?EIO=4&transport=polling" | head -c 100
+curl -s "https://idle-api.northglass.io/socket.io/?EIO=4&transport=polling" | head -c 100
 # Should return a JSON sid (session ID), not an error
 ```
 
@@ -274,7 +274,7 @@ free -h
 | "IDLE_MASTER_SECRET is required" | `.env.production` exists and is readable by deployer |
 | 502 Bad Gateway | Server not running or wrong port. `systemctl status idle-server` |
 | WebSocket disconnects | Cloudflare dashboard → Network → WebSockets must be ON |
-| DNS not resolving | `dig api.idle.northglass.io` — check Cloudflare propagation |
+| DNS not resolving | `dig idle-api.northglass.io` — check Cloudflare propagation |
 | Permission denied on data/ | `chown -R deployer:deployer /var/www/idle-server/data` |
 | PGlite corruption | Stop server, `rm -rf data/pglite`, restart (runs fresh migration) |
 | Out of memory | Tune with `NODE_OPTIONS="--max-old-space-size=512"` in .env |
@@ -328,7 +328,7 @@ IDLE_MASTER_SECRET=PASTE_YOUR_SECRET_HERE
 PORT=3005
 DATABASE_URL=postgresql://idle:YOUR_DB_PASSWORD@localhost:5432/idle
 REDIS_URL=redis://localhost:6379
-PUBLIC_URL=https://api.idle.northglass.io
+PUBLIC_URL=https://idle-api.northglass.io
 
 # === Optional S3 (omit for local filesystem) ===
 # S3_HOST=your-s3-host
@@ -340,7 +340,7 @@ PUBLIC_URL=https://api.idle.northglass.io
 # === Optional integrations ===
 # GITHUB_CLIENT_ID=...
 # GITHUB_CLIENT_SECRET=...
-# GITHUB_REDIRECT_URI=https://api.idle.northglass.io/v1/connect/github/callback
+# GITHUB_REDIRECT_URI=https://idle-api.northglass.io/v1/connect/github/callback
 # ELEVENLABS_API_KEY=...
 
 NODE_ENV=production

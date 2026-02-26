@@ -58,7 +58,7 @@ import { logger } from '@/ui/logger';
  * Uses dependency injection for testability.
  */
 export interface OfflineReconnectionConfig<TSession> {
-    /** Server URL to health-check against (e.g., 'https://api.idle.northglass.io') */
+    /** Server URL to health-check against (e.g., 'https://idle-api.northglass.io') */
     serverUrl: string;
 
     /**

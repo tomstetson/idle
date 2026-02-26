@@ -18,7 +18,7 @@ describe('config', () => {
     describe('defaults', () => {
         it('uses default server URL', () => {
             const config = loadConfig();
-            expect(config.serverUrl).toBe('https://api.idle.northglass.io');
+            expect(config.serverUrl).toBe('https://idle-api.northglass.io');
         });
 
         it('uses default home directory', () => {

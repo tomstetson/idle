@@ -124,7 +124,7 @@ Idle sandbox disable    # Disable sandboxing
 
 ### Idle Configuration
 
-- `IDLE_SERVER_URL` - Custom server URL (default: https://api.idle.northglass.io)
+- `IDLE_SERVER_URL` - Custom server URL (default: https://idle-api.northglass.io)
 - `IDLE_WEBAPP_URL` - Custom web app URL (default: https://idle.northglass.io)
 - `IDLE_HOME_DIR` - Custom home directory for Idle data (default: ~/.idle)
 - `IDLE_DISABLE_CAFFEINATE` - Disable macOS sleep prevention (set to `true`, `1`, or `yes`)
