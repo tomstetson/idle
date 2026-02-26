@@ -18,7 +18,7 @@ describe('config', () => {
     describe('defaults', () => {
         it('uses default server URL', () => {
             const config = loadConfig();
-            expect(config.serverUrl).toBe('https://api.cluster-fluster.com');
+            expect(config.serverUrl).toBe('https://api.idle.northglass.io');
         });
 
         it('uses default home directory', () => {

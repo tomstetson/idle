@@ -1,10 +1,10 @@
-import { KeyTree, crypto } from "privacy-kit";
+import * as privacyKit from "privacy-kit";
 
-let keyTree: KeyTree | null = null;
+let keyTree: privacyKit.KeyTree | null = null;
 
 export async function initEncrypt() {
-    keyTree = new KeyTree(await crypto.deriveSecureKey({
-        key: process.env.HANDY_MASTER_SECRET!,
+    keyTree = new privacyKit.KeyTree(await privacyKit.crypto.deriveSecureKey({
+        key: process.env.IDLE_MASTER_SECRET!,
         usage: 'idle-server-tokens'
     }));
 }

@@ -97,6 +97,6 @@ idle-server serve      # Start the server
 ```
 
 ## Post-Completion
-- Document env vars for portable mode (`PGLITE_DIR`, `DATA_DIR`, `HANDY_MASTER_SECRET`)
+- Document env vars for portable mode (`PGLITE_DIR`, `DATA_DIR`, `IDLE_MASTER_SECRET`)
 - Test on Linux for cross-platform binary (Bun cross-compile)
 - Consider adding `idle-server init` command for first-time setup

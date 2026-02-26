@@ -119,7 +119,7 @@ Exit code 0 when agent becomes idle, 1 on timeout.
 
 ## Environment Variables
 
-- `IDLE_SERVER_URL` - API server URL (default: `https://api.cluster-fluster.com`)
+- `IDLE_SERVER_URL` - API server URL (default: `https://api.idle.northglass.io`)
 - `IDLE_HOME_DIR` - Home directory for credential storage (default: `~/.idle`)
 
 ## Session ID Matching

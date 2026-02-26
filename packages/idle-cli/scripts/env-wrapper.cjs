@@ -24,13 +24,13 @@ const VARIANTS = {
     homeDir: path.join(os.homedir(), '.idle'),
     color: '\x1b[32m', // Green
     label: '✅ STABLE',
-    serverUrl: process.env.IDLE_SERVER_URL || 'https://api.cluster-fluster.com'
+    serverUrl: process.env.IDLE_SERVER_URL || 'https://api.idle.northglass.io'
   },
   dev: {
     homeDir: path.join(os.homedir(), '.idle-dev'),
     color: '\x1b[33m', // Yellow
     label: '🔧 DEV',
-    serverUrl: process.env.IDLE_SERVER_URL || 'https://api.cluster-fluster.com'
+    serverUrl: process.env.IDLE_SERVER_URL || 'https://api.idle.northglass.io'
   }
 };
 

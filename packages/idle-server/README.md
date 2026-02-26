@@ -24,7 +24,7 @@ Your Claude Code clients generate encryption keys locally and use Idle Server as
 
 ## Hosting
 
-**You don't need to self-host!** Our free cloud Idle Server at `Idle-api.slopus.com` is just as secure as running your own. Since all data is end-to-end encrypted before it reaches our servers, we literally cannot read your messages even if we wanted to. The encryption happens on your device, and only you have the keys.
+**You don't need to self-host!** Our free cloud Idle Server at `api.idle.northglass.io` is just as secure as running your own. Since all data is end-to-end encrypted before it reaches our servers, we literally cannot read your messages even if we wanted to. The encryption happens on your device, and only you have the keys.
 
 That said, Idle Server is open source and self-hostable if you prefer running your own infrastructure. The security model is identical whether you use our servers or your own.
 
@@ -40,7 +40,7 @@ Run from the monorepo root:
 
 ```bash
 docker run -p 3005:3005 \
-  -e HANDY_MASTER_SECRET=<your-secret> \
+  -e IDLE_MASTER_SECRET=<your-secret> \
   -v Idle-data:/data \
   idle-server
 ```
@@ -56,7 +56,7 @@ Data persists in the `Idle-data` Docker volume across container restarts.
 
 | Variable | Required | Default | Description |
 |----------|----------|---------|-------------|
-| `HANDY_MASTER_SECRET` | Yes | - | Master secret for auth/encryption |
+| `IDLE_MASTER_SECRET` | Yes | - | Master secret for auth/encryption |
 | `PUBLIC_URL` | No | `http://localhost:3005` | Public base URL for file URLs sent to clients |
 | `PORT` | No | `3005` | Server port |
 | `DATA_DIR` | No | `/data` | Base data directory |

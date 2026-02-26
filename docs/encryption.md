@@ -495,7 +495,7 @@ graph LR
     end
 
     subgraph "Server"
-        Secret[HANDY_MASTER_SECRET]
+        Secret[IDLE_MASTER_SECRET]
         KeyTree[KeyTree]
         Encrypt[Encrypt]
     end
@@ -515,7 +515,7 @@ The server encrypts certain third-party tokens at rest:
 - GitHub OAuth tokens (`GithubUser.token`).
 - Vendor service tokens (`ServiceAccountToken.token`).
 
-These are encrypted with a server-only KeyTree derived from `HANDY_MASTER_SECRET` and are not end-to-end encrypted.
+These are encrypted with a server-only KeyTree derived from `IDLE_MASTER_SECRET` and are not end-to-end encrypted.
 
 ## Encoding conventions
 

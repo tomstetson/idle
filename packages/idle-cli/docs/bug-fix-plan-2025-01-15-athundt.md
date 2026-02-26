@@ -97,7 +97,7 @@ if (startFrom) {
 **Problem**: Idle-CLI crashes when Idle API server is unreachable
 
 **Server Details**:
-- Default server: `https://api.cluster-fluster.com`
+- Default server: `https://api.idle.northglass.io`
 - Environment variable: `IDLE_SERVER_URL` (overrides default)
 - Local development: `http://localhost:3005`
 - The server handles session management and real-time communication for Idle CLI

@@ -7,7 +7,7 @@ This is a completely separate client from `idle-cli`. It has its own authenticat
 
 ## Context
 - **Existing system**: Monorepo with `idle-cli` (agent runtime + control), `idle-server` (Fastify + PostgreSQL + Redis), `idle-app` (React Native mobile)
-- **Server API**: REST endpoints at `https://api.cluster-fluster.com` + Socket.IO at `/v1/updates`
+- **Server API**: REST endpoints at `https://api.idle.northglass.io` + Socket.IO at `/v1/updates`
 - **Authentication**: Uses account auth flow (`/v1/auth/account/request` + `/v1/auth/account/response`) — generates ephemeral keypair, displays QR code (`Idle:///account?[base64url-publicKey]`), user scans with existing Idle mobile app to approve, receives encrypted account secret
 - **Credential storage**: `~/.idle/agent.key` (separate from idle-cli's `~/.idle/access.key`)
 - **Encryption**: AES-256-GCM (dataKey) for all new sessions. The master content keypair is derived deterministically from the account secret via `deriveKey(secret, 'Idle EnCoder', ['content'])` → seed → `crypto_box_seed_keypair(seed)`. Per-session random keys are encrypted with the master public key and stored on the server.
@@ -77,7 +77,7 @@ This is a completely separate client from `idle-cli`. It has its own authenticat
 - [x] Run tests — must pass before task 3
 
 ### Task 3: Configuration and credential storage
-- [x] Create `src/config.ts` — reads `IDLE_SERVER_URL` (default: `https://api.cluster-fluster.com`), `IDLE_HOME_DIR` (default: `~/.idle`), derives credential file path as `${idleHomeDir}/agent.key`
+- [x] Create `src/config.ts` — reads `IDLE_SERVER_URL` (default: `https://api.idle.northglass.io`), `IDLE_HOME_DIR` (default: `~/.idle`), derives credential file path as `${idleHomeDir}/agent.key`
 - [x] Create `src/credentials.ts`:
   - `Credentials` type: `{ token: string, secret: Uint8Array, contentKeyPair: { publicKey: Uint8Array, secretKey: Uint8Array } }`
   - `readCredentials(config)` — parses `~/.idle/agent.key` JSON `{ token, secret }`, decodes secret from base64, derives contentKeyPair via `deriveContentKeyPair(secret)`. Returns `Credentials` or `null` if file missing.

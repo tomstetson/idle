@@ -555,7 +555,7 @@ describe('Acceptance: Full test suite runs', () => {
 
         try {
             const config = loadConfig();
-            expect(config.serverUrl).toBe('https://api.cluster-fluster.com');
+            expect(config.serverUrl).toBe('https://api.idle.northglass.io');
             expect(config.homeDir).toContain('.idle');
             expect(config.credentialPath).toContain('agent.key');
         } finally {

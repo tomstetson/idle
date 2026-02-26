@@ -62,7 +62,7 @@ export function connectRoutes(app: Fastify) {
         }
     }, async (request, reply) => {
         const clientId = process.env.GITHUB_CLIENT_ID;
-        const redirectUri = process.env.GITHUB_REDIRECT_URL;
+        const redirectUri = process.env.GITHUB_REDIRECT_URI;
 
         if (!clientId || !redirectUri) {
             return reply.code(400).send({ error: 'GitHub OAuth not configured' });

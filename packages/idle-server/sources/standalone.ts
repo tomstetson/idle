@@ -145,7 +145,7 @@ Environment variables:
   DATABASE_URL      PostgreSQL URL (if set, uses external Postgres instead of PGlite)
   REDIS_URL         Redis URL (optional, not required for standalone)
   PORT              Server port (default: 3005)
-  HANDY_MASTER_SECRET  Required: master secret for auth/encryption
+  IDLE_MASTER_SECRET  Required: master secret for auth/encryption
 `);
         process.exit(command === "--help" || command === "-h" ? 0 : 1);
 }

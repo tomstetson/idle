@@ -27,7 +27,7 @@ class AuthModule {
         
         const generator = await privacyKit.createPersistentTokenGenerator({
             service: 'handy',
-            seed: process.env.HANDY_MASTER_SECRET!
+            seed: process.env.IDLE_MASTER_SECRET!
         });
 
         
@@ -38,7 +38,7 @@ class AuthModule {
         
         const githubGenerator = await privacyKit.createEphemeralTokenGenerator({
             service: 'github-idle',
-            seed: process.env.HANDY_MASTER_SECRET!,
+            seed: process.env.IDLE_MASTER_SECRET!,
             ttl: 5 * 60 * 1000 // 5 minutes
         });
 

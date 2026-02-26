@@ -34,7 +34,7 @@ spec:
         - name: REDIS_URL
           value: redis://idle-redis:6379
         - name: S3_PUBLIC_URL
-          value: https://files.cluster-fluster.com/happy
+          value: https://files.idle.northglass.io
         envFrom:
         - secretRef:
             name: handy-secrets
