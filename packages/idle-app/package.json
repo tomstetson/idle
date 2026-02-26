@@ -8,7 +8,7 @@
     "ios": "expo run:ios",
     "ios:connected-device": "yarn ios -d",
     "submit": "eas submit --platform ios",
-    "web": "expo start --web",
+    "web": "EXPO_NO_METRO_WORKSPACE_ROOT=1 expo start --web",
     "test": "vitest",
     "release": "node ./release.cjs",
     "release:build:developer": "eas build --profile development --platform ios --no-wait --non-interactive && eas build --profile development --platform android --no-wait --non-interactive && eas build --profile preview --platform ios --no-wait --non-interactive && eas build --profile preview --platform android --no-wait --non-interactive && eas build --profile development-store --platform ios --auto-submit-with-profile=production --no-wait --non-interactive && eas build --profile preview-store --platform ios --auto-submit-with-profile=production --no-wait --non-interactive",
