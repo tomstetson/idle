@@ -50,12 +50,12 @@ Key notes:
 
 ## Kubernetes manifests
 Example manifests live in `packages/idle-server/deploy`:
-- `handy.yaml`: Deployment + Service + ExternalSecrets for the server.
+- `idle-server.yaml`: Deployment + Service + ExternalSecrets for the server.
 - `idle-redis.yaml`: Redis StatefulSet + Service + ConfigMap.
 
 The deployment config expects:
 - Prometheus scraping annotations on port `9090`.
-- A secret named `handy-secrets` populated by ExternalSecrets.
+- A secret named `idle-secrets` populated by ExternalSecrets.
 - A service mapping port `3000` to container port `3005`.
 
 ## Local dev helpers

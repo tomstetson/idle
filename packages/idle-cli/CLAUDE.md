@@ -2,11 +2,11 @@
 
 ## Project Overview
 
-Idle CLI (`handy-cli`) is a command-line tool that wraps Claude Code to enable remote control and session sharing. It's part of a three-component system:
+Idle CLI (`idle-coder`) is a command-line tool that wraps Claude Code to enable remote control and session sharing. It's part of a three-component system:
 
-1. **handy-cli** (this project) - CLI wrapper for Claude Code
-2. **handy** - React Native mobile client
-3. **handy-server** - Node.js server with Prisma (hosted at https://idle-api.northglass.io/)
+1. **idle-coder** (this project) - CLI wrapper for Claude Code
+2. **idle-app** - React Native mobile/web client
+3. **idle-server** - Node.js server with Prisma (hosted at https://idle-api.northglass.io/)
 
 ## Code Style Preferences
 
@@ -120,7 +120,7 @@ User interface components.
 
 ## Security Considerations
 
-- Private keys stored in `~/.handy/access.key` with restricted permissions
+- Private keys stored in `~/.idle/access.key` with restricted permissions
 - All communications encrypted using TweetNaCl
 - Challenge-response authentication prevents replay attacks
 - Session isolation through unique session IDs
@@ -219,7 +219,7 @@ Lines 7-8: New messages from current interaction
 {"parentUuid":"...","sessionId":"1433467f-ff14-4292-b5b2-2aac77a808f0","message":{"role":"user","content":"what file did we just see?"},...}
 ```
 
-## Implications for handy-cli
+## Implications for idle-coder
 
 When using --resume:
 1. Must handle new session ID in responses

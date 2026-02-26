@@ -1,7 +1,7 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: handy-server
+  name: idle-server
 spec:
   strategy:
     type: RollingUpdate
@@ -11,19 +11,19 @@ spec:
   replicas: 1
   selector:
     matchLabels:
-      app: handy-server
+      app: idle-server
   template:
     metadata:
       labels:
-        app: handy-server
+        app: idle-server
       annotations:
         prometheus.io/scrape: "true"
         prometheus.io/port: "9090"
         prometheus.io/path: "/metrics"
     spec:
       containers:
-      - name: handy
-        image: docker.korshakov.com/handy-server:{version}
+      - name: idle
+        image: ghcr.io/tomstetson/idle-server:{version}
         ports:
         - containerPort: 3005
         env:
@@ -37,7 +37,7 @@ spec:
           value: https://files.idle.northglass.io
         envFrom:
         - secretRef:
-            name: handy-secrets
+            name: idle-secrets
         livenessProbe:
           httpGet:
             path: /health
@@ -58,48 +58,48 @@ spec:
 apiVersion: policy/v1
 kind: PodDisruptionBudget
 metadata:
-  name: handy-server-pdb
+  name: idle-server-pdb
 spec:
   minAvailable: 1
   selector:
     matchLabels:
-      app: handy-server
+      app: idle-server
 ---
 apiVersion: external-secrets.io/v1beta1
 kind: ExternalSecret
 metadata:
-  name: handy-secrets
+  name: idle-secrets
 spec:
   refreshInterval: 1h
   secretStoreRef:
     name: vault-backend
     kind: SecretStore
   target:
-    name: handy-secrets
+    name: idle-secrets
     creationPolicy: Owner
   dataFrom:
     - extract:
-        key: /handy-db
+        key: /idle-db
     - extract:
-        key: /handy-master
+        key: /idle-master
     - extract:
-        key: /handy-github
+        key: /idle-github
     - extract:
-        key: /handy-files
+        key: /idle-files
     - extract:
-        key: /handy-e2b
+        key: /idle-e2b
     - extract:
-        key: /handy-revenuecat
+        key: /idle-revenuecat
     - extract:
-        key: /handy-elevenlabs
+        key: /idle-elevenlabs
 ---
 apiVersion: v1
 kind: Service
 metadata:
-  name: handy-server
+  name: idle-server
 spec:
   selector:
-    app: handy-server
+    app: idle-server
   ports:
   - port: 3000
     targetPort: 3005

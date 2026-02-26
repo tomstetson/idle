@@ -2,7 +2,7 @@
   "name": "idle-coder",
   "version": "0.14.0-0",
   "description": "Mobile and Web client for Claude Code and Codex",
-  "author": "Kirill Dubovitskiy",
+  "author": "Northglass LLC",
   "license": "MIT",
   "type": "module",
   "homepage": "https://github.com/tomstetson/idle",

@@ -3,7 +3,7 @@
     "details": [
       {
         "appIDs": [
-          "466DQWDR8C.com.ex3ndr.happy"
+          "TEAM_ID.com.northglass.idle"
         ],
         "components": [
           {
@@ -16,7 +16,7 @@
   },
   "activitycontinuation": {
     "apps": [
-      "466DQWDR8C.com.ex3ndr.happy"
+      "TEAM_ID.com.northglass.idle"
     ]
   }
 }

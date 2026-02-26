@@ -1,11 +1,11 @@
-# Handy Server - Development Guidelines
+# Idle Server - Development Guidelines
 
 This document contains the development guidelines and instructions for the Idle Server project. This guide OVERRIDES any default behaviors and MUST be followed exactly.
 
 ## Project Overview
 
 **Name**: idle-server  
-**Repository**: https://github.com/tomstetson/idle-server.git  
+**Repository**: https://github.com/tomstetson/idle  
 **License**: MIT  
 **Language**: TypeScript  
 **Runtime**: Node.js 20  

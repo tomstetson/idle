@@ -2,7 +2,7 @@
   "name": "@northglass/agent",
   "version": "0.1.0",
   "description": "CLI client for controlling Idle Coder agents remotely",
-  "author": "Kirill Dubovitskiy",
+  "author": "Northglass LLC",
   "license": "MIT",
   "type": "module",
   "homepage": "https://github.com/tomstetson/idle/tree/main/packages/idle-agent",
