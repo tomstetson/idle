@@ -4,12 +4,15 @@
 - [x] Fork and rebrand codebase
 - [x] Bootstrap project docs (CLAUDE.md, AGENTS.md, ADR)
 - [x] Write server deployment runbook
+- [x] Deploy server to IONOS VPS (standalone mode, systemd + nginx)
+- [x] Configure DNS (idle-api.northglass.io via Cloudflare)
+- [x] SSL — Cloudflare Origin Certificate + Full SSL mode
+- [x] Cloudflare WAF — IP-locked to home (72.94.103.120 / Tailscale travel-vpn)
+- [x] Homelab docs + ADR-013 + MCP vault credentials
 - [ ] Replace logo/icon assets
-- [ ] Deploy server to IONOS VPS
-- [ ] Configure DNS (idle.northglass.io, idle-api.northglass.io)
 - [ ] Create @northglass npm org
-- [ ] Verify `yarn install && yarn web` works end-to-end
-- [ ] Apple Developer setup + first TestFlight build
+- [ ] Verify `yarn install && yarn web` works end-to-end against production server
+- [ ] Apple Developer setup + first TestFlight build (blocked — Apple Dev account pending)
 
 ## Phase 2: Improvements (Planned)
 - [ ] CLI auto-title fallback (PR 3 from session title plan)
