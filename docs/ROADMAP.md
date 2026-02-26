@@ -9,9 +9,13 @@
 - [x] SSL — Cloudflare Origin Certificate + Full SSL mode
 - [x] Cloudflare WAF — IP-locked to home (72.94.103.120 / Tailscale travel-vpn)
 - [x] Homelab docs + ADR-013 + MCP vault credentials
-- [ ] Replace logo/icon assets
-- [ ] Create @northglass npm org
-- [ ] Verify `yarn install && yarn web` works end-to-end against production server
+- [x] Complete rebrand — auth URL scheme, server auth service, package authors, deploy manifests
+- [x] PWA support — manifest.json, icons, iOS meta tags, build script
+- [x] Deploy web app to idle.northglass.io (static export + nginx + Cloudflare SSL)
+- [x] Verify web app works E2E — account creation, WebSocket connected, session UI
+- [x] CLI builds and connects to production server
+- [ ] Replace logo/icon assets with custom Idle designs (currently using generated placeholders)
+- [ ] Create @northglass npm org and publish idle-coder + idle-wire
 - [ ] Apple Developer setup + first TestFlight build (blocked — Apple Dev account pending)
 
 ## Phase 2: Improvements (Planned)
