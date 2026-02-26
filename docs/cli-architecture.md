@@ -94,8 +94,8 @@ graph LR
         E2[IDLE_SERVER_URL]
         E3[IDLE_WEBAPP_URL]
         E4[IDLE_VARIANT]
-        E5[HAPPY_EXPERIMENTAL]
-        E6[HAPPY_DISABLE_CAFFEINATE]
+        E5[IDLE_EXPERIMENTAL]
+        E6[IDLE_DISABLE_CAFFEINATE]
     end
 
     E1 -.-> settings & access & daemon & logs
@@ -109,7 +109,7 @@ Local state lives under `~/.idle` (or `IDLE_HOME_DIR`):
 
 Configuration lives in `src/configuration.ts`:
 - `IDLE_SERVER_URL` and `IDLE_WEBAPP_URL` override defaults.
-- `IDLE_VARIANT`, `HAPPY_EXPERIMENTAL`, `HAPPY_DISABLE_CAFFEINATE` control behavior.
+- `IDLE_VARIANT`, `IDLE_EXPERIMENTAL`, `IDLE_DISABLE_CAFFEINATE` control behavior.
 
 ## API client architecture
 

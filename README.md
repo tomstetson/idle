@@ -99,7 +99,7 @@ We're engineers scattered across Bay Area coffee shops and hacker houses, consta
 
 - **[Documentation Website](https://northglass.io/docs/)** - Learn how to use Idle Coder effectively
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Development setup including iOS, Android, and macOS desktop variant builds
-- **[Edit docs at github.com/slopus/slopus.github.io](https://github.com/slopus/slopus.github.io)** - Help improve our documentation and guides
+- **[Edit docs on GitHub](https://github.com/tomstetson/idle)** - Help improve our documentation and guides
 
 ## License
 
