@@ -270,6 +270,7 @@ function migrateSettings(raw: any, fromVersion: number): any {
 export interface DaemonLocallyPersistedState {
   pid: number;
   httpPort: number;
+  authToken?: string;
   startTime: string;
   startedWithCliVersion: string;
   lastHeartbeat?: string;

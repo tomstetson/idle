@@ -33,9 +33,13 @@ async function daemonPost(path: string, body?: any): Promise<{ error?: string } 
 
   try {
     const timeout = process.env.IDLE_DAEMON_HTTP_TIMEOUT ? parseInt(process.env.IDLE_DAEMON_HTTP_TIMEOUT) : 10_000;
+    const headers: Record<string, string> = { 'Content-Type': 'application/json' };
+    if (state.authToken) {
+      headers['Authorization'] = `Bearer ${state.authToken}`;
+    }
     const response = await fetch(`http://127.0.0.1:${state.httpPort}${path}`, {
       method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
+      headers,
       body: JSON.stringify(body || {}),
       // Mostly increased for stress test
       signal: AbortSignal.timeout(timeout)

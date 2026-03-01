@@ -16,13 +16,15 @@ export function startDaemonControlServer({
   stopSession,
   spawnSession,
   requestShutdown,
-  onIdleSessionWebhook
+  onIdleSessionWebhook,
+  authToken
 }: {
   getChildren: () => TrackedSession[];
   stopSession: (sessionId: string) => boolean;
   spawnSession: (options: SpawnSessionOptions) => Promise<SpawnSessionResult>;
   requestShutdown: () => void;
   onIdleSessionWebhook: (sessionId: string, metadata: Metadata) => void;
+  authToken: string;
 }): Promise<{ port: number; stop: () => Promise<void> }> {
   return new Promise((resolve) => {
     const app = fastify({
@@ -33,6 +35,14 @@ export function startDaemonControlServer({
     app.setValidatorCompiler(validatorCompiler);
     app.setSerializerCompiler(serializerCompiler);
     const typed = app.withTypeProvider<ZodTypeProvider>();
+
+    // Require bearer token auth on all routes
+    app.addHook('preHandler', async (request, reply) => {
+      const header = request.headers.authorization;
+      if (!header || header !== `Bearer ${authToken}`) {
+        reply.code(401).send({ error: 'Unauthorized' });
+      }
+    });
 
     // Session reports itself after creation
     typed.post('/session-started', {
