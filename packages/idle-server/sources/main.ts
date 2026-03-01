@@ -13,6 +13,12 @@ import { loadFiles } from "./storage/files";
 
 async function main() {
 
+    // Validate required secrets at startup
+    if (!process.env.IDLE_MASTER_SECRET) {
+        log({ module: 'main', level: 'error' }, 'FATAL: IDLE_MASTER_SECRET is not set. Server cannot start without it.');
+        process.exit(1);
+    }
+
     // Storage
     await db.$connect();
     onShutdown('db', async () => {

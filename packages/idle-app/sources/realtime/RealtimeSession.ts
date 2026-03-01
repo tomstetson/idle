@@ -55,7 +55,7 @@ export async function startRealtimeSession(sessionId: string, initialContext?: s
         }
         
         const response = await fetchVoiceToken(credentials, sessionId);
-        console.log('[Voice] fetchVoiceToken response:', response);
+        console.log('[Voice] fetchVoiceToken allowed:', response.allowed);
 
         if (!response.allowed) {
             console.log('[Voice] Not allowed, presenting paywall...');

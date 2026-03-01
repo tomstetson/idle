@@ -14,12 +14,15 @@ import { artifactUpdateHandler } from "./socket/artifactUpdateHandler";
 import { accessKeyHandler } from "./socket/accessKeyHandler";
 
 export function startSocket(app: Fastify) {
+    const allowedOrigins = process.env.NODE_ENV === 'production'
+        ? ['https://idle.northglass.io']
+        : ['https://idle.northglass.io', 'http://localhost:8081', 'http://localhost:19006'];
     const io = new Server(app.server, {
         cors: {
-            origin: "*",
+            origin: allowedOrigins,
             methods: ["GET", "POST", "OPTIONS"],
             credentials: true,
-            allowedHeaders: ["*"]
+            allowedHeaders: ["Content-Type", "Authorization"]
         },
         transports: ['websocket', 'polling'],
         pingTimeout: 45000,

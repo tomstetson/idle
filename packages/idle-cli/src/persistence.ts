@@ -476,22 +476,22 @@ export async function readCredentials(): Promise<Credentials | null> {
 
 export async function writeCredentialsLegacy(credentials: { secret: Uint8Array, token: string }): Promise<void> {
   if (!existsSync(configuration.idleHomeDir)) {
-    await mkdir(configuration.idleHomeDir, { recursive: true })
+    await mkdir(configuration.idleHomeDir, { recursive: true, mode: 0o700 })
   }
   await writeFile(configuration.privateKeyFile, JSON.stringify({
     secret: encodeBase64(credentials.secret),
     token: credentials.token
-  }, null, 2));
+  }, null, 2), { mode: 0o600 });
 }
 
 export async function writeCredentialsDataKey(credentials: { publicKey: Uint8Array, machineKey: Uint8Array, token: string }): Promise<void> {
   if (!existsSync(configuration.idleHomeDir)) {
-    await mkdir(configuration.idleHomeDir, { recursive: true })
+    await mkdir(configuration.idleHomeDir, { recursive: true, mode: 0o700 })
   }
   await writeFile(configuration.privateKeyFile, JSON.stringify({
     encryption: { publicKey: encodeBase64(credentials.publicKey), machineKey: encodeBase64(credentials.machineKey) },
     token: credentials.token
-  }, null, 2));
+  }, null, 2), { mode: 0o600 });
 }
 
 export async function clearCredentials(): Promise<void> {

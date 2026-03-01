@@ -1,6 +1,9 @@
 import * as privacyKit from "privacy-kit";
 import { log } from "@/utils/log";
 
+const TOKEN_CACHE_TTL = 60 * 60 * 1000; // 1 hour
+const TOKEN_CACHE_MAX_SIZE = 10_000;
+
 interface TokenCacheEntry {
     userId: string;
     extras?: any;
@@ -76,13 +79,17 @@ class AuthModule {
     }
     
     async verifyToken(token: string): Promise<{ userId: string; extras?: any } | null> {
-        // Check cache first
+        // Check cache first (with TTL)
         const cached = this.tokenCache.get(token);
         if (cached) {
-            return {
-                userId: cached.userId,
-                extras: cached.extras
-            };
+            if (Date.now() - cached.cachedAt > TOKEN_CACHE_TTL) {
+                this.tokenCache.delete(token);
+            } else {
+                return {
+                    userId: cached.userId,
+                    extras: cached.extras
+                };
+            }
         }
         
         // Cache miss - verify token
@@ -99,7 +106,12 @@ class AuthModule {
             const userId = verified.user as string;
             const extras = verified.extras;
             
-            // Cache the result permanently
+            // Evict oldest entries if cache is too large
+            if (this.tokenCache.size >= TOKEN_CACHE_MAX_SIZE) {
+                const oldest = [...this.tokenCache.entries()].sort((a, b) => a[1].cachedAt - b[1].cachedAt)[0];
+                if (oldest) this.tokenCache.delete(oldest[0]);
+            }
+            // Cache the result with TTL
             this.tokenCache.set(token, {
                 userId,
                 extras,
