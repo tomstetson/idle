@@ -42,37 +42,29 @@ jobs:
           cd packages/idle-app/dist
           sed -i 's|</head>|<meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" /><meta name="apple-mobile-web-app-title" content="Idle" /><meta name="theme-color" content="#18171C" /><link rel="apple-touch-icon" href="/apple-touch-icon.png" /><link rel="manifest" href="/manifest.json" /></head>|' index.html
 
-      - name: Package for transfer
-        run: tar czf idle-webapp.tar.gz -C packages/idle-app/dist .
+      - name: Package and deploy to VPS
+        env:
+          VPS_HOST: ${{ secrets.VPS_HOST }}
+          VPS_USER: ${{ secrets.VPS_USER }}
+          VPS_SSH_KEY: ${{ secrets.VPS_SSH_KEY }}
+        run: |
+          mkdir -p ~/.ssh
+          echo "$VPS_SSH_KEY" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          ssh-keyscan -H "$VPS_HOST" >> ~/.ssh/known_hosts 2>/dev/null
 
-      - name: Deploy to VPS
-        uses: appleboy/scp-action@v0.1.7
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          source: idle-webapp.tar.gz
-          target: /tmp/
+          echo "Transferring build..."
+          tar czf - -C packages/idle-app/dist . | \
+            ssh -i ~/.ssh/deploy_key "$VPS_USER@$VPS_HOST" '
+              set -euo pipefail
+              DEPLOY_DIR=/var/www/idle-app
+              TEMP_DIR=$(mktemp -d)
+              tar xzf - -C "$TEMP_DIR"
+              rm -rf "${DEPLOY_DIR}.old"
+              mv "$DEPLOY_DIR" "${DEPLOY_DIR}.old"
+              mv "$TEMP_DIR" "$DEPLOY_DIR"
+              rm -rf "${DEPLOY_DIR}.old"
+              echo "Webapp deploy successful!"
+            '
 
-      - name: Extract and swap on VPS
-        uses: appleboy/ssh-action@v1
-        with:
-          host: ${{ secrets.VPS_HOST }}
-          username: ${{ secrets.VPS_USER }}
-          key: ${{ secrets.VPS_SSH_KEY }}
-          script: |
-            set -euo pipefail
-            DEPLOY_DIR=/var/www/idle-app
-            TEMP_DIR=$(mktemp -d)
-
-            echo "Extracting build..."
-            tar xzf /tmp/idle-webapp.tar.gz -C "$TEMP_DIR"
-            rm /tmp/idle-webapp.tar.gz
-
-            echo "Atomic swap..."
-            rm -rf "${DEPLOY_DIR}.old"
-            mv "$DEPLOY_DIR" "${DEPLOY_DIR}.old"
-            mv "$TEMP_DIR" "$DEPLOY_DIR"
-            rm -rf "${DEPLOY_DIR}.old"
-
-            echo "Webapp deploy successful!"
+          rm -f ~/.ssh/deploy_key
