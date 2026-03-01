@@ -58,12 +58,10 @@ jobs:
             ssh -i ~/.ssh/deploy_key "$VPS_USER@$VPS_HOST" '
               set -euo pipefail
               DEPLOY_DIR=/var/www/idle-app
-              TEMP_DIR=$(mktemp -d)
-              tar xzf - -C "$TEMP_DIR"
-              rm -rf "${DEPLOY_DIR}.old"
-              mv "$DEPLOY_DIR" "${DEPLOY_DIR}.old"
-              mv "$TEMP_DIR" "$DEPLOY_DIR"
-              rm -rf "${DEPLOY_DIR}.old"
+              echo "Clearing old files..."
+              find "$DEPLOY_DIR" -mindepth 1 -delete
+              echo "Extracting new build..."
+              tar xzf - -C "$DEPLOY_DIR"
               echo "Webapp deploy successful!"
             '
 
