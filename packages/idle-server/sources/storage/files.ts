@@ -57,6 +57,26 @@ export function getLocalFilesDir() {
 
 export async function putLocalFile(filePath: string, data: Buffer) {
     const fullPath = path.join(localFilesDir, filePath);
+    const resolvedPath = path.resolve(fullPath);
+    const resolvedBase = path.resolve(localFilesDir);
+
+    // Security: Prevent path traversal outside the files directory
+    if (!resolvedPath.startsWith(resolvedBase + path.sep) && resolvedPath !== resolvedBase) {
+        throw new Error(`Access denied: file path resolves outside the files directory`);
+    }
+
+    // Security: Reject if target is a symlink
+    try {
+        const stat = fs.lstatSync(resolvedPath);
+        if (stat.isSymbolicLink()) {
+            throw new Error(`Access denied: target path is a symbolic link`);
+        }
+    } catch (error: any) {
+        if (error.code !== 'ENOENT') {
+            throw error;
+        }
+    }
+
     fs.mkdirSync(path.dirname(fullPath), { recursive: true });
     fs.writeFileSync(fullPath, data);
 }
