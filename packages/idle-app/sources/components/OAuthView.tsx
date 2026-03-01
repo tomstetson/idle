@@ -1,4 +1,4 @@
-import { parseCallbackUrl, generatePKCE, generateState, PKCECodes, ClaudeAuthTokens } from '@/utils/oauth';
+import { parseCallbackUrl, isAllowedOAuthDomain, generatePKCE, generateState, PKCECodes, ClaudeAuthTokens } from '@/utils/oauth';
 import * as React from 'react';
 import { ActivityIndicator, Platform, Text, TouchableOpacity, View } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
@@ -315,8 +315,7 @@ export const OAuthViewRender = React.memo((props: {
             <WebView
                 source={{ uri: props.parameters.url }}
                 style={[styles.webview, { backgroundColor: props.backgroundColor }]}
-                originWhitelist={['*']}
-                limitsNavigationsToAppBoundDomains={false}
+                originWhitelist={['https://*', 'http://localhost*']}
                 onNavigationStateChange={handleNavigationStateChange}
                 onShouldStartLoadWithRequest={(request) => {
                     const callbackData = parseCallbackUrl(request.url);
@@ -324,7 +323,8 @@ export const OAuthViewRender = React.memo((props: {
                         handleNavigationStateChange({ url: request.url });
                         return false;
                     }
-                    return true;
+                    // Only allow navigation to known OAuth provider domains
+                    return isAllowedOAuthDomain(request.url);
                 }}
                 onError={handleWebViewError}
                 onLoad={handleWebViewLoad}

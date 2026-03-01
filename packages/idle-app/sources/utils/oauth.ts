@@ -116,6 +116,30 @@ export async function exchangeCodeForTokens(
     };
 }
 
+// Allowed OAuth provider domains — update when adding new OAuth providers
+const ALLOWED_OAUTH_DOMAINS = [
+    'claude.ai',
+    'console.anthropic.com',
+    'github.com',
+    'accounts.google.com',
+    'linear.app',
+    'localhost',
+] as const;
+
+/**
+ * Check if a URL belongs to an allowed OAuth provider domain.
+ */
+export function isAllowedOAuthDomain(url: string): boolean {
+    try {
+        const hostname = new URL(url).hostname;
+        return ALLOWED_OAUTH_DOMAINS.some(domain =>
+            hostname === domain || hostname.endsWith('.' + domain)
+        );
+    } catch {
+        return false;
+    }
+}
+
 /**
  * Parse authorization code from callback URL
  */
