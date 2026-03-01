@@ -1,0 +1,89 @@
+name: Deploy Server
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/idle-server/**'
+      - 'packages/idle-wire/**'
+      - '.github/workflows/deploy-server.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-server
+  cancel-in-progress: false
+
+jobs:
+  typecheck:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - run: yarn install --immutable
+
+      - name: Build idle-wire (shared types)
+        run: yarn workspace @northglass/idle-wire build
+
+      - name: Typecheck server
+        run: yarn workspace idle-server build
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - run: yarn install --immutable
+
+      - name: Build idle-wire (shared types)
+        run: yarn workspace @northglass/idle-wire build
+
+      - name: Run server tests
+        run: yarn workspace idle-server test
+
+  deploy:
+    needs: [typecheck, test]
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - name: Deploy to VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            cd /var/www/idle-server
+
+            echo "Pulling latest code..."
+            git pull origin main
+
+            echo "Installing dependencies..."
+            yarn install --frozen-lockfile
+
+            echo "Restarting service..."
+            sudo /usr/bin/systemctl restart idle-server
+
+            echo "Waiting for startup..."
+            sleep 8
+
+            echo "Health check..."
+            curl -sf http://localhost:3005/health || {
+              echo "Health check failed!"
+              sudo /usr/bin/systemctl status idle-server --no-pager
+              exit 1
+            }
+
+            echo "Deploy successful!"

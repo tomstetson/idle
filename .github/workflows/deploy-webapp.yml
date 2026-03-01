@@ -1,0 +1,79 @@
+name: Deploy Web App
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'packages/idle-app/**'
+      - 'packages/idle-wire/**'
+      - '.github/workflows/deploy-webapp.yml'
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-webapp
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    environment: production
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: yarn
+          cache-dependency-path: yarn.lock
+
+      - run: yarn install --immutable
+
+      - name: Build idle-wire (shared types)
+        run: yarn workspace @northglass/idle-wire build
+
+      - name: Build web app
+        run: |
+          cd packages/idle-app
+          rm -rf dist
+          APP_ENV=production EXPO_NO_METRO_WORKSPACE_ROOT=1 npx expo export --platform web --output-dir dist
+
+      - name: Inject PWA meta tags
+        run: |
+          cd packages/idle-app/dist
+          sed -i 's|</head>|<meta name="apple-mobile-web-app-capable" content="yes" /><meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" /><meta name="apple-mobile-web-app-title" content="Idle" /><meta name="theme-color" content="#18171C" /><link rel="apple-touch-icon" href="/apple-touch-icon.png" /><link rel="manifest" href="/manifest.json" /></head>|' index.html
+
+      - name: Package for transfer
+        run: tar czf /tmp/idle-webapp.tar.gz -C packages/idle-app/dist .
+
+      - name: Deploy to VPS
+        uses: appleboy/scp-action@v0.1.7
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          source: /tmp/idle-webapp.tar.gz
+          target: /tmp/
+          strip_components: 0
+
+      - name: Extract and swap on VPS
+        uses: appleboy/ssh-action@v1
+        with:
+          host: ${{ secrets.VPS_HOST }}
+          username: ${{ secrets.VPS_USER }}
+          key: ${{ secrets.VPS_SSH_KEY }}
+          script: |
+            set -euo pipefail
+            DEPLOY_DIR=/var/www/idle-app
+            TEMP_DIR=$(mktemp -d)
+
+            echo "Extracting build..."
+            tar xzf /tmp/idle-webapp.tar.gz -C "$TEMP_DIR"
+            rm /tmp/idle-webapp.tar.gz
+
+            echo "Atomic swap..."
+            rm -rf "${DEPLOY_DIR}.old"
+            mv "$DEPLOY_DIR" "${DEPLOY_DIR}.old"
+            mv "$TEMP_DIR" "$DEPLOY_DIR"
+            rm -rf "${DEPLOY_DIR}.old"
+
+            echo "Webapp deploy successful!"
