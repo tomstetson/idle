@@ -1,5 +1,6 @@
 import fs from 'fs/promises';
 import os from 'os';
+import { randomBytes } from 'node:crypto';
 import * as tmp from 'tmp';
 
 import { ApiClient } from '@/api/api';
@@ -222,6 +223,23 @@ export async function startDaemon(): Promise<void> {
       const { directory, sessionId, machineId, approvedNewDirectoryCreation = true } = options;
       let directoryCreated = false;
 
+      // Security: Reject symlink targets to prevent directory traversal attacks
+      try {
+        const stat = await fs.lstat(directory);
+        if (stat.isSymbolicLink()) {
+          logger.debug(`[DAEMON RUN] Security: Rejecting symlink directory: ${directory}`);
+          return {
+            type: 'error',
+            errorMessage: `The path '${directory}' is a symbolic link. Please use the actual directory path.`
+          };
+        }
+      } catch (error: any) {
+        // ENOENT is fine — directory doesn't exist yet and will be created below
+        if (error.code !== 'ENOENT') {
+          throw error;
+        }
+      }
+
       try {
         await fs.access(directory);
         logger.debug(`[DAEMON RUN] Directory exists: ${directory}`);
@@ -281,7 +299,7 @@ export async function startDaemon(): Promise<void> {
             const codexHomeDir = tmp.dirSync();
 
             // Write the token to the temporary directory
-            fs.writeFile(join(codexHomeDir.name, 'auth.json'), options.token);
+            await fs.writeFile(join(codexHomeDir.name, 'auth.json'), options.token);
 
             // Set the environment variable for Codex
             authEnv.CODEX_HOME = codexHomeDir.name;
@@ -636,19 +654,24 @@ export async function startDaemon(): Promise<void> {
       pidToTrackedSession.delete(pid);
     };
 
+    // Generate auth token for daemon control server
+    const authToken = randomBytes(32).toString('hex');
+
     // Start control server
     const { port: controlPort, stop: stopControlServer } = await startDaemonControlServer({
       getChildren: getCurrentChildren,
       stopSession,
       spawnSession,
       requestShutdown: () => requestShutdown('idle-cli'),
-      onIdleSessionWebhook
+      onIdleSessionWebhook,
+      authToken
     });
 
     // Write initial daemon state (no lock needed for state file)
     const fileState: DaemonLocallyPersistedState = {
       pid: process.pid,
       httpPort: controlPort,
+      authToken,
       startTime: new Date().toLocaleString(),
       startedWithCliVersion: packageJson.version,
       daemonLogPath: logger.logFilePath
@@ -761,6 +784,7 @@ export async function startDaemon(): Promise<void> {
         const updatedState: DaemonLocallyPersistedState = {
           pid: process.pid,
           httpPort: controlPort,
+          authToken: fileState.authToken,
           startTime: fileState.startTime,
           startedWithCliVersion: packageJson.version,
           lastHeartbeat: new Date().toLocaleString(),
