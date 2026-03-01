@@ -39,8 +39,8 @@ export const lightTheme = {
         //
 
         text: '#000000',
-        textDestructive: Platform.select({ ios: '#FF3B30', default: '#F44336' }),
-        textSecondary: Platform.select({ ios: '#8E8E93', default: '#49454F' }),
+        textDestructive: Platform.select({ ios: '#FF3B30', web: '#FF3B30', default: '#F44336' }),
+        textSecondary: Platform.select({ ios: '#8E8E93', web: '#8E8E93', default: '#49454F' }),
         textLink: '#2BACCC',
         deleteAction: '#FF6B6B', // Delete/remove button color
         warningCritical: '#FF3B30',
@@ -49,8 +49,8 @@ export const lightTheme = {
         surface: '#ffffff',
         surfaceRipple: 'rgba(0, 0, 0, 0.08)',
         surfacePressed: '#f0f0f2',
-        surfaceSelected: Platform.select({ ios: '#C6C6C8', default: '#eaeaea' }),
-        surfacePressedOverlay: Platform.select({ ios: '#D1D1D6', default: 'transparent' }),
+        surfaceSelected: Platform.select({ ios: '#C6C6C8', web: '#C6C6C8', default: '#eaeaea' }),
+        surfacePressedOverlay: Platform.select({ ios: '#D1D1D6', web: '#D1D1D6', default: 'transparent' }),
         surfaceHigh: '#F8F8F8',
         surfaceHighest: '#f0f0f0',
         divider: Platform.select({ ios: '#eaeaea', default: '#eaeaea' }),
@@ -64,9 +64,9 @@ export const lightTheme = {
         //
 
         groupped: {
-            background: Platform.select({ ios: '#F2F2F7', default: '#F5F5F5' }),
-            chevron: Platform.select({ ios: '#C7C7CC', default: '#49454F' }),
-            sectionTitle: Platform.select({ ios: '#8E8E93', default: '#49454F' }),
+            background: Platform.select({ ios: '#F2F2F7', web: '#F2F2F7', default: '#F5F5F5' }),
+            chevron: Platform.select({ ios: '#C7C7CC', web: '#C7C7CC', default: '#49454F' }),
+            sectionTitle: Platform.select({ ios: '#8E8E93', web: '#8E8E93', default: '#49454F' }),
         },
         header: {
             background: '#ffffff',
@@ -74,7 +74,7 @@ export const lightTheme = {
         },
         switch: {
             track: {
-                active: Platform.select({ ios: '#34C759', default: '#1976D2' }),
+                active: Platform.select({ ios: '#34C759', web: '#34C759', default: '#1976D2' }),
                 inactive: '#dddddd',
             },
             thumb: {
@@ -248,22 +248,22 @@ export const darkTheme = {
         //
 
         text: '#ffffff',
-        textDestructive: Platform.select({ ios: '#FF453A', default: '#F48FB1' }),
-        textSecondary: Platform.select({ ios: '#8E8E93', default: '#CAC4D0' }),
+        textDestructive: Platform.select({ ios: '#FF453A', web: '#FF453A', default: '#F48FB1' }),
+        textSecondary: Platform.select({ ios: '#8E8E93', web: '#8E8E93', default: '#CAC4D0' }),
         textLink: '#2BACCC',
         deleteAction: '#FF6B6B', // Delete/remove button color (same in both themes)
         warningCritical: '#FF453A',
         warning: '#8E8E93',
         success: '#32D74B',
-        surface: Platform.select({ ios: '#18171C', default: '#212121' }),
+        surface: Platform.select({ ios: '#18171C', web: '#18171C', default: '#212121' }),
         surfaceRipple: 'rgba(255, 255, 255, 0.08)',
         surfacePressed: '#2C2C2E',
         surfaceSelected: '#2C2C2E',
-        surfacePressedOverlay: Platform.select({ ios: '#2C2C2E', default: 'transparent' }),
+        surfacePressedOverlay: Platform.select({ ios: '#2C2C2E', web: '#2C2C2E', default: 'transparent' }),
         // iOS dark theme is #1c1c1e for items, and #000 for the background
-        surfaceHigh: Platform.select({ ios: '#2C2C2E', default: '#171717' }),
-        surfaceHighest: Platform.select({ ios: '#38383A', default: '#292929' }),
-        divider: Platform.select({ ios: '#38383A', default: '#292929' }),
+        surfaceHigh: Platform.select({ ios: '#2C2C2E', web: '#2C2C2E', default: '#171717' }),
+        surfaceHighest: Platform.select({ ios: '#38383A', web: '#38383A', default: '#292929' }),
+        divider: Platform.select({ ios: '#38383A', web: '#38383A', default: '#292929' }),
         shadow: {
             color: Platform.select({ default: '#000000', web: 'rgba(0, 0, 0, 0.1)' }),
             opacity: 0.1,
@@ -274,12 +274,12 @@ export const darkTheme = {
         //
 
         header: {
-            background: Platform.select({ ios: '#18171C', default: '#212121' }),
+            background: Platform.select({ ios: '#18171C', web: '#18171C', default: '#212121' }),
             tint: '#ffffff'
         },
         switch: {
             track: {
-                active: Platform.select({ ios: '#34C759', default: '#1976D2' }),
+                active: Platform.select({ ios: '#34C759', web: '#34C759', default: '#1976D2' }),
                 inactive: '#3a393f',
             },
             thumb: {
@@ -288,9 +288,9 @@ export const darkTheme = {
             },
         },
         groupped: {
-            background: Platform.select({ ios: '#1C1C1E', default: '#1e1e1e' }),
-            chevron: Platform.select({ ios: '#48484A', default: '#CAC4D0' }),
-            sectionTitle: Platform.select({ ios: '#8E8E93', default: '#CAC4D0' }),
+            background: Platform.select({ ios: '#1C1C1E', web: '#1C1C1E', default: '#1e1e1e' }),
+            chevron: Platform.select({ ios: '#48484A', web: '#48484A', default: '#CAC4D0' }),
+            sectionTitle: Platform.select({ ios: '#8E8E93', web: '#8E8E93', default: '#CAC4D0' }),
         },
         fab: {
             background: '#FFFFFF',
@@ -316,7 +316,7 @@ export const darkTheme = {
             }
         },
         input: {
-            background: Platform.select({ ios: '#1C1C1E', default: '#303030' }),
+            background: Platform.select({ ios: '#1C1C1E', web: '#1C1C1E', default: '#303030' }),
             text: '#FFFFFF',
             placeholder: '#8E8E93',
         },

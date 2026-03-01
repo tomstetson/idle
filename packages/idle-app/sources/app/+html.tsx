@@ -11,7 +11,7 @@ export default function Root({ children }: { children: React.ReactNode }) {
       <head>
         <meta charSet="utf-8" />
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover" />
 
         {/* 
           Disable body scrolling on web. This makes ScrollView components work closer to how they do on native. 
@@ -37,9 +37,23 @@ export default function Root({ children }: { children: React.ReactNode }) {
 const responsiveBackground = `
 body {
   background-color: #fff;
+  /* Suppress default tap highlight on mobile WebKit browsers */
+  -webkit-tap-highlight-color: transparent;
+  /* Prevent text selection and callout menus on interactive elements */
+  -webkit-touch-callout: none;
+  /* Safe area padding for notch/Dynamic Island/home indicator */
+  padding-top: env(safe-area-inset-top);
+  padding-bottom: env(safe-area-inset-bottom);
+  padding-left: env(safe-area-inset-left);
+  padding-right: env(safe-area-inset-right);
 }
 @media (prefers-color-scheme: dark) {
   body {
     background-color: #000;
   }
+}
+/* Prevent user-select on non-text interactive elements */
+button, [role="button"], [data-pressable] {
+  -webkit-user-select: none;
+  user-select: none;
 }`;
