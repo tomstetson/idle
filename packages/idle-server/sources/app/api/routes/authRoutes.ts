@@ -13,6 +13,12 @@ export function authRoutes(app: Fastify) {
                 challenge: z.string(),
                 signature: z.string()
             })
+        },
+        config: {
+            rateLimit: {
+                max: 10,
+                timeWindow: '1 minute',
+            }
         }
     }, async (request, reply) => {
         const tweetnacl = (await import("tweetnacl")).default;
@@ -55,6 +61,12 @@ export function authRoutes(app: Fastify) {
                 401: z.object({
                     error: z.literal('Invalid public key')
                 })
+            }
+        },
+        config: {
+            rateLimit: {
+                max: 10,
+                timeWindow: '1 minute',
             }
         }
     }, async (request, reply) => {
@@ -182,6 +194,12 @@ export function authRoutes(app: Fastify) {
                 401: z.object({
                     error: z.literal('Invalid public key')
                 })
+            }
+        },
+        config: {
+            rateLimit: {
+                max: 10,
+                timeWindow: '1 minute',
             }
         }
     }, async (request, reply) => {

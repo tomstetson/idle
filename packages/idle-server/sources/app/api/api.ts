@@ -44,6 +44,14 @@ export async function startApi() {
         allowedHeaders: ['Content-Type', 'Authorization'],
         methods: ['GET', 'POST', 'DELETE']
     });
+
+    // Rate limiting — stricter on auth endpoints, relaxed elsewhere
+    await app.register(import('@fastify/rate-limit'), {
+        max: 100,               // Default: 100 requests per window
+        timeWindow: '1 minute',
+        allowList: ['127.0.0.1'], // Don't rate-limit localhost (health checks, daemon)
+    });
+
     app.get('/', function (request, reply) {
         reply.send('Welcome to Idle Server!');
     });
