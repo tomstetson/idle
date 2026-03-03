@@ -26,7 +26,7 @@
 - [x] Add rate limiting on auth endpoints
 - [x] Document architecture and security model (ARCHITECTURE.md, SECURITY.md)
 - [x] Verify Cloudflare WAF configuration and document it
-- [ ] Update stale documentation (ROADMAP, AGENTS.md)
+- [x] Update stale documentation (ROADMAP, AGENTS.md)
 - [ ] Test web app E2E from mobile device
 - [ ] Replace logo/icon assets with custom Idle designs (placeholder currently)
 

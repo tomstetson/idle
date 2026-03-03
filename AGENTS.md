@@ -8,7 +8,9 @@ Mobile and web client for Claude Code, forked from Happy Engineering. Monorepo w
 |------|---------|--------------|
 | `CLAUDE.md` | Build commands, architecture, gotchas | First — always |
 | `package.json` | Workspace config, scripts | Setting up or debugging builds |
-| `docs/` | Protocol specs, architecture, plans | Understanding data flow or encryption |
+| `docs/ARCHITECTURE.md` | Traffic flow diagrams, domain layout, encryption boundaries | Understanding how components connect |
+| `docs/SECURITY.md` | Zero-knowledge model, what's encrypted, known gaps | Security review or explaining privacy model |
+| `docs/` | Protocol specs, plans, runbooks | Deep dives on wire protocol or encryption format |
 
 ## Packages
 

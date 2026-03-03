@@ -16,11 +16,11 @@ This document contains the development guidelines and instructions for the Idle 
 - **Runtime**: Node.js 20
 - **Language**: TypeScript (strict mode enabled)
 - **Web Framework**: Fastify 5
-- **Database**: PostgreSQL with Prisma ORM
+- **Database**: PGlite (embedded PostgreSQL) with Prisma ORM
 - **Validation**: Zod
 - **HTTP Client**: Axios
 - **Real-time**: Socket.io
-- **Cache/Pub-Sub**: Redis (via ioredis)
+- **Rate Limiting**: @fastify/rate-limit (100 req/min global, 10 req/min on auth)
 - **Testing**: Vitest
 - **Package Manager**: Yarn (not npm)
 
@@ -35,10 +35,9 @@ This document contains the development guidelines and instructions for the Idle 
 - `yarn db` - Start local PostgreSQL in Docker
 
 ### Environment Requirements
-- FFmpeg installed (for media processing)
-- Python3 installed
-- PostgreSQL database
-- Redis (for event bus and caching)
+- Node.js 20
+- PGlite stores data in `data/pglite/` (no external PostgreSQL needed)
+- `IDLE_MASTER_SECRET` env var (for auth token signing)
 
 ## Code Style and Structure
 
@@ -56,25 +55,19 @@ This document contains the development guidelines and instructions for the Idle 
 
 ### Folder Structure
 ```
-/sources                    # Root of the sources
-├── /app                   # Application entry points
-│   ├── api.ts            # API server setup
-│   └── timeout.ts        # Timeout handling
-├── /apps                  # Applications directory
-│   └── /api              # API server application
-│       └── /routes       # API routes
+/sources
+├── /app                   # Application logic
+│   ├── /api              # Fastify server, routes, socket, auth
+│   │   ├── api.ts        # Server setup (CORS, rate limiting, plugins)
+│   │   ├── /routes       # API route handlers (auth, sessions, push, etc.)
+│   │   └── socket.ts     # Socket.IO setup
+│   └── /auth             # Auth module (token creation, verification, expiry)
 ├── /modules              # Reusable modules (non-application logic)
-├── /utils                # Low level or abstract utilities
-├── /recipes              # Scripts to run outside of the server
-├── /services             # Core services
-│   └── pubsub.ts        # Pub/sub service
-├── /storage              # Database and storage utilities
-│   ├── db.ts            # Database client
-│   ├── inTx.ts          # Transaction wrapper
-│   ├── repeatKey.ts     # Key utilities
-│   ├── simpleCache.ts   # Caching utility
-│   └── types.ts         # Storage types
-└── main.ts               # Main entry point
+├── /utils                # Low-level utilities (logging, shutdown)
+├── /storage              # Database client, transactions, caching
+│   ├── db.ts            # PGlite database client
+│   └── files.ts         # File storage (local or cloud)
+└── main.ts               # Entry point
 ```
 
 ### Naming Conventions
@@ -137,9 +130,6 @@ This document contains the development guidelines and instructions for the Idle 
 - For complex fields, use "Json" type
 - NEVER DO MIGRATION YOURSELF. Only run yarn generate when new types needed
 
-### Current Schema Status
-The project has pending Prisma migrations that need to be applied:
-- Migration: `20250715012822_add_metadata_version_agent_state`
 
 ## Events
 

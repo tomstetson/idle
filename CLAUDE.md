@@ -7,7 +7,7 @@ Fork of [Happy Engineering](https://github.com/slopus/happy), rebranded and main
 - **Monorepo**: Yarn workspaces (yarn 1.22)
 - **idle-app**: React Native (Expo), Unistyles theming, Expo Router
 - **idle-cli**: Node.js/TypeScript, Claude Code SDK, Socket.IO
-- **idle-server**: Node.js/TypeScript, Prisma, PostgreSQL, Redis, Socket.IO
+- **idle-server**: Node.js/TypeScript, Fastify 5, PGlite (embedded PostgreSQL), Socket.IO
 - **idle-agent**: Node.js/TypeScript CLI for programmatic agent control
 - **idle-wire**: Shared message types (Zod schemas) used by all packages
 
@@ -52,7 +52,7 @@ scripts/            # Build and release scripts
 
 ## Key Architecture
 
-- **E2E Encryption**: All session data encrypted client-side via TweetNaCl before leaving device
+- **E2E Encryption**: All session data encrypted client-side (AES-256-GCM or legacy TweetNaCl) before leaving device
 - **Dual mode**: CLI runs Claude interactively (terminal) or remotely (controlled from app)
 - **Real-time sync**: Socket.IO for session state, messages, permissions between CLI ↔ server ↔ app
 - **MCP tools**: CLI registers MCP tools (e.g., `change_title`) that Claude can call during sessions
