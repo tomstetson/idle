@@ -3,6 +3,10 @@ import { log } from "@/utils/log";
 
 const TOKEN_CACHE_TTL = 60 * 60 * 1000; // 1 hour
 const TOKEN_CACHE_MAX_SIZE = 10_000;
+const TOKEN_TTL_DAYS = process.env.IDLE_TOKEN_TTL_DAYS
+    ? parseInt(process.env.IDLE_TOKEN_TTL_DAYS, 10)
+    : 30;
+const TOKEN_TTL_MS = TOKEN_TTL_DAYS * 24 * 60 * 60 * 1000;
 
 interface TokenCacheEntry {
     userId: string;
@@ -56,25 +60,32 @@ class AuthModule {
         log({ module: 'auth' }, 'Auth module initialized');
     }
     
+    private isTokenExpired(extras?: any): boolean {
+        if (!extras?.expiresAt) {
+            return false; // Backward compat: old tokens without expiresAt are valid
+        }
+        return Date.now() > extras.expiresAt;
+    }
+
     async createToken(userId: string, extras?: any): Promise<string> {
         if (!this.tokens) {
             throw new Error('Auth module not initialized');
         }
-        
-        const payload: any = { user: userId };
-        if (extras) {
-            payload.extras = extras;
-        }
-        
+
+        const expiresAt = Date.now() + TOKEN_TTL_MS;
+        const tokenExtras = { ...extras, expiresAt };
+
+        const payload: any = { user: userId, extras: tokenExtras };
+
         const token = await this.tokens.generator.new(payload);
-        
+
         // Cache the token immediately
         this.tokenCache.set(token, {
             userId,
-            extras,
+            extras: tokenExtras,
             cachedAt: Date.now()
         });
-        
+
         return token;
     }
     
@@ -84,6 +95,9 @@ class AuthModule {
         if (cached) {
             if (Date.now() - cached.cachedAt > TOKEN_CACHE_TTL) {
                 this.tokenCache.delete(token);
+            } else if (this.isTokenExpired(cached.extras)) {
+                this.tokenCache.delete(token);
+                return null;
             } else {
                 return {
                     userId: cached.userId,
@@ -105,7 +119,11 @@ class AuthModule {
             
             const userId = verified.user as string;
             const extras = verified.extras;
-            
+
+            if (this.isTokenExpired(extras)) {
+                return null;
+            }
+
             // Evict oldest entries if cache is too large
             if (this.tokenCache.size >= TOKEN_CACHE_MAX_SIZE) {
                 const oldest = [...this.tokenCache.entries()].sort((a, b) => a[1].cachedAt - b[1].cachedAt)[0];
