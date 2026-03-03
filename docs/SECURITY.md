@@ -114,11 +114,13 @@ When you add a new device (e.g., connecting your phone to your laptop's CLI):
 Being transparent about what isn't perfect:
 
 - **Session tags are unencrypted**: The server can see session names like "my-project". Message content is encrypted, but the label is not.
-- **No token expiry**: Auth tokens currently don't expire. A compromised token grants access until manually revoked.
-- **No rate limiting**: Auth endpoints don't currently rate-limit, which could allow brute-force attempts against a public deployment.
 - **Server metadata is visible**: The server knows how many sessions you have, when you're active, and message sizes — even though it can't read content.
 
-These are documented gaps being addressed in the alpha hardening sprint.
+### Recently Addressed
+
+- **Token expiry** — Auth tokens now expire after 30 days (configurable via `IDLE_TOKEN_TTL_DAYS`). Old tokens without expiry remain valid for backward compatibility.
+- **Rate limiting** — Auth endpoints are rate-limited to 10 requests/min per IP. All other endpoints: 100 requests/min. Localhost is exempt.
+- **Encryption test vectors** — CLI encryption functions are independently verified against reference tests (AES-256-GCM, TweetNaCl, auth challenge signatures).
 
 ## For Self-Hosters
 

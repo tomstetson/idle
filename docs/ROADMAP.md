@@ -21,11 +21,11 @@
 - [x] Fix pre-existing CI failures (Expo typecheck, runAcp test)
 
 ## Phase 1.5: Alpha Readiness (Current)
-- [ ] Verify E2E encryption against reference test vectors
-- [ ] Add token expiry to persistent auth tokens
-- [ ] Add rate limiting on auth endpoints
-- [ ] Document architecture and security model (ARCHITECTURE.md, SECURITY.md)
-- [ ] Verify Cloudflare WAF configuration and document it
+- [x] Verify E2E encryption against reference test vectors
+- [x] Add token expiry to persistent auth tokens
+- [x] Add rate limiting on auth endpoints
+- [x] Document architecture and security model (ARCHITECTURE.md, SECURITY.md)
+- [x] Verify Cloudflare WAF configuration and document it
 - [ ] Update stale documentation (ROADMAP, AGENTS.md)
 - [ ] Test web app E2E from mobile device
 - [ ] Replace logo/icon assets with custom Idle designs (placeholder currently)
