@@ -14,8 +14,7 @@ export interface AuthCredentials {
 export const TokenStorage = {
     async getCredentials(): Promise<AuthCredentials | null> {
         if (Platform.OS === 'web') {
-            // Security: sessionStorage scoped to tab, clears on close — limits XSS exposure
-            const stored = sessionStorage.getItem(AUTH_KEY);
+            const stored = localStorage.getItem(AUTH_KEY);
             return stored ? JSON.parse(stored) as AuthCredentials : null;
         }
         try {
@@ -31,7 +30,7 @@ export const TokenStorage = {
 
     async setCredentials(credentials: AuthCredentials): Promise<boolean> {
         if (Platform.OS === 'web') {
-            sessionStorage.setItem(AUTH_KEY, JSON.stringify(credentials));
+            localStorage.setItem(AUTH_KEY, JSON.stringify(credentials));
             return true;
         }
         try {
@@ -47,7 +46,7 @@ export const TokenStorage = {
 
     async removeCredentials(): Promise<boolean> {
         if (Platform.OS === 'web') {
-            sessionStorage.removeItem(AUTH_KEY);
+            localStorage.removeItem(AUTH_KEY);
             return true;
         }
         try {

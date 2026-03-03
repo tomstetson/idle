@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { View, Pressable, Text } from 'react-native';
+import { Platform, View, Pressable, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { Image } from 'expo-image';
@@ -95,7 +95,7 @@ export const TabBar = React.memo(({ activeTab, onTabPress, inboxBadgeCount = 0 }
     }, []);
 
     return (
-        <View style={[styles.outerContainer, { paddingBottom: insets.bottom }]}>
+        <View style={[styles.outerContainer, { paddingBottom: Platform.OS === 'web' ? Math.max(insets.bottom, 16) : insets.bottom }]}>
             <View style={styles.innerContainer}>
                 {tabs.map((tab) => {
                     const isActive = activeTab === tab.key;

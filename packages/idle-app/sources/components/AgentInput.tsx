@@ -829,7 +829,7 @@ export const AgentInput = React.memo(React.forwardRef<MultiTextInputHandle, Agen
                             alignItems: 'flex-end',
                             minWidth: 150, // Fixed minimum width to prevent layout shift
                         }}>
-                            {displayPermissionMode && (
+                            {displayPermissionMode && permissionModeKey !== 'default' && (
                                 <Text style={{
                                     fontSize: 11,
                                     color: isSandboxedYoloMode ? '#4169E1' :
@@ -839,13 +839,13 @@ export const AgentInput = React.memo(React.forwardRef<MultiTextInputHandle, Agen
                                                     permissionModeKey === 'read-only' ? theme.colors.permission.readOnly :
                                                         permissionModeKey === 'safe-yolo' ? theme.colors.permission.safeYolo :
                                                             permissionModeKey === 'yolo' ? theme.colors.permission.yolo :
-                                                                theme.colors.textSecondary, // Use secondary text color for default
+                                                                theme.colors.textSecondary,
                                     ...Typography.default()
                                 }}>
                                     {withSandboxSuffix(displayPermissionMode.name, permissionModeKey)}
                                 </Text>
                             )}
-                            {props.modelMode && (
+                            {props.modelMode && props.modelMode.key !== 'default' && (
                                 <Text style={{
                                     fontSize: 11,
                                     color: theme.colors.textSecondary,
