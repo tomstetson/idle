@@ -1,7 +1,7 @@
 import tweetnacl from 'tweetnacl';
 import axios from 'axios';
 
-const SERVER_URL = process.env.IDLE_E2E_SERVER_URL || 'https://idle-api.northglass.io';
+export const SERVER_URL = process.env.IDLE_E2E_SERVER_URL || 'https://idle-api.northglass.io';
 
 export interface TestAccount {
     publicKey: string;
