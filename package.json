@@ -11,7 +11,8 @@
         "test:cli": "yarn workspace idle-coder test",
         "test:app": "yarn workspace idle-app test",
         "test:wire": "yarn workspace @northglass/idle-wire test",
-        "test:agent": "yarn workspace @northglass/agent test"
+        "test:agent": "yarn workspace @northglass/agent test",
+        "test:e2e": "yarn workspace idle-e2e test"
     },
     "workspaces": {
         "packages": [
@@ -19,7 +20,8 @@
             "packages/idle-agent",
             "packages/idle-cli",
             "packages/idle-server",
-            "packages/idle-wire"
+            "packages/idle-wire",
+            "packages/idle-e2e"
         ],
         "nohoist": [
             "**/zod",
