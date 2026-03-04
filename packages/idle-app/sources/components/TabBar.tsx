@@ -95,7 +95,7 @@ export const TabBar = React.memo(({ activeTab, onTabPress, inboxBadgeCount = 0 }
     }, []);
 
     return (
-        <View style={[styles.outerContainer, { paddingBottom: Platform.OS === 'web' ? Math.max(insets.bottom, 16) : insets.bottom }]}>
+        <View style={[styles.outerContainer, { paddingBottom: Platform.OS === 'web' ? Math.max(insets.bottom, 34) : insets.bottom }]}>
             <View style={styles.innerContainer}>
                 {tabs.map((tab) => {
                     const isActive = activeTab === tab.key;
