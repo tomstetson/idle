@@ -5,7 +5,13 @@
         "cli": "yarn workspace idle-coder cli",
         "release": "node ./scripts/release.cjs",
         "web": "yarn workspace idle-app web",
-        "postinstall": "node ./scripts/postinstall.cjs"
+        "postinstall": "node ./scripts/postinstall.cjs",
+        "test": "yarn workspaces run test",
+        "test:server": "yarn workspace idle-server test",
+        "test:cli": "yarn workspace idle-coder test",
+        "test:app": "yarn workspace idle-app test",
+        "test:wire": "yarn workspace @northglass/idle-wire test",
+        "test:agent": "yarn workspace @northglass/agent test"
     },
     "workspaces": {
         "packages": [
