@@ -7,9 +7,15 @@ Mobile and web client for Claude Code, forked from Happy Engineering. Monorepo w
 | File | Purpose | When to Read |
 |------|---------|--------------|
 | `CLAUDE.md` | Build commands, architecture, gotchas | First — always |
+| `CONTRIBUTING.md` | Dev setup, testing, deployment guide for new sessions | Onboarding or resuming after a break |
 | `package.json` | Workspace config, scripts | Setting up or debugging builds |
+| `scripts/deploy-server-quick.sh` | Quick-deploy server to VPS (bypasses CI) | Manual server deploys |
 | `docs/ARCHITECTURE.md` | Traffic flow diagrams, domain layout, encryption boundaries | Understanding how components connect |
 | `docs/SECURITY.md` | Zero-knowledge model, what's encrypted, known gaps | Security review or explaining privacy model |
+| `docs/adr/002-pglite-embedded-database.md` | ADR for PGlite as embedded database | Understanding DB choice |
+| `docs/adr/003-deployment-architecture.md` | ADR for VPS + Cloudflare deployment | Understanding hosting setup |
+| `docs/adr/004-e2e-encryption-model.md` | ADR for encryption design | Understanding crypto model |
+| `docs/adr/005-dev-test-strategy.md` | ADR for dev/test approach | Understanding test philosophy |
 | `docs/` | Protocol specs, plans, runbooks | Deep dives on wire protocol or encryption format |
 
 ## Packages
@@ -21,6 +27,7 @@ Mobile and web client for Claude Code, forked from Happy Engineering. Monorepo w
 | `packages/idle-server/` | WebSocket relay + API server | Server-side logic, deployments |
 | `packages/idle-agent/` | Programmatic agent control | Agent API, automation |
 | `packages/idle-wire/` | Shared Zod types | Adding/changing message schemas |
+| `packages/idle-e2e/` | E2E tests (Playwright + CLI child process) | Running or adding integration tests |
 
 ## App Package Deep Dive (`packages/idle-app/`)
 
@@ -53,3 +60,4 @@ Mobile and web client for Claude Code, forked from Happy Engineering. Monorepo w
 | Add a translation key | Add to all 10 files in `packages/idle-app/sources/text/translations/` + `_default.ts` |
 | Change what metadata CLI sends | Edit `packages/idle-cli/src/utils/createSessionMetadata.ts` |
 | Modify wire types | Edit `packages/idle-wire/src/`, rebuild, then update consumers |
+| Configure env vars | Copy `.env.example` to `.env` in each package (idle-app, idle-cli, idle-server) |

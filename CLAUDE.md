@@ -30,11 +30,20 @@ yarn workspace idle-app typecheck
 # Run CLI tests
 yarn workspace idle-coder test
 
+# Run all package tests
+yarn test
+
+# Run E2E tests (requires `yarn web` running in another terminal)
+yarn test:e2e
+
 # Build CLI
 yarn workspace idle-coder build
 
 # Build wire types (needed before other packages)
 yarn workspace @northglass/idle-wire build
+
+# Quick-deploy server to VPS (bypasses CI)
+./scripts/deploy-server-quick.sh
 ```
 
 ## Directory Structure
@@ -86,6 +95,8 @@ Remote `upstream` points to `https://github.com/slopus/happy`.
 - **Yarn 1**: Not yarn berry. Use `yarn` not `yarn install --immutable`
 - **Import aliases**: All packages use `@/` → `src/` via tsconfig paths
 - **Unistyles**: App uses `react-native-unistyles` for theming, not StyleSheet directly
+- **PGlite Bytes fields**: Use `Buffer.from()`, NEVER `new Uint8Array(Buffer.from())` — PGlite serializes Uint8Array as JSON objects instead of binary
+- **Dev workflow**: `yarn web` runs local Expo with hot reload, already points at VPS API (no config needed)
 
 ## Code Style (from upstream)
 
