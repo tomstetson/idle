@@ -18,10 +18,10 @@ describe('applySuggestion', () => {
             const content = 'I feel :hap';
             const selection = { start: 11, end: 11 };
             const result = applySuggestion(content, selection, ':idle:');
-            
+
             expect(result).toEqual({
                 text: 'I feel :idle: ',
-                cursorPosition: 15
+                cursorPosition: 14
             });
         });
         

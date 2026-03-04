@@ -12,9 +12,9 @@ describe('findActiveWord', () => {
 
         it('should detect : emoji at cursor', () => {
             const content = 'I feel :idle';
-            const selection = { start: 13, end: 13 };
+            const selection = { start: 12, end: 12 };
             const result = findActiveWord(content, selection);
-            expect(result).toEqual({ word: ':idle', activeWord: ':idle', offset: 7, length: 6, activeLength: 6, endOffset: 13 });
+            expect(result).toEqual({ word: ':idle', activeWord: ':idle', offset: 7, length: 5, activeLength: 5, endOffset: 12 });
         });
 
         it('should detect / command at cursor', () => {
