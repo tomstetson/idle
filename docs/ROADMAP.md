@@ -41,6 +41,17 @@
 - [ ] Encrypt session tags (server currently sees session names)
 - [ ] Token revocation endpoint (POST /v1/auth/logout)
 
+## Backlog (UI/UX Issues)
+- [ ] "Connect Terminal" page: dark text on dark background (heading barely visible)
+- [ ] "connected" indicator shows green before user accepts terminal connection
+- [ ] GitHub connection flow doesn't work
+- [ ] Send button active with no session connected — should show "not connected" message
+- [ ] PWA auth doesn't persist across close/reopen (iOS standalone localStorage isolation — needs investigation)
+- [ ] Investigate Cloudflare WAF: Bot Fight Mode blocks CLI requests (had to disable globally)
+- [ ] Verify analytics/tracking functions actually send data (trackAccountCreated, trackLogout, etc.)
+- [ ] Set up monitoring dashboard — Cloudflare analytics + app-level usage metrics
+- [ ] Verify anonymous data collection works end-to-end
+
 ## Phase 3: Make It Ours (Future)
 - [ ] Custom landing page (separate from app, e.g., northglass.io/idle)
 - [ ] Idle-specific features beyond upstream Happy
