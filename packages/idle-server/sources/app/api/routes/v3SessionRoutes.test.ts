@@ -201,15 +201,15 @@ const {
     };
 });
 
-vi.mock("@/storage/db", () => ({
+vi.mock("../../../storage/db", () => ({
     db: dbMock
 }));
 
-vi.mock("@/utils/randomKeyNaked", () => ({
+vi.mock("../../../utils/randomKeyNaked", () => ({
     randomKeyNaked: vi.fn(() => "update-id")
 }));
 
-vi.mock("@/app/events/eventRouter", () => ({
+vi.mock("../../events/eventRouter", () => ({
     eventRouter: {
         emitUpdate: emitUpdateMock
     },
