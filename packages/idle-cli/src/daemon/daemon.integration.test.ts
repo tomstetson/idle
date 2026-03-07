@@ -466,8 +466,64 @@ describe.skipIf(!await isServerHealthy())('Daemon Integration Tests', { timeout:
   });
 
   // TODO: Add a test to see if a corrupted file will work
-  
-  // TODO: Test npm uninstall scenario - daemon should gracefully handle when idle-coder is uninstalled
-  // Current behavior: daemon tries to spawn new daemon on version mismatch but dist/index.mjs is gone
-  // Expected: daemon should detect missing entrypoint and either exit cleanly or at minimum not respawn infinitely
+
+  /**
+   * npm uninstall scenario — verifies daemon exits gracefully when package.json disappears.
+   *
+   * When a user runs `npm uninstall idle-coder`, the package directory (including package.json)
+   * is removed while the daemon is still running. On the next heartbeat, the daemon tries to
+   * read package.json for the version check. Without the fix, this throws ENOENT which
+   * propagates to the uncaught exception handler, which could trigger an infinite respawn loop.
+   *
+   * With the fix, the daemon catches the error and shuts down gracefully.
+   */
+  it('[takes 1 minute to run] should exit gracefully when package.json is missing (simulates npm uninstall)', { timeout: 100_000 }, async () => {
+    const packagePath = path.join(process.cwd(), 'package.json');
+    const packageJsonBackup = readFileSync(packagePath, 'utf8');
+
+    try {
+      // Verify daemon is running before we start
+      const initialState = await readDaemonState();
+      expect(initialState).toBeDefined();
+      const initialPid = initialState!.pid;
+      console.log(`[TEST] Daemon running with PID ${initialPid}`);
+
+      // Remove package.json to simulate npm uninstall removing the CLI
+      unlinkSync(packagePath);
+      console.log('[TEST] Removed package.json to simulate npm uninstall');
+
+      // Wait for the heartbeat to fire and the daemon to shut down gracefully.
+      // Heartbeat interval is configurable via IDLE_DAEMON_HEARTBEAT_INTERVAL (default 60s).
+      const heartbeatMs = parseInt(process.env.IDLE_DAEMON_HEARTBEAT_INTERVAL || '60000');
+      await new Promise(resolve => setTimeout(resolve, heartbeatMs + 10_000));
+
+      // Verify the daemon process is no longer running
+      let isDead = false;
+      try {
+        process.kill(initialPid, 0);
+      } catch {
+        isDead = true;
+      }
+      expect(isDead, 'Daemon should have exited after package.json was removed').toBe(true);
+
+      // Verify no new daemon was spawned (no respawn loop).
+      // If a new daemon had spawned, it would have written a new state file with a different PID.
+      const finalState = await readDaemonState();
+      const noRespawn = finalState === null || finalState.pid === initialPid;
+      expect(noRespawn, 'Daemon should NOT have respawned a new instance').toBe(true);
+
+      // Check daemon logs for the graceful shutdown message
+      const logFile = await getLatestDaemonLog();
+      if (logFile) {
+        const logContent = readFileSync(logFile.path, 'utf8');
+        expect(logContent).toContain('CLI appears to have been uninstalled');
+      }
+
+      console.log('[TEST] Daemon exited gracefully after package.json removal — no infinite respawn');
+    } finally {
+      // CRITICAL: Restore package.json so the rest of the test suite (and the project) still works
+      writeFileSync(packagePath, packageJsonBackup);
+      console.log('[TEST] Restored package.json');
+    }
+  });
 });

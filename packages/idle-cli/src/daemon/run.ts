@@ -743,7 +743,19 @@ export async function startDaemon(): Promise<void> {
       // Check if daemon needs update
       // If version on disk is different from the one in package.json - we need to restart
       // BIG if - does this get updated from underneath us on npm upgrade?
-      const projectVersion = JSON.parse(readFileSync(join(projectPath(), 'package.json'), 'utf-8')).version;
+      let projectVersion: string;
+      try {
+        projectVersion = JSON.parse(readFileSync(join(projectPath(), 'package.json'), 'utf-8')).version;
+      } catch (error) {
+        // package.json is missing or corrupted — the CLI was likely uninstalled.
+        // Shut down gracefully instead of letting the exception propagate to the
+        // uncaught exception handler, which would trigger a respawn loop since the
+        // new daemon would also fail to read the missing file.
+        logger.debug('[DAEMON RUN] Cannot read package.json — CLI appears to have been uninstalled, shutting down gracefully', error);
+        clearInterval(restartOnStaleVersionAndHeartbeat);
+        requestShutdown('exception', 'CLI uninstalled: package.json not found');
+        return;
+      }
       if (projectVersion !== configuration.currentCliVersion) {
         logger.debug('[DAEMON RUN] Daemon is outdated, triggering self-restart with latest version, clearing heartbeat interval');
 
