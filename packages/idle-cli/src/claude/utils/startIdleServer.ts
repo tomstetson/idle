@@ -10,22 +10,26 @@ import { AddressInfo } from "node:net";
 import { z } from "zod";
 import { logger } from "@/ui/logger";
 import { ApiSessionClient } from "@/api/apiSession";
-import { randomUUID } from "node:crypto";
 
 export async function startIdleServer(client: ApiSessionClient) {
     logger.debug(`[idleMCP] server:start sessionId=${client.sessionId}`);
 
-    // Handler that sends title updates via the client
+    // Handler that sends title updates directly via metadata.
+    // Title is session metadata, not a chat message — routing through
+    // sendClaudeSessionMessage caused the protocol mapper to produce
+    // empty envelopes (summary messages are intentionally dropped),
+    // which could trigger HTTP 500 from downstream endpoints.
     const handler = async (title: string) => {
         logger.debug('[idleMCP] Changing title to:', title);
         try {
-            // Send title as a summary message, similar to title generator
-            client.sendClaudeSessionMessage({
-                type: 'summary',
-                summary: title,
-                leafUuid: randomUUID()
-            });
-            
+            client.updateMetadata((metadata) => ({
+                ...metadata,
+                summary: {
+                    text: title,
+                    updatedAt: Date.now()
+                }
+            }));
+
             return { success: true };
         } catch (error) {
             return { success: false, error: String(error) };
