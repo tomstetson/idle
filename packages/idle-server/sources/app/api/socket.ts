@@ -13,6 +13,66 @@ import { machineUpdateHandler } from "./socket/machineUpdateHandler";
 import { artifactUpdateHandler } from "./socket/artifactUpdateHandler";
 import { accessKeyHandler } from "./socket/accessKeyHandler";
 
+// --- Rate limiting (A6-1) ---
+
+const MAX_EVENTS_PER_MINUTE = 120;
+const MAX_CONNECTIONS_PER_USER = 10;
+
+// Per-socket event counters: socketId -> { count, resetTime }
+const socketEventCounters = new Map<string, { count: number; resetTime: number }>();
+
+// Per-user connection counters: userId -> Set<socketId>
+const userConnectionTracker = new Map<string, Set<string>>();
+
+function checkEventRateLimit(socketId: string): boolean {
+    const now = Date.now();
+    let entry = socketEventCounters.get(socketId);
+
+    if (!entry || now >= entry.resetTime) {
+        // Start a fresh window
+        entry = { count: 1, resetTime: now + 60_000 };
+        socketEventCounters.set(socketId, entry);
+        return true;
+    }
+
+    entry.count++;
+    if (entry.count > MAX_EVENTS_PER_MINUTE) {
+        return false;
+    }
+    return true;
+}
+
+function trackUserConnection(userId: string, socketId: string): boolean {
+    let sockets = userConnectionTracker.get(userId);
+    if (!sockets) {
+        sockets = new Set();
+        userConnectionTracker.set(userId, sockets);
+    }
+
+    if (sockets.size >= MAX_CONNECTIONS_PER_USER) {
+        return false;
+    }
+
+    sockets.add(socketId);
+    return true;
+}
+
+function removeUserConnection(userId: string, socketId: string): void {
+    const sockets = userConnectionTracker.get(userId);
+    if (sockets) {
+        sockets.delete(socketId);
+        if (sockets.size === 0) {
+            userConnectionTracker.delete(userId);
+        }
+    }
+}
+
+function cleanupSocketRateLimit(socketId: string): void {
+    socketEventCounters.delete(socketId);
+}
+
+// --- End rate limiting ---
+
 export function startSocket(app: Fastify) {
     const allowedOrigins = process.env.NODE_ENV === 'production'
         ? ['https://idle.northglass.io']
@@ -32,6 +92,20 @@ export function startSocket(app: Fastify) {
         upgradeTimeout: 10000,
         connectTimeout: 20000,
         serveClient: false // Don't serve the client files
+    });
+
+    // Per-event rate limiting middleware (A6-1)
+    io.use((socket, next) => {
+        socket.use(([event, ..._args], nextEvent) => {
+            if (checkEventRateLimit(socket.id)) {
+                nextEvent();
+            } else {
+                log({ module: 'websocket' }, `Rate limit exceeded for socket ${socket.id}, disconnecting`);
+                socket.emit('error', { message: 'Rate limit exceeded (max 120 events/minute)' });
+                socket.disconnect();
+            }
+        });
+        next();
     });
 
     let rpcListeners = new Map<string, Map<string, Socket>>();
@@ -76,6 +150,14 @@ export function startSocket(app: Fastify) {
         const userId = verified.userId;
         log({ module: 'websocket' }, `Token verified: ${userId}, clientType: ${clientType || 'user-scoped'}, sessionId: ${sessionId || 'none'}, machineId: ${machineId || 'none'}, socketId: ${socket.id}`);
 
+        // Per-user connection limit (A6-1)
+        if (!trackUserConnection(userId, socket.id)) {
+            log({ module: 'websocket' }, `Connection limit reached for user ${userId} (max ${MAX_CONNECTIONS_PER_USER})`);
+            socket.emit('error', { message: `Too many connections (max ${MAX_CONNECTIONS_PER_USER} per user)` });
+            socket.disconnect();
+            return;
+        }
+
         // Store connection based on type
         const metadata = { clientType: clientType || 'user-scoped', sessionId, machineId };
         let connection: ClientConnection;
@@ -116,6 +198,10 @@ export function startSocket(app: Fastify) {
 
         socket.on('disconnect', () => {
             websocketEventsCounter.inc({ event_type: 'disconnect' });
+
+            // Cleanup rate limiting and connection tracking (A6-1)
+            cleanupSocketRateLimit(socket.id);
+            removeUserConnection(userId, socket.id);
 
             // Cleanup connections
             eventRouter.removeConnection(userId, connection);
