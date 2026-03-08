@@ -21,8 +21,8 @@ export async function findAllIdleProcesses(): Promise<Array<{ pid: number, comma
       const name = proc.name || '';
       
       // Check if it's a Idle process
-      const isIdle = name.includes('idle') || 
-                      name === 'node' && (cmd.includes('idle-cli') || cmd.includes('dist/index.mjs')) ||
+      const isIdle = name.includes('idle') ||
+                      name === 'node' && (cmd.includes('idle-cli') || cmd.includes('idle-coder')) ||
                       cmd.includes('idle.mjs') ||
                       cmd.includes('idle-coder') ||
                       (cmd.includes('tsx') && cmd.includes('src/index.ts') && cmd.includes('idle-cli'));

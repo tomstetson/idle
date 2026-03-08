@@ -74,9 +74,11 @@ function cleanupSocketRateLimit(socketId: string): void {
 // --- End rate limiting ---
 
 export function startSocket(app: Fastify) {
-    const allowedOrigins = process.env.NODE_ENV === 'production'
-        ? ['https://idle.northglass.io']
-        : ['https://idle.northglass.io', 'http://localhost:8081', 'http://localhost:19006'];
+    const allowedOrigins = [
+        'https://idle.northglass.io',
+        'http://localhost:8081',
+        'http://localhost:19006',
+    ];
     const io = new Server(app.server, {
         cors: {
             origin: allowedOrigins,

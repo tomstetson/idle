@@ -36,9 +36,11 @@ export async function startApi() {
         loggerInstance: logger,
         bodyLimit: 1024 * 1024 * 100, // 100MB
     });
-    const allowedOrigins = process.env.NODE_ENV === 'production'
-        ? ['https://idle.northglass.io']
-        : ['https://idle.northglass.io', 'http://localhost:8081', 'http://localhost:19006'];
+    const allowedOrigins = [
+        'https://idle.northglass.io',
+        'http://localhost:8081',
+        'http://localhost:19006',
+    ];
     app.register(import('@fastify/cors'), {
         origin: allowedOrigins,
         allowedHeaders: ['Content-Type', 'Authorization'],
