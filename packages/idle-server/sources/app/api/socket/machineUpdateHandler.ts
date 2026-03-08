@@ -68,7 +68,8 @@ export function machineUpdateHandler(userId: string, socket: Socket) {
                 where: {
                     accountId: userId,
                     id: machineId
-                }
+                },
+                select: { id: true, metadataVersion: true, metadata: true }
             });
             if (!machine) {
                 if (callback) {
@@ -107,7 +108,8 @@ export function machineUpdateHandler(userId: string, socket: Socket) {
                     where: {
                         accountId: userId,
                         id: machineId
-                    }
+                    },
+                    select: { id: true, metadataVersion: true, metadata: true }
                 });
                 callback({
                     result: 'version-mismatch',
@@ -162,7 +164,8 @@ export function machineUpdateHandler(userId: string, socket: Socket) {
                 where: {
                     accountId: userId,
                     id: machineId
-                }
+                },
+                select: { id: true, daemonStateVersion: true, daemonState: true }
             });
             if (!machine) {
                 if (callback) {
@@ -202,7 +205,8 @@ export function machineUpdateHandler(userId: string, socket: Socket) {
                     where: {
                         accountId: userId,
                         id: machineId
-                    }
+                    },
+                    select: { id: true, daemonStateVersion: true, daemonState: true }
                 });
                 callback({
                     result: 'version-mismatch',

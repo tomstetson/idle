@@ -22,10 +22,12 @@ export function accessKeyHandler(userId: string, socket: Socket) {
             // Verify session and machine belong to user
             const [session, machine] = await Promise.all([
                 db.session.findFirst({
-                    where: { id: sessionId, accountId: userId }
+                    where: { id: sessionId, accountId: userId },
+                    select: { id: true }
                 }),
                 db.machine.findFirst({
-                    where: { id: machineId, accountId: userId }
+                    where: { id: machineId, accountId: userId },
+                    select: { id: true }
                 })
             ]);
 

@@ -20,10 +20,10 @@ export function accountRoutes(app: Fastify) {
                 lastName: true,
                 username: true,
                 avatar: true,
-                githubUser: true
+                githubUser: { select: { id: true, profile: true } }
             }
         });
-        const connectedVendors = new Set((await db.serviceAccountToken.findMany({ where: { accountId: userId } })).map(t => t.vendor));
+        const connectedVendors = new Set((await db.serviceAccountToken.findMany({ where: { accountId: userId }, select: { vendor: true } })).map(t => t.vendor));
         return reply.send({
             id: userId,
             timestamp: Date.now(),
@@ -138,7 +138,8 @@ export function accountRoutes(app: Fastify) {
             if (count === 0) {
                 // Re-fetch to get current version
                 const account = await db.account.findUnique({
-                    where: { id: userId }
+                    where: { id: userId },
+                    select: { settingsVersion: true, settings: true }
                 });
                 return reply.code(200).send({
                     success: false,
@@ -210,7 +211,8 @@ export function accountRoutes(app: Fastify) {
                     where: {
                         id: sessionId,
                         accountId: userId
-                    }
+                    },
+                    select: { id: true }
                 });
                 if (!session) {
                     return reply.code(404).send({ error: 'Session not found' });

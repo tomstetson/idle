@@ -67,7 +67,7 @@ export async function githubConnect(
         const encrypted = encryptString(['user', userId, 'github', 'token'], accessToken);
         const encryptedBase64 = Buffer.from(encrypted).toString('base64');
 
-        const existingGithub = await tx.githubUser.findUnique({ where: { id: githubUserId } });
+        const existingGithub = await tx.githubUser.findUnique({ where: { id: githubUserId }, select: { id: true } });
         if (existingGithub) {
             await tx.githubUser.update({
                 where: { id: githubUserId },
