@@ -190,7 +190,17 @@ export class ApiSessionClient extends EventEmitter {
                         return;
                     }
                     const body = decrypt(this.encryptionKey, this.encryptionVariant, decodeBase64(data.body.message.content.c));
-                    logger.debugLargeJson('[SOCKET] [UPDATE] Received update:', body)
+                    // Security: log message structure only, not decrypted content (A10-5)
+                    const bodyObj = body && typeof body === 'object' ? body as Record<string, unknown> : {};
+                    logger.debug('[SOCKET] [UPDATE] Decrypted message:', JSON.stringify({
+                        type: bodyObj.type ?? bodyObj.role ?? 'unknown',
+                        keys: Object.keys(bodyObj),
+                        contentPreview: typeof bodyObj.content === 'string'
+                            ? bodyObj.content.substring(0, 100) + '...'
+                            : typeof bodyObj.content === 'object' && bodyObj.content !== null
+                                ? `[${Array.isArray(bodyObj.content) ? 'array' : 'object'}]`
+                                : typeof bodyObj.content
+                    }));
                     this.routeIncomingMessage(body);
                     this.lastSeq = messageSeq;
                 } else if (data.body.t === 'update-session') {
@@ -551,7 +561,11 @@ export class ApiSessionClient extends EventEmitter {
      * @param handler - Handler function that returns the updated agent state
      */
     updateAgentState(handler: (metadata: AgentState) => AgentState) {
-        logger.debugLargeJson('Updating agent state', this.agentState);
+        // Security: log agent state structure only, not decrypted values (A10-5)
+        logger.debug('Updating agent state', JSON.stringify({
+            keys: this.agentState ? Object.keys(this.agentState) : [],
+            version: this.agentStateVersion
+        }));
         this.agentStateLock.inLock(async () => {
             await backoff(async () => {
                 let updated = handler(this.agentState || {});
@@ -559,7 +573,11 @@ export class ApiSessionClient extends EventEmitter {
                 if (answer.result === 'success') {
                     this.agentState = answer.agentState ? decrypt(this.encryptionKey, this.encryptionVariant, decodeBase64(answer.agentState)) : null;
                     this.agentStateVersion = answer.version;
-                    logger.debug('Agent state updated', this.agentState);
+                    // Security: log structure only, not decrypted state (A10-5)
+                    logger.debug('Agent state updated', JSON.stringify({
+                        keys: this.agentState ? Object.keys(this.agentState) : [],
+                        version: this.agentStateVersion
+                    }));
                 } else if (answer.result === 'version-mismatch') {
                     if (answer.version > this.agentStateVersion) {
                         this.agentStateVersion = answer.version;
