@@ -131,6 +131,10 @@ If you run your own Idle server:
 - **Protect `IDLE_MASTER_SECRET`** — this is used for auth token signing and encrypting vendor API tokens at rest. If leaked, an attacker could forge auth tokens and decrypt stored vendor API keys (but still not read session messages, which are end-to-end encrypted)
 - **Back up PGlite data** — `data/pglite/` contains encrypted session data. Loss = loss of session history (but keys live on client devices)
 
+## Security Audit
+
+A comprehensive security audit was conducted for the alpha v1.0 release. See [security/alpha-security-audit.md](security/alpha-security-audit.md) for full findings, and [ADR-006](adr/006-public-access-decision.md) for the public access decision.
+
 ## Technical Details
 
 For the full cryptographic specification (algorithms, binary layouts, key derivation):

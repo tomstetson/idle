@@ -16,6 +16,11 @@ Mobile and web client for Claude Code, forked from Happy Engineering. Monorepo w
 | `docs/adr/003-deployment-architecture.md` | ADR for VPS + Cloudflare deployment | Understanding hosting setup |
 | `docs/adr/004-e2e-encryption-model.md` | ADR for encryption design | Understanding crypto model |
 | `docs/adr/005-dev-test-strategy.md` | ADR for dev/test approach | Understanding test philosophy |
+| `docs/adr/006-public-access-decision.md` | ADR for going public without CF Zero Trust | Security posture decisions |
+| `docs/adr/007-pwa-auth-limitation.md` | ADR for PWA auth session limitation | Web platform constraints |
+| `docs/security/alpha-security-audit.md` | Full alpha security audit (27 findings) | Security review, remediation tracking |
+| `docs/monitoring.md` | Health endpoints, metrics, server logs, troubleshooting | Operations, debugging |
+| `docs/plans/2026-03-08-alpha-v1.0-implementation.md` | Alpha v1.0 release plan (Phases A-G) | Understanding alpha release scope |
 | `docs/` | Protocol specs, plans, runbooks | Deep dives on wire protocol or encryption format |
 
 ## Packages
@@ -37,7 +42,7 @@ Mobile and web client for Claude Code, forked from Happy Engineering. Monorepo w
 | `sources/app/(app)/` | Expo Router screens (session, machine, settings, new session) |
 | `sources/sync/` | Storage, encryption, socket sync, session state management |
 | `sources/utils/` | Helpers (session names, OS icons, path formatting) |
-| `sources/text/translations/` | i18n — 10 language files |
+| `sources/text/translations/` | i18n — 11 language files |
 | `app.config.js` | Expo config (bundle IDs, schemes, associated domains) |
 
 ## CLI Package Deep Dive (`packages/idle-cli/`)
