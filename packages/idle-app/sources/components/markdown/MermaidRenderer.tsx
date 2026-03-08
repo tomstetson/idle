@@ -5,6 +5,15 @@ import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { Typography } from '@/constants/Typography';
 import { t } from '@/text';
 
+// Sanitize SVG output to prevent XSS — strips script elements,
+// on* event handler attributes, and javascript: URLs
+function sanitizeSvg(svg: string): string {
+    return svg
+        .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+        .replace(/\s+on\w+\s*=\s*(?:"[^"]*"|'[^']*'|[^\s>]*)/gi, '')
+        .replace(/(href\s*=\s*["'])javascript:/gi, '$1');
+}
+
 // Style for Web platform
 const webStyle: any = {
     backgroundColor: '#1a1a1a',
@@ -53,7 +62,7 @@ export const MermaidRenderer = React.memo((props: {
                         );
 
                         if (isMounted) {
-                            setSvgContent(svg);
+                            setSvgContent(sanitizeSvg(svg));
                         }
                     }
                 } catch (error) {
