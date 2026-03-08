@@ -266,6 +266,10 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
     let currentDisallowedTools: string[] | undefined = undefined; // Track current disallowed tools
     session.onUserMessage((message) => {
 
+        // Schedule auto-title fallback on the first user message.
+        // scheduleAutoTitle is idempotent — only the first call sets the timer.
+        idleServer.scheduleAutoTitle(workingDirectory, message.content.text);
+
         // Resolve permission mode from meta - pass through as-is, mapping happens at SDK boundary
         let messagePermissionMode: PermissionMode | undefined = currentPermissionMode;
         if (message.meta?.permissionMode) {
