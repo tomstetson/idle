@@ -1,5 +1,15 @@
 import type { MarkdownSpan } from "./parseMarkdown";
 
+// Block dangerous URL protocols (javascript:, data:, vbscript:, etc.)
+// Allow http(s), mailto, fragment, and relative URLs
+function isSafeUrl(url: string): boolean {
+    const trimmed = url.trim().toLowerCase();
+    if (trimmed.startsWith('https:') || trimmed.startsWith('http:') || trimmed.startsWith('mailto:') || trimmed.startsWith('/') || trimmed.startsWith('#')) {
+        return true;
+    }
+    return !trimmed.includes(':');
+}
+
 // Updated pattern to handle nested markdown and asterisks
 const pattern = /(\*\*(.*?)(?:\*\*|$))|(\*(.*?)(?:\*|$))|(\[([^\]]+)\](?:\(([^)]+)\))?)|(`(.*?)(?:`|$))/g;
 
@@ -31,11 +41,11 @@ export function parseMarkdownSpans(markdown: string, header: boolean) {
             }
         } else if (match[5]) {
             // Link - handle incomplete links (no URL part)
-            if (match[7]) {
+            if (match[7] && isSafeUrl(match[7])) {
                 spans.push({ styles: [], text: match[6], url: match[7] });
             } else {
-                // If no URL part, treat as plain text with brackets
-                spans.push({ styles: [], text: `[${match[6]}]`, url: null });
+                // No URL, or URL uses a dangerous protocol — render as plain text
+                spans.push({ styles: [], text: match[6], url: null });
             }
         } else if (match[8]) {
             // Inline code
