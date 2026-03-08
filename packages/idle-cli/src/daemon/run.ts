@@ -14,7 +14,7 @@ import { startCaffeinate, stopCaffeinate } from '@/utils/caffeinate';
 import packageJson from '../../package.json';
 import { getEnvironmentInfo } from '@/ui/doctor';
 import { spawnIdleCLI } from '@/utils/spawnIdleCLI';
-import { writeDaemonState, DaemonLocallyPersistedState, readDaemonState, acquireDaemonLock, releaseDaemonLock, readSettings, getActiveProfile, getEnvironmentVariables, validateProfileForAgent, getProfileEnvironmentVariables } from '@/persistence';
+import { writeDaemonState, DaemonLocallyPersistedState, readDaemonState, readDaemonStateSync, acquireDaemonLock, releaseDaemonLock, readSettings, getActiveProfile, getEnvironmentVariables, validateProfileForAgent, getProfileEnvironmentVariables } from '@/persistence';
 
 import { cleanupDaemonState, isDaemonRunningCurrentlyInstalledIdleVersion, stopDaemon } from './controlClient';
 import { startDaemonControlServer } from './controlServer';
@@ -174,6 +174,52 @@ export async function startDaemon(): Promise<void> {
     // Helper functions
     const getCurrentChildren = () => Array.from(pidToTrackedSession.values());
 
+    // Persist a session to daemon state file so it survives daemon restarts
+    const persistSessionToDaemonState = (idleSessionId: string, sessionMetadata: Metadata) => {
+      try {
+        const daemonState = readDaemonStateSync();
+        if (!daemonState) return;
+
+        const activeSessions = daemonState.activeSessions ?? [];
+
+        // Avoid duplicates
+        if (activeSessions.some(s => s.idleSessionId === idleSessionId)) return;
+
+        activeSessions.push({
+          idleSessionId,
+          claudeSessionId: sessionMetadata.claudeSessionId ?? undefined,
+          workingDirectory: sessionMetadata.path ?? undefined,
+          startedAt: new Date().toISOString(),
+        });
+
+        daemonState.activeSessions = activeSessions;
+        writeDaemonState(daemonState);
+        logger.debug(`[DAEMON RUN] Persisted session ${idleSessionId} to daemon state (${activeSessions.length} active)`);
+      } catch (error) {
+        logger.debug('[DAEMON RUN] Failed to persist session to daemon state:', error);
+      }
+    };
+
+    // Remove a session from the persisted daemon state
+    const removeSessionFromDaemonState = (idleSessionId: string) => {
+      try {
+        const daemonState = readDaemonStateSync();
+        if (!daemonState || !daemonState.activeSessions) return;
+
+        const before = daemonState.activeSessions.length;
+        daemonState.activeSessions = daemonState.activeSessions.filter(
+          s => s.idleSessionId !== idleSessionId
+        );
+
+        if (daemonState.activeSessions.length < before) {
+          writeDaemonState(daemonState);
+          logger.debug(`[DAEMON RUN] Removed session ${idleSessionId} from daemon state (${daemonState.activeSessions.length} active)`);
+        }
+      } catch (error) {
+        logger.debug('[DAEMON RUN] Failed to remove session from daemon state:', error);
+      }
+    };
+
     // Handle webhook from idle session reporting itself
     const onIdleSessionWebhook = (sessionId: string, sessionMetadata: Metadata) => {
       logger.debugLargeJson(`[DAEMON RUN] Session reported`, sessionMetadata);
@@ -196,6 +242,9 @@ export async function startDaemon(): Promise<void> {
         existingSession.idleSessionMetadataFromLocalWebhook = sessionMetadata;
         logger.debug(`[DAEMON RUN] Updated daemon-spawned session ${sessionId} with metadata`);
 
+        // Persist to disk for resume support
+        persistSessionToDaemonState(sessionId, sessionMetadata);
+
         // Resolve any awaiter for this PID
         const awaiter = pidToAwaiter.get(pid);
         if (awaiter) {
@@ -213,6 +262,9 @@ export async function startDaemon(): Promise<void> {
         };
         pidToTrackedSession.set(pid, trackedSession);
         logger.debug(`[DAEMON RUN] Registered externally-started session ${sessionId}`);
+
+        // Persist to disk for resume support
+        persistSessionToDaemonState(sessionId, sessionMetadata);
       }
     };
 
@@ -640,6 +692,11 @@ export async function startDaemon(): Promise<void> {
 
           pidToTrackedSession.delete(pid);
           logger.debug(`[DAEMON RUN] Removed session ${sessionId} from tracking`);
+
+          // Remove from persisted daemon state
+          if (session.idleSessionId) {
+            removeSessionFromDaemonState(session.idleSessionId);
+          }
           return true;
         }
       }
@@ -651,7 +708,13 @@ export async function startDaemon(): Promise<void> {
     // Handle child process exit
     const onChildExited = (pid: number) => {
       logger.debug(`[DAEMON RUN] Removing exited process PID ${pid} from tracking`);
+      const session = pidToTrackedSession.get(pid);
       pidToTrackedSession.delete(pid);
+
+      // Remove from persisted daemon state
+      if (session?.idleSessionId) {
+        removeSessionFromDaemonState(session.idleSessionId);
+      }
     };
 
     // Generate auth token for daemon control server
@@ -729,7 +792,7 @@ export async function startDaemon(): Promise<void> {
       }
 
       // Prune stale sessions
-      for (const [pid, _] of pidToTrackedSession.entries()) {
+      for (const [pid, session] of pidToTrackedSession.entries()) {
         try {
           // Check if process is still alive (signal 0 doesn't kill, just checks)
           process.kill(pid, 0);
@@ -737,6 +800,11 @@ export async function startDaemon(): Promise<void> {
           // Process is dead, remove from tracking
           logger.debug(`[DAEMON RUN] Removing stale session with PID ${pid} (process no longer exists)`);
           pidToTrackedSession.delete(pid);
+
+          // Remove from persisted daemon state
+          if (session.idleSessionId) {
+            removeSessionFromDaemonState(session.idleSessionId);
+          }
         }
       }
 
@@ -793,6 +861,8 @@ export async function startDaemon(): Promise<void> {
 
       // Heartbeat
       try {
+        // Re-read current state to preserve activeSessions (may have been updated since last heartbeat)
+        const currentState = readDaemonStateSync();
         const updatedState: DaemonLocallyPersistedState = {
           pid: process.pid,
           httpPort: controlPort,
@@ -800,7 +870,8 @@ export async function startDaemon(): Promise<void> {
           startTime: fileState.startTime,
           startedWithCliVersion: packageJson.version,
           lastHeartbeat: new Date().toLocaleString(),
-          daemonLogPath: fileState.daemonLogPath
+          daemonLogPath: fileState.daemonLogPath,
+          activeSessions: currentState?.activeSessions,
         };
         writeDaemonState(updatedState);
         if (process.env.DEBUG) {

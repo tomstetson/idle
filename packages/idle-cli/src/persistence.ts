@@ -275,6 +275,12 @@ export interface DaemonLocallyPersistedState {
   startedWithCliVersion: string;
   lastHeartbeat?: string;
   daemonLogPath?: string;
+  activeSessions?: Array<{
+    idleSessionId: string;
+    claudeSessionId?: string;
+    workingDirectory?: string;
+    startedAt: string;
+  }>;
 }
 
 export async function readSettings(): Promise<Settings> {
@@ -520,6 +526,23 @@ export async function readDaemonState(): Promise<DaemonLocallyPersistedState | n
     return JSON.parse(content) as DaemonLocallyPersistedState;
   } catch (error) {
     // State corrupted somehow :(
+    console.error(`[PERSISTENCE] Daemon state file corrupted: ${configuration.daemonStateFile}`, error);
+    return null;
+  }
+}
+
+/**
+ * Read daemon state from local file (synchronous version)
+ * Used in synchronous contexts like webhook handlers and process exit callbacks
+ */
+export function readDaemonStateSync(): DaemonLocallyPersistedState | null {
+  try {
+    if (!existsSync(configuration.daemonStateFile)) {
+      return null;
+    }
+    const content = readFileSync(configuration.daemonStateFile, 'utf-8');
+    return JSON.parse(content) as DaemonLocallyPersistedState;
+  } catch (error) {
     console.error(`[PERSISTENCE] Daemon state file corrupted: ${configuration.daemonStateFile}`, error);
     return null;
   }
