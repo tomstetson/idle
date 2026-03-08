@@ -305,3 +305,11 @@ See A3 for complete field-level classification.
 | A5-4 | localStorage secrets on web | Web is secondary platform |
 | A8-1 | PGlite unencrypted on disk | Standard for embedded DBs |
 | A9-2 | privacy-kit pre-1.0 | Monitor, pin version |
+
+---
+
+## Accepted Risks & Decisions
+
+**[D1] Cloudflare Bot Fight Mode remains OFF.** The API has its own auth boundary — all data endpoints require bearer tokens with Ed25519-signed challenge-response authentication. Bot Fight Mode is designed for web scraping prevention (CAPTCHAs, JS challenges), not API protection. Enabling it would interfere with legitimate CLI and mobile API traffic without meaningful security benefit. The marginal value for an API-only endpoint behind token auth does not justify the risk of blocking real clients.
+
+**[D3] PostHog analytics present but inactive in current deployment.** The mobile app (`idle-app`) includes a full PostHog integration via `posthog-react-native` with ~20 event types (auth, messaging, paywall, voice, friends). However, analytics only activate when `EXPO_PUBLIC_POSTHOG_API_KEY` is set — this key is commented out in `.env.example` and not configured in production. The tracking module (`packages/idle-app/sources/track/`) uses null-safe optional chaining (`tracking?.capture()`), so all calls are no-ops when the key is absent. Users also have an `analyticsOptOut` setting that controls PostHog's opt-in/opt-out state. No analytics data is currently being collected. The CLI and server packages contain no analytics/tracking code.
