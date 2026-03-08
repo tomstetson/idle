@@ -50,7 +50,7 @@
 - [x] Graceful shutdown — SIGINT/SIGTERM handling, socket cleanup
 - [x] Reconnection logic — exponential backoff, session state recovery
 - [x] CLI error boundaries — catch-all for unhandled promise rejections
-- [ ] Publish idle-coder pre-release to npm (needs npm auth)
+- [x] Publish idle-coder pre-release to npm (idle-coder@0.14.0-0, beta tag)
 
 ### Milestone 3: Permission Handling + Session Resume (Complete)
 - [x] Permission request UI — modal flow with approve/deny/always-allow
