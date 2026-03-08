@@ -45,7 +45,7 @@ const ChatListInternal = React.memo((props: {
     return (
         <FlatList
             data={props.messages}
-            inverted={true}
+            inverted={Platform.OS !== 'web'}
             keyExtractor={keyExtractor}
             maintainVisibleContentPosition={{
                 minIndexForVisible: 0,
