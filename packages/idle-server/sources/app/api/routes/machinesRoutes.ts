@@ -59,12 +59,23 @@ export function machinesRoutes(app: Fastify) {
                     metadataVersion: 1,
                     daemonState: daemonState || null,
                     daemonStateVersion: daemonState ? 1 : 0,
-                    dataEncryptionKey: dataEncryptionKey ? dataEncryptionKey as any : undefined,
                     // Default to offline - in case the user does not start daemon
                     active: false,
                     // lastActiveAt and activeAt defaults to now() in schema
                 }
             });
+
+            // PGlite + Prisma 6 bug: Bytes fields serialize as JSON objects.
+            // Use raw SQL to set dataEncryptionKey after creation.
+            if (dataEncryptionKey) {
+                await db.$executeRawUnsafe(
+                    `UPDATE "Machine" SET "dataEncryptionKey" = decode($1, 'base64') WHERE "id" = $2`,
+                    dataEncryptionKey, id
+                );
+                // Re-fetch to get the updated machine
+                const updated = await db.machine.findUnique({ where: { id } });
+                if (updated) Object.assign(newMachine, updated);
+            }
 
             // Emit both new-machine and update-machine events for backward compatibility
             const updSeq1 = await allocateUserSeq(userId);

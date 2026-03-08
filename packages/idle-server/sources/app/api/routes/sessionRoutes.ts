@@ -266,9 +266,19 @@ export function sessionRoutes(app: Fastify) {
                     accountId: userId,
                     tag: tag,
                     metadata: metadata,
-                    dataEncryptionKey: dataEncryptionKey ? dataEncryptionKey as any : undefined
                 }
             });
+
+            // PGlite + Prisma 6 bug: Bytes fields serialize as JSON objects.
+            // Use raw SQL to set dataEncryptionKey after creation.
+            if (dataEncryptionKey) {
+                await db.$executeRawUnsafe(
+                    `UPDATE "Session" SET "dataEncryptionKey" = decode($1, 'base64') WHERE "id" = $2`,
+                    dataEncryptionKey, session.id
+                );
+                const updated = await db.session.findUnique({ where: { id: session.id } });
+                if (updated) Object.assign(session, updated);
+            }
             log({ module: 'session-create', sessionId: session.id, userId }, `Session created: ${session.id}`);
 
             // Emit new session update
