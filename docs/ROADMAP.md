@@ -7,7 +7,7 @@
 - [x] Deploy server to IONOS VPS (standalone mode, systemd + nginx)
 - [x] Configure DNS (idle-api.northglass.io via Cloudflare)
 - [x] SSL — Cloudflare Origin Certificate + Full SSL mode
-- [x] Cloudflare WAF — IP-locked to home
+- [x] Cloudflare WAF — IP-locked to home (to be removed for alpha)
 - [x] Homelab docs + ADR-013 + MCP vault credentials
 - [x] Complete rebrand — auth URL scheme, server auth service, package authors, deploy manifests
 - [x] PWA support — manifest.json, icons, iOS meta tags, build script
@@ -51,6 +51,7 @@
 - [x] Reconnection logic — exponential backoff, session state recovery
 - [x] CLI error boundaries — catch-all for unhandled promise rejections
 - [x] Publish idle-coder pre-release to npm (idle-coder@0.14.0-0, beta tag)
+- [x] Publish idle-coder stable to npm (idle-coder@0.14.0, latest tag)
 
 ### Milestone 3: Permission Handling + Session Resume (Complete)
 - [x] Permission request UI — modal flow with approve/deny/always-allow
@@ -76,19 +77,19 @@
 ### Milestone 5: Polish & Open Up (In Progress)
 - [x] M5.1: Web scroll fix (completed under M4)
 - [x] M5.2: Session rename (completed under M4)
-- [ ] M5.3: Cloudflare Access email-gate (needs CF dashboard)
+- [x] M5.3: Public access — ADR-006 accepted, security audit passed, IP restriction removal pending (CF dashboard)
 - [x] M5.4: Update documentation (this update)
-- [ ] M5.5: Final TestFlight build (after all features complete)
+- [ ] M5.5: Final TestFlight build (in progress)
 
 ## Backlog (UI/UX Issues)
-- [ ] "Connect Terminal" page: dark text on dark background (heading barely visible)
-- [ ] "connected" indicator shows green before user accepts terminal connection
-- [ ] GitHub connection flow doesn't work
-- [ ] Send button active with no session connected — should show "not connected" message
-- [ ] PWA auth doesn't persist across close/reopen (iOS standalone localStorage isolation)
-- [ ] Investigate Cloudflare WAF: Bot Fight Mode blocks CLI requests (had to disable globally)
-- [ ] Verify analytics/tracking functions actually send data
-- [ ] Set up monitoring dashboard — Cloudflare analytics + app-level usage metrics
+- [x] "Connect Terminal" page: dark text on dark background — verified uses theme tokens (C1)
+- [x] "connected" indicator shows green before user accepts terminal connection — fixed (C3)
+- [x] GitHub connection flow doesn't work — UI removed, deferred to Phase 4 (C4)
+- [x] Send button active with no session connected — disabled when offline (C2)
+- [x] PWA auth doesn't persist across close/reopen — documented in ADR-007 (D2)
+- [x] Investigate Cloudflare WAF: Bot Fight Mode — documented as accepted risk (D1)
+- [x] Verify analytics/tracking functions — PostHog present but inactive, no API key (D3)
+- [x] Set up monitoring dashboard — documented health endpoints + Prometheus (D4)
 - [ ] Replace logo/icon assets with custom Idle designs (placeholder currently)
 - [ ] Merge upstream changes (periodic sync with slopus/happy)
 - [ ] Encrypt session tags (server currently sees session names)
