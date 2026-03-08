@@ -1,6 +1,7 @@
 import { sessionAliveEventsCounter, websocketEventsCounter } from "@/app/monitoring/metrics2";
 import { activityCache } from "@/app/presence/sessionCache";
 import { buildNewMessageUpdate, buildSessionActivityEphemeral, buildUpdateSessionUpdate, ClientConnection, eventRouter } from "@/app/events/eventRouter";
+import { pushSendToAccount } from "@/app/push/pushSend";
 import { db } from "@/storage/db";
 import { allocateSessionSeq, allocateUserSeq } from "@/storage/seq";
 import { AsyncLock } from "@/utils/lock";
@@ -238,6 +239,19 @@ export function sessionUpdateHandler(userId: string, socket: Socket, connection:
                     recipientFilter: { type: 'all-interested-in-session', sessionId: sid },
                     skipSenderConnection: connection
                 });
+
+                // Send push notification if user has no active user-scoped connections
+                const connections = eventRouter.getConnections(userId);
+                const hasUserScopedConnection = connections ? [...connections].some(
+                    c => c.connectionType === 'user-scoped'
+                ) : false;
+
+                if (!hasUserScopedConnection) {
+                    // Fire and forget — don't block message processing
+                    pushSendToAccount(userId, 'New message', 'You have a new message in your session', {
+                        sessionId: sid,
+                    }).catch(() => {});
+                }
             } catch (error) {
                 log({ module: 'websocket', level: 'error' }, `Error in message handler: ${error}`);
             }
