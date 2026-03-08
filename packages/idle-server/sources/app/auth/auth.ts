@@ -62,7 +62,7 @@ class AuthModule {
     
     private isTokenExpired(extras?: any): boolean {
         if (!extras?.expiresAt) {
-            return false; // Backward compat: old tokens without expiresAt are valid
+            return true; // Legacy tokens without expiresAt are treated as expired
         }
         return Date.now() > extras.expiresAt;
     }
