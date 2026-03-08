@@ -32,7 +32,7 @@ const stylesheet = StyleSheet.create((theme) => ({
         fontSize: 18,
         fontWeight: '600',
         color: theme.colors.text,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     stepIndicator: {
         flexDirection: 'row',
@@ -65,7 +65,7 @@ const stylesheet = StyleSheet.create((theme) => ({
         fontWeight: '600',
         color: theme.colors.text,
         marginBottom: 8,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     stepDescription: {
         fontSize: 16,
@@ -101,7 +101,7 @@ const stylesheet = StyleSheet.create((theme) => ({
     buttonText: {
         fontSize: 16,
         fontWeight: '600',
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     buttonTextPrimary: {
         color: '#FFFFFF',
@@ -152,7 +152,7 @@ const stylesheet = StyleSheet.create((theme) => ({
         fontSize: 16,
         fontWeight: '600',
         color: theme.colors.text,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     agentDescription: {
         fontSize: 14,
@@ -213,7 +213,7 @@ function ProfileSelectionItem({ profile, isSelected, onSelect, onUseAsIs, onEdit
                             fontWeight: '600',
                             color: theme.colors.text,
                             marginBottom: 4,
-                            ...Typography.default('semiBold'),
+                            ...Typography.default('medium'),
                         }}>
                             {profile.name}
                         </Text>
@@ -276,7 +276,7 @@ function ProfileSelectionItem({ profile, isSelected, onSelect, onUseAsIs, onEdit
                                 fontSize: 14,
                                 fontWeight: '600',
                                 marginLeft: 6,
-                                ...Typography.default('semiBold'),
+                                ...Typography.default('medium'),
                             }}>
                                 Use As-Is
                             </Text>
@@ -303,7 +303,7 @@ function ProfileSelectionItem({ profile, isSelected, onSelect, onUseAsIs, onEdit
                                 fontSize: 14,
                                 fontWeight: '600',
                                 marginLeft: 6,
-                                ...Typography.default('semiBold'),
+                                ...Typography.default('medium'),
                             }}>
                                 Edit
                             </Text>
@@ -337,7 +337,7 @@ function ProfileSelectionItem({ profile, isSelected, onSelect, onUseAsIs, onEdit
                                     fontSize: 12,
                                     fontWeight: '600',
                                     marginLeft: 4,
-                                    ...Typography.default('semiBold'),
+                                    ...Typography.default('medium'),
                                 }}>
                                     Duplicate
                                 </Text>
@@ -364,7 +364,7 @@ function ProfileSelectionItem({ profile, isSelected, onSelect, onUseAsIs, onEdit
                                     fontSize: 12,
                                     fontWeight: '600',
                                     marginLeft: 4,
-                                    ...Typography.default('semiBold'),
+                                    ...Typography.default('medium'),
                                 }}>
                                     Delete
                                 </Text>
@@ -422,7 +422,7 @@ function ManualConfigurationItem({ isSelected, onSelect, onUseCliVars, onConfigu
                             fontWeight: '600',
                             color: theme.colors.text,
                             marginBottom: 4,
-                            ...Typography.default('semiBold'),
+                            ...Typography.default('medium'),
                         }}>
                             Manual Configuration
                         </Text>
@@ -471,7 +471,7 @@ function ManualConfigurationItem({ isSelected, onSelect, onUseCliVars, onConfigu
                             fontSize: 14,
                             fontWeight: '600',
                             marginLeft: 6,
-                            ...Typography.default('semiBold'),
+                            ...Typography.default('medium'),
                         }}>
                             Use CLI Vars
                         </Text>
@@ -498,7 +498,7 @@ function ManualConfigurationItem({ isSelected, onSelect, onUseCliVars, onConfigu
                             fontSize: 14,
                             fontWeight: '600',
                             marginLeft: 6,
-                            ...Typography.default('semiBold'),
+                            ...Typography.default('medium'),
                         }}>
                             Configure
                         </Text>
@@ -1221,7 +1221,7 @@ export function NewSessionWizard({ onComplete, onCancel, initialPrompt = '' }: N
                                         fontWeight: '600',
                                         color: theme.colors.text,
                                         marginBottom: 4,
-                                        ...Typography.default('semiBold'),
+                                        ...Typography.default('medium'),
                                     }}>
                                         Create New Profile
                                     </Text>
@@ -1307,7 +1307,7 @@ export function NewSessionWizard({ onComplete, onCancel, initialPrompt = '' }: N
                                         fontWeight: '600',
                                         color: theme.colors.text,
                                         marginBottom: 8,
-                                        ...Typography.default('semiBold'),
+                                        ...Typography.default('medium'),
                                     }}>
                                         {field.label}
                                     </Text>

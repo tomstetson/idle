@@ -99,7 +99,7 @@ const stylesheet = StyleSheet.create((theme, runtime) => ({
     sessionTitle: {
         fontSize: 15,
         fontWeight: '500',
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     sessionTitleConnected: {
         color: theme.colors.text,
@@ -182,7 +182,7 @@ const stylesheet = StyleSheet.create((theme, runtime) => ({
         fontSize: 14,
         fontWeight: '500',
         color: theme.colors.text,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     newSessionButtonTextDisabled: {
         color: theme.colors.textSecondary,
@@ -213,7 +213,7 @@ const stylesheet = StyleSheet.create((theme, runtime) => ({
         fontSize: 12,
         color: '#FFFFFF',
         textAlign: 'center',
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
 }));
 

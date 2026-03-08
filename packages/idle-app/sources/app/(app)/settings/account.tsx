@@ -248,7 +248,7 @@ export default React.memo(() => {
                                         color: theme.colors.textSecondary,
                                         letterSpacing: 0.5,
                                         textTransform: 'uppercase',
-                                        ...Typography.default('semiBold')
+                                        ...Typography.default('medium')
                                     }}>
                                         {t('settingsAccount.secretKeyLabel')}
                                     </Text>

@@ -179,7 +179,7 @@ function ProfileManager({ onProfileSelect, selectedProfileId }: ProfileManagerPr
                         fontWeight: 'bold',
                         color: theme.colors.text,
                         marginVertical: 16,
-                        ...Typography.default('semiBold')
+                        ...Typography.default('medium')
                     }}>
                         {t('profiles.title')}
                     </Text>
@@ -214,7 +214,7 @@ function ProfileManager({ onProfileSelect, selectedProfileId }: ProfileManagerPr
                                 fontSize: 16,
                                 fontWeight: '600',
                                 color: theme.colors.text,
-                                ...Typography.default('semiBold')
+                                ...Typography.default('medium')
                             }}>
                                 {t('profiles.noProfile')}
                             </Text>
@@ -268,7 +268,7 @@ function ProfileManager({ onProfileSelect, selectedProfileId }: ProfileManagerPr
                                         fontSize: 16,
                                         fontWeight: '600',
                                         color: theme.colors.text,
-                                        ...Typography.default('semiBold')
+                                        ...Typography.default('medium')
                                     }}>
                                         {profile.name}
                                     </Text>
@@ -329,7 +329,7 @@ function ProfileManager({ onProfileSelect, selectedProfileId }: ProfileManagerPr
                                     fontSize: 16,
                                     fontWeight: '600',
                                     color: theme.colors.text,
-                                    ...Typography.default('semiBold')
+                                    ...Typography.default('medium')
                                 }}>
                                     {profile.name}
                                 </Text>
@@ -384,7 +384,7 @@ function ProfileManager({ onProfileSelect, selectedProfileId }: ProfileManagerPr
                             fontWeight: '600',
                             color: theme.colors.button.secondary.tint,
                             marginLeft: 8,
-                            ...Typography.default('semiBold')
+                            ...Typography.default('medium')
                         }}>
                             {t('profiles.addProfile')}
                         </Text>

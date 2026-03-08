@@ -58,7 +58,7 @@ const stylesheet = StyleSheet.create((theme, runtime) => ({
         fontSize: 17,
         fontWeight: '600',
         color: theme.colors.header.tint,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     statusContainer: {
         flexDirection: 'row',
@@ -101,7 +101,7 @@ const stylesheet = StyleSheet.create((theme, runtime) => ({
     badgeText: {
         color: '#FFFFFF',
         fontSize: 10,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     // Status colors
     statusConnected: {

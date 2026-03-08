@@ -108,7 +108,7 @@ export function ProfileEditForm({
                         fontWeight: '600',
                         color: theme.colors.text,
                         marginBottom: 8,
-                        ...Typography.default('semiBold')
+                        ...Typography.default('medium')
                     }}>
                         {t('profiles.profileName')}
                     </Text>
@@ -144,7 +144,7 @@ export function ProfileEditForm({
                                     fontSize: 15,
                                     fontWeight: '600',
                                     color: theme.colors.text,
-                                    ...Typography.default('semiBold')
+                                    ...Typography.default('medium')
                                 }}>
                                     Setup Instructions
                                 </Text>
@@ -191,7 +191,7 @@ export function ProfileEditForm({
                                         color: theme.colors.button.primary.tint,
                                         fontWeight: '600',
                                         flex: 1,
-                                        ...Typography.default('semiBold')
+                                        ...Typography.default('medium')
                                     }}>
                                         View Official Setup Guide
                                     </Text>
@@ -207,7 +207,7 @@ export function ProfileEditForm({
                         fontWeight: '600',
                         color: theme.colors.text,
                         marginBottom: 12,
-                        ...Typography.default('semiBold')
+                        ...Typography.default('medium')
                     }}>
                         Default Session Type
                     </Text>
@@ -224,7 +224,7 @@ export function ProfileEditForm({
                         fontWeight: '600',
                         color: theme.colors.text,
                         marginBottom: 12,
-                        ...Typography.default('semiBold')
+                        ...Typography.default('medium')
                     }}>
                         Default Permission Mode
                     </Text>
@@ -301,7 +301,7 @@ export function ProfileEditForm({
                             fontSize: 14,
                             fontWeight: '600',
                             color: theme.colors.text,
-                            ...Typography.default('semiBold')
+                            ...Typography.default('medium')
                         }}>
                             Spawn Sessions in Tmux
                         </Text>
@@ -321,7 +321,7 @@ export function ProfileEditForm({
                         fontWeight: '600',
                         color: theme.colors.text,
                         marginBottom: 8,
-                        ...Typography.default('semiBold')
+                        ...Typography.default('medium')
                     }}>
                         Tmux Session Name ({t('common.optional')})
                     </Text>
@@ -357,7 +357,7 @@ export function ProfileEditForm({
                         fontWeight: '600',
                         color: theme.colors.text,
                         marginBottom: 8,
-                        ...Typography.default('semiBold')
+                        ...Typography.default('medium')
                     }}>
                         Tmux Temp Directory ({t('common.optional')})
                     </Text>
@@ -423,7 +423,7 @@ export function ProfileEditForm({
                                 fontSize: 16,
                                 fontWeight: '600',
                                 color: theme.colors.text,
-                                ...Typography.default('semiBold')
+                                ...Typography.default('medium')
                             }}>
                                 Startup Bash Script
                             </Text>
@@ -509,7 +509,7 @@ export function ProfileEditForm({
                                 fontSize: 16,
                                 fontWeight: '600',
                                 color: theme.colors.button.secondary.tint,
-                                ...Typography.default('semiBold')
+                                ...Typography.default('medium')
                             }}>
                                 {t('common.cancel')}
                             </Text>
@@ -530,7 +530,7 @@ export function ProfileEditForm({
                                     fontSize: 16,
                                     fontWeight: '600',
                                     color: theme.colors.button.primary.tint,
-                                    ...Typography.default('semiBold')
+                                    ...Typography.default('medium')
                                 }}>
                                     {t('common.saveAs')}
                                 </Text>
@@ -551,7 +551,7 @@ export function ProfileEditForm({
                                     fontSize: 16,
                                     fontWeight: '600',
                                     color: theme.colors.button.primary.tint,
-                                    ...Typography.default('semiBold')
+                                    ...Typography.default('medium')
                                 }}>
                                     {t('common.save')}
                                 </Text>

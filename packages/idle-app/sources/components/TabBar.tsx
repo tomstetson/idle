@@ -47,7 +47,7 @@ const styles = StyleSheet.create((theme) => ({
     },
     labelActive: {
         color: theme.colors.text,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     labelInactive: {
         color: theme.colors.textSecondary,
@@ -67,7 +67,7 @@ const styles = StyleSheet.create((theme) => ({
     badgeText: {
         color: '#FFFFFF',
         fontSize: 10,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     indicatorDot: {
         position: 'absolute',

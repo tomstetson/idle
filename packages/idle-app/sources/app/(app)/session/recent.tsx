@@ -41,7 +41,7 @@ const styles = StyleSheet.create((theme) => ({
         paddingHorizontal: 24,
     },
     dateHeaderText: {
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
         color: theme.colors.groupped.sectionTitle,
         fontSize: 14,
         fontWeight: '600',
@@ -78,7 +78,7 @@ const styles = StyleSheet.create((theme) => ({
         fontWeight: '500',
         color: theme.colors.text,
         marginBottom: 2,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     sessionSubtitle: {
         fontSize: 13,

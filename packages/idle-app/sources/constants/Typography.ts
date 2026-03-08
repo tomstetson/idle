@@ -2,54 +2,49 @@ import { Platform } from 'react-native';
 
 /**
  * Typography system for Idle Coder app
- * 
- * Default typography: IBM Plex Sans
- * Monospace typography: IBM Plex Mono  
- * Logo typography: Bricolage Grotesque (specific use only)
- * 
+ *
+ * Default typography: Inter
+ * Monospace typography: JetBrains Mono
+ * Heading typography: Space Grotesk (headings and branding)
+ *
  * Usage Examples:
- * 
- * // Default typography (IBM Plex Sans)
+ *
+ * // Default typography (Inter)
  * <Text style={{ fontSize: 16, ...Typography.default() }}>Regular text</Text>
- * <Text style={{ fontSize: 16, ...Typography.default('italic') }}>Italic text</Text>
- * <Text style={{ fontSize: 16, ...Typography.default('semiBold') }}>Semi-bold text</Text>
- * 
- * // Monospace typography (IBM Plex Mono)
+ * <Text style={{ fontSize: 16, ...Typography.default('medium') }}>Medium text</Text>
+ *
+ * // Monospace typography (JetBrains Mono)
  * <Text style={{ fontSize: 14, ...Typography.mono() }}>Code text</Text>
- * <Text style={{ fontSize: 14, ...Typography.mono('italic') }}>Italic code</Text>
- * <Text style={{ fontSize: 14, ...Typography.mono('semiBold') }}>Bold code</Text>
- * 
- * // Logo typography (Bricolage Grotesque - use sparingly!)
- * // Note: Don't add fontWeight as this font is already bold
- * <Text style={{ fontSize: 28, ...Typography.logo() }}>Logo Text</Text>
- * 
+ * <Text style={{ fontSize: 14, ...Typography.mono('medium') }}>Medium code</Text>
+ *
+ * // Heading typography (Space Grotesk)
+ * <Text style={{ fontSize: 28, ...Typography.heading() }}>Heading Text</Text>
+ *
  * // Alternative direct usage
- * <Text style={{ fontSize: 16, fontFamily: getDefaultFont('semiBold') }}>Direct usage</Text>
+ * <Text style={{ fontSize: 16, fontFamily: getDefaultFont('medium') }}>Direct usage</Text>
  * <Text style={{ fontSize: 14, fontFamily: getMonoFont() }}>Direct mono usage</Text>
- * <Text style={{ fontSize: 28, fontFamily: getLogoFont() }}>Direct logo usage</Text>
+ * <Text style={{ fontSize: 28, fontFamily: getHeadingFont() }}>Direct heading usage</Text>
  */
 
 // Font family constants
 export const FontFamilies = {
-  // IBM Plex Sans (default typography)
+  // Inter (default typography)
   default: {
-    regular: 'IBMPlexSans-Regular',
-    italic: 'IBMPlexSans-Italic', 
-    semiBold: 'IBMPlexSans-SemiBold',
+    regular: 'Inter-Regular',
+    medium: 'Inter-Medium',
   },
-  
-  // IBM Plex Mono (default monospace)
+
+  // JetBrains Mono (default monospace)
   mono: {
-    regular: 'IBMPlexMono-Regular',
-    italic: 'IBMPlexMono-Italic',
-    semiBold: 'IBMPlexMono-SemiBold',
+    regular: 'JetBrainsMono-Regular',
+    medium: 'JetBrainsMono-Medium',
   },
-  
-  // Bricolage Grotesque (logo/special use only)
-  logo: {
-    bold: 'BricolageGrotesque-Bold',
+
+  // Space Grotesk (headings and branding)
+  heading: {
+    bold: 'SpaceGrotesk-Bold',
   },
-  
+
   // Legacy fonts (keep for backward compatibility)
   legacy: {
     spaceMono: 'SpaceMono',
@@ -58,52 +53,52 @@ export const FontFamilies = {
 };
 
 // Helper functions for easy access to font families
-export const getDefaultFont = (weight: 'regular' | 'italic' | 'semiBold' = 'regular') => {
+export const getDefaultFont = (weight: 'regular' | 'medium' = 'regular') => {
   return FontFamilies.default[weight];
 };
 
-export const getMonoFont = (weight: 'regular' | 'italic' | 'semiBold' = 'regular') => {
+export const getMonoFont = (weight: 'regular' | 'medium' = 'regular') => {
   return FontFamilies.mono[weight];
 };
 
-export const getLogoFont = () => {
-  return FontFamilies.logo.bold;
+export const getHeadingFont = () => {
+  return FontFamilies.heading.bold;
 };
 
 // Font weight mappings for the font families
 export const FontWeights = {
   regular: '400',
-  semiBold: '600', 
+  medium: '500',
   bold: '700',
 } as const;
 
 // Style utilities for easy inline usage
 export const Typography = {
-  // Default font styles (IBM Plex Sans)
-  default: (weight: 'regular' | 'italic' | 'semiBold' = 'regular') => ({
+  // Default font styles (Inter)
+  default: (weight: 'regular' | 'medium' = 'regular') => ({
     fontFamily: getDefaultFont(weight),
   }),
-  
-  // Monospace font styles (IBM Plex Mono)
-  mono: (weight: 'regular' | 'italic' | 'semiBold' = 'regular') => ({
+
+  // Monospace font styles (JetBrains Mono)
+  mono: (weight: 'regular' | 'medium' = 'regular') => ({
     fontFamily: getMonoFont(weight),
   }),
-  
-  // Logo font style (Bricolage Grotesque)
-  logo: () => ({
-    fontFamily: getLogoFont(),
+
+  // Heading font style (Space Grotesk)
+  heading: () => ({
+    fontFamily: getHeadingFont(),
   }),
-  
+
   // Header text style
   header: () => ({
-    fontFamily: getDefaultFont('semiBold'),
+    fontFamily: getDefaultFont('medium'),
   }),
-  
+
   // Body text style
   body: () => ({
     fontFamily: getDefaultFont('regular'),
   }),
-  
+
   // Legacy font styles (for backward compatibility)
   legacy: {
     spaceMono: () => ({
@@ -113,4 +108,4 @@ export const Typography = {
       fontFamily: FontFamilies.legacy.systemMono,
     }),
   }
-}; 
+};

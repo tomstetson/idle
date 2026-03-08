@@ -63,7 +63,7 @@ export const ChatHeaderView: React.FC<ChatHeaderViewProps> = ({
                             styles.title,
                             {
                                 color: theme.colors.header.tint,
-                                ...Typography.default('semiBold')
+                                ...Typography.default('medium')
                             }
                         ]}
                     >

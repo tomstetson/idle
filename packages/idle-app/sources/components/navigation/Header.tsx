@@ -128,7 +128,7 @@ const NavigationHeaderComponent: React.FC<NativeStackHeaderProps> = React.memo((
             title = (
                 <Text style={[
                     { fontSize: 17, fontWeight: '600', textAlign: Platform.OS === 'ios' ? 'center' : 'left', color: options.headerTintColor || '#000' },
-                    Typography.default('semiBold'),
+                    Typography.default('medium'),
                     options.headerTitleStyle
                 ]}>
                     {options.headerTitle}
@@ -142,7 +142,7 @@ const NavigationHeaderComponent: React.FC<NativeStackHeaderProps> = React.memo((
         title = (
             <Text style={[
                 { fontSize: 17, fontWeight: '600', textAlign: Platform.OS === 'ios' ? 'center' : 'left', color: options.headerTintColor || '#000' },
-                Typography.default('semiBold'),
+                Typography.default('medium'),
                 options.headerTitleStyle
             ]}>
                 {options.title}
@@ -238,7 +238,7 @@ const stylesheet = StyleSheet.create((theme, runtime) => ({
         fontWeight: '600',
         textAlign: 'center',
         color: theme.colors.header.tint,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     subtitle: {
         fontSize: 13,

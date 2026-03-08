@@ -33,7 +33,7 @@ const styles = StyleSheet.create((theme) => ({
     },
     emptyTitle: {
         fontSize: 20,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
         color: theme.colors.text,
         marginBottom: 8,
         textAlign: 'center',
@@ -47,7 +47,7 @@ const styles = StyleSheet.create((theme) => ({
     },
     sectionHeader: {
         fontSize: 14,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
         color: theme.colors.textSecondary,
         paddingHorizontal: 16,
         paddingTop: 24,
@@ -67,7 +67,7 @@ function HeaderTitleTablet() {
             fontSize: 17,
             color: theme.colors.header.tint,
             fontWeight: '600',
-            ...Typography.default('semiBold'),
+            ...Typography.default('medium'),
         }}>
             {t('tabs.inbox')}
         </Text>

@@ -53,7 +53,7 @@ const stylesheet = StyleSheet.create((theme) => ({
         fontWeight: '600',
         color: theme.colors.groupped.sectionTitle,
         letterSpacing: 0.1,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     projectGroup: {
         paddingHorizontal: 16,
@@ -64,7 +64,7 @@ const stylesheet = StyleSheet.create((theme) => ({
         fontSize: 13,
         fontWeight: '600',
         color: theme.colors.text,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     projectGroupSubtitle: {
         fontSize: 11,
@@ -94,7 +94,7 @@ const stylesheet = StyleSheet.create((theme) => ({
         color: theme.colors.groupped.sectionTitle,
         letterSpacing: 0.1,
         flex: 1,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     machineGroupCount: {
         fontSize: 12,
@@ -154,7 +154,7 @@ const stylesheet = StyleSheet.create((theme) => ({
         fontSize: 15,
         fontWeight: '500',
         flex: 1,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     sessionTitleConnected: {
         color: theme.colors.text,
@@ -219,7 +219,7 @@ const stylesheet = StyleSheet.create((theme) => ({
         fontSize: 12,
         color: '#FFFFFF',
         textAlign: 'center',
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
 }));
 

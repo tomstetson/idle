@@ -22,7 +22,7 @@ const stylesheet = StyleSheet.create((theme) => ({
         marginBottom: 8,
         marginLeft: 16,
         marginTop: 12,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     optionContainer: {
         flexDirection: 'row',

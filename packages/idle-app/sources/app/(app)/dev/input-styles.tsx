@@ -1875,7 +1875,7 @@ export default function InputStylesDemo() {
                     fontWeight: 'bold',
                     marginBottom: 8,
                     paddingHorizontal: 16,
-                    ...Typography.default('semiBold'),
+                    ...Typography.default('medium'),
                 }}>
                     Input Style Variants
                 </Text>
@@ -1918,7 +1918,7 @@ export default function InputStylesDemo() {
                                     fontSize: 18,
                                     fontWeight: '600',
                                     color: '#000',
-                                    ...Typography.default('semiBold'),
+                                    ...Typography.default('medium'),
                                 }}>
                                     {style.name}
                                 </Text>

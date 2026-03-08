@@ -33,7 +33,7 @@ export default function RootLayout() {
                 headerTintColor: theme.colors.header.tint,
                 headerTitleStyle: {
                     color: theme.colors.header.tint,
-                    ...Typography.default('semiBold'),
+                    ...Typography.default('medium'),
                 },
 
             }}

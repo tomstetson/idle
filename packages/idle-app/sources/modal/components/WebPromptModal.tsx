@@ -122,7 +122,7 @@ export function WebPromptModal({ config, onClose, onConfirm }: WebPromptModalPro
         <BaseModal visible={true} onClose={handleCancel} closeOnBackdrop={false}>
             <View style={styles.container}>
                 <View style={styles.content}>
-                    <Text style={[styles.title, Typography.default('semiBold')]}>
+                    <Text style={[styles.title, Typography.default('medium')]}>
                         {config.title}
                     </Text>
                     {config.message && (
@@ -173,7 +173,7 @@ export function WebPromptModal({ config, onClose, onConfirm }: WebPromptModalPro
                     >
                         <Text style={[
                             styles.buttonText,
-                            Typography.default('semiBold')
+                            Typography.default('medium')
                         ]}>
                             {config.confirmText || 'OK'}
                         </Text>

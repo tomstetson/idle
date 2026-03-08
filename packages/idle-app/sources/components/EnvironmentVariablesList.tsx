@@ -107,7 +107,7 @@ export function EnvironmentVariablesList({
                 fontWeight: '600',
                 color: theme.colors.text,
                 marginBottom: 12,
-                ...Typography.default('semiBold')
+                ...Typography.default('medium')
             }}>
                 Environment Variables
             </Text>
@@ -131,7 +131,7 @@ export function EnvironmentVariablesList({
                     fontSize: 13,
                     fontWeight: '600',
                     color: theme.colors.button.primary.tint,
-                    ...Typography.default('semiBold')
+                    ...Typography.default('medium')
                 }}>
                     Add Variable
                 </Text>
@@ -222,7 +222,7 @@ export function EnvironmentVariablesList({
                                 fontSize: 14,
                                 fontWeight: '600',
                                 color: theme.colors.button.primary.tint,
-                                ...Typography.default('semiBold')
+                                ...Typography.default('medium')
                             }}>
                                 Add
                             </Text>

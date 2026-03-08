@@ -76,7 +76,7 @@ export default function LogsScreen() {
             borderBottomColor: '#F0F0F0'
         }}>
             <Text style={{
-                fontFamily: 'IBMPlexMono-Regular',
+                fontFamily: 'JetBrainsMono-Regular',
                 fontSize: 12,
                 color: '#333',
                 lineHeight: 16

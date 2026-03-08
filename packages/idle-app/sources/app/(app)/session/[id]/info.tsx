@@ -249,7 +249,7 @@ function SessionInfoContent({ session }: { session: Session }) {
                             marginTop: 12,
                             textAlign: 'center',
                             color: theme.colors.text,
-                            ...Typography.default('semiBold')
+                            ...Typography.default('medium')
                         }}>
                             {sessionName}
                         </Text>
@@ -573,7 +573,7 @@ export default React.memo(() => {
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <Ionicons name="hourglass-outline" size={48} color={theme.colors.textSecondary} />
-                <Text style={{ color: theme.colors.textSecondary, fontSize: 17, marginTop: 16, ...Typography.default('semiBold') }}>{t('common.loading')}</Text>
+                <Text style={{ color: theme.colors.textSecondary, fontSize: 17, marginTop: 16, ...Typography.default('medium') }}>{t('common.loading')}</Text>
             </View>
         );
     }
@@ -583,7 +583,7 @@ export default React.memo(() => {
         return (
             <View style={{ flex: 1, alignItems: 'center', justifyContent: 'center' }}>
                 <Ionicons name="trash-outline" size={48} color={theme.colors.textSecondary} />
-                <Text style={{ color: theme.colors.text, fontSize: 20, marginTop: 16, ...Typography.default('semiBold') }}>{t('errors.sessionDeleted')}</Text>
+                <Text style={{ color: theme.colors.text, fontSize: 20, marginTop: 16, ...Typography.default('medium') }}>{t('errors.sessionDeleted')}</Text>
                 <Text style={{ color: theme.colors.textSecondary, fontSize: 15, marginTop: 8, textAlign: 'center', paddingHorizontal: 32, ...Typography.default() }}>{t('errors.sessionDeletedDescription')}</Text>
             </View>
         );

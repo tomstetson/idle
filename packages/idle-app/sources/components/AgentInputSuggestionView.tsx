@@ -71,7 +71,7 @@ const styles = StyleSheet.create((theme) => ({
         fontSize: 14,
         color: theme.colors.text,
         fontWeight: '600',
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     descriptionText: {
         flex: 1,

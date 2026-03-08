@@ -86,7 +86,7 @@ export function CommandPaletteResults({
 
                 return (
                     <View key={category.id}>
-                        <Text style={[styles.categoryTitle, Typography.default('semiBold')]}>
+                        <Text style={[styles.categoryTitle, Typography.default('medium')]}>
                             {category.title}
                         </Text>
                         {categoryCommands}

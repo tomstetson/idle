@@ -50,7 +50,7 @@ const stylesheet = StyleSheet.create((theme) => ({
         fontSize: 16,
         color: theme.colors.button.primary.tint,
         fontWeight: '600',
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
 }));
 

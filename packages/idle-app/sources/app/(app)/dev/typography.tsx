@@ -24,57 +24,47 @@ export default function TypographyScreen() {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.content}>
-                {/* IBM Plex Sans (Default) */}
+                {/* Inter (Default) */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>IBM Plex Sans (Default)</Text>
-                    
-                    <TextSample 
-                        title="Regular (400)" 
+                    <Text style={styles.sectionTitle}>Inter (Default)</Text>
+
+                    <TextSample
+                        title="Regular (400)"
                         style={Typography.default()}
                     />
-                    
-                    <TextSample 
-                        title="Italic" 
-                        style={Typography.default('italic')}
-                    />
-                    
-                    <TextSample 
-                        title="Semi-Bold (600)" 
-                        style={Typography.default('semiBold')}
+
+                    <TextSample
+                        title="Medium (500)"
+                        style={Typography.default('medium')}
                     />
                 </View>
 
-                {/* IBM Plex Mono */}
+                {/* JetBrains Mono */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>IBM Plex Mono</Text>
-                    
-                    <CodeSample 
-                        title="Regular (400)" 
+                    <Text style={styles.sectionTitle}>JetBrains Mono</Text>
+
+                    <CodeSample
+                        title="Regular (400)"
                         style={Typography.mono()}
                     />
-                    
-                    <CodeSample 
-                        title="Italic" 
-                        style={Typography.mono('italic')}
-                    />
-                    
-                    <CodeSample 
-                        title="Semi-Bold (600)" 
-                        style={Typography.mono('semiBold')}
+
+                    <CodeSample
+                        title="Medium (500)"
+                        style={Typography.mono('medium')}
                     />
                 </View>
 
-                {/* Bricolage Grotesque (Logo) */}
+                {/* Space Grotesk (Heading) */}
                 <View style={styles.section}>
-                    <Text style={styles.sectionTitle}>Bricolage Grotesque (Logo)</Text>
-                    
-                    <TextSample 
-                        title="Bold (700) - Logo Only" 
-                        style={{ fontSize: 28, ...Typography.logo() }}
+                    <Text style={styles.sectionTitle}>Space Grotesk (Heading)</Text>
+
+                    <TextSample
+                        title="Bold (700) - Headings & Branding"
+                        style={{ fontSize: 28, ...Typography.heading() }}
                         text="Idle"
                     />
                     <Text style={styles.note}>
-                        Note: This font should only be used for the app logo and branding
+                        Note: This font is used for headings and branding
                     </Text>
                 </View>
 
@@ -103,8 +93,8 @@ export default function TypographyScreen() {
                         />
                         <Item 
                             title="With Custom Title Style"
-                            titleStyle={{ ...Typography.default('semiBold') }}
-                            subtitle="Using semi-bold for title"
+                            titleStyle={{ ...Typography.default('medium') }}
+                            subtitle="Using medium for title"
                         />
                         <Item 
                             title="Monospace Detail"
@@ -120,15 +110,15 @@ export default function TypographyScreen() {
                     
                     <View style={styles.codeBlock}>
                         <Text style={{ ...Typography.mono(), fontSize: 12 }}>
-{`// Default typography (IBM Plex Sans)
+{`// Default typography (Inter)
 <Text style={{ fontSize: 16, ...Typography.default() }}>Regular</Text>
-<Text style={{ fontSize: 16, ...Typography.default('semiBold') }}>Bold</Text>
+<Text style={{ fontSize: 16, ...Typography.default('medium') }}>Medium</Text>
 
-// Monospace typography (IBM Plex Mono)
+// Monospace typography (JetBrains Mono)
 <Text style={{ fontSize: 14, ...Typography.mono() }}>Code</Text>
 
-// Logo typography (Bricolage Grotesque)
-<Text style={{ fontSize: 28, ...Typography.logo() }}>Logo</Text>`}
+// Heading typography (Space Grotesk)
+<Text style={{ fontSize: 28, ...Typography.heading() }}>Heading</Text>`}
                         </Text>
                     </View>
                 </View>

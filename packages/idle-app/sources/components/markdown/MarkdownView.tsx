@@ -323,7 +323,7 @@ const style = StyleSheet.create((theme) => ({
     // Headers
 
     header: {
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
         color: theme.colors.text,
     },
     header1: {
@@ -537,7 +537,7 @@ const style = StyleSheet.create((theme) => ({
         backgroundColor: theme.colors.surfaceHigh,
     },
     tableHeaderText: {
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
         color: theme.colors.text,
         fontSize: 16,
         lineHeight: 24,

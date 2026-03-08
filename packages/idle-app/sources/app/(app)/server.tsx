@@ -28,7 +28,7 @@ const stylesheet = StyleSheet.create((theme) => ({
         alignSelf: 'center',
     },
     labelText: {
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
         fontSize: 12,
         color: theme.colors.textSecondary,
         textTransform: 'uppercase',

@@ -31,7 +31,7 @@ const stylesheet = StyleSheet.create((theme) => ({
         borderRadius: 9999,
     },
     text: {
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
         fontWeight: '600',
         includeFontPadding: false,
     },

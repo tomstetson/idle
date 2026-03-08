@@ -7,7 +7,7 @@ const ColorSwatch = ({ name, color, textColor = '#000' }: { name: string; color:
         <View 
             style={[styles.swatch, { backgroundColor: color }]}
         >
-            <Text style={{ color: textColor, ...Typography.default('semiBold') }}>{name}</Text>
+            <Text style={{ color: textColor, ...Typography.default('medium') }}>{name}</Text>
             <Text style={{ color: textColor, ...Typography.mono(), fontSize: 12 }}>{color}</Text>
         </View>
     </View>
@@ -18,7 +18,7 @@ const ColorPair = ({ name, bg, text }: { name: string; bg: string; text: string 
         <View 
             style={[styles.swatch, { backgroundColor: bg }]}
         >
-            <Text style={{ color: text, ...Typography.default('semiBold'), marginBottom: 4 }}>{name}</Text>
+            <Text style={{ color: text, ...Typography.default('medium'), marginBottom: 4 }}>{name}</Text>
             <Text style={{ color: text, ...Typography.mono(), fontSize: 12 }}>BG: {bg}</Text>
             <Text style={{ color: text, ...Typography.mono(), fontSize: 12 }}>Text: {text}</Text>
         </View>
@@ -31,7 +31,7 @@ export default function ColorsScreen() {
             <View style={styles.content}>
                 {/* iOS System Colors */}
                 <View style={styles.section}>
-                    <Text style={[styles.sectionTitle, Typography.default('semiBold')]}>
+                    <Text style={[styles.sectionTitle, Typography.default('medium')]}>
                         iOS System Colors
                     </Text>
                     
@@ -48,7 +48,7 @@ export default function ColorsScreen() {
 
                 {/* Gray Scale */}
                 <View style={styles.section}>
-                    <Text style={[styles.sectionTitle, Typography.default('semiBold')]}>
+                    <Text style={[styles.sectionTitle, Typography.default('medium')]}>
                         Gray Scale
                     </Text>
                     
@@ -69,7 +69,7 @@ export default function ColorsScreen() {
 
                 {/* Backgrounds */}
                 <View style={styles.section}>
-                    <Text style={[styles.sectionTitle, Typography.default('semiBold')]}>
+                    <Text style={[styles.sectionTitle, Typography.default('medium')]}>
                         Backgrounds
                     </Text>
                     
@@ -82,7 +82,7 @@ export default function ColorsScreen() {
 
                 {/* Component Colors */}
                 <View style={styles.section}>
-                    <Text style={[styles.sectionTitle, Typography.default('semiBold')]}>
+                    <Text style={[styles.sectionTitle, Typography.default('medium')]}>
                         Component Colors
                     </Text>
                     
@@ -95,7 +95,7 @@ export default function ColorsScreen() {
 
                 {/* Usage in Code */}
                 <View style={styles.section}>
-                    <Text style={[styles.sectionTitle, Typography.default('semiBold')]}>
+                    <Text style={[styles.sectionTitle, Typography.default('medium')]}>
                         Usage Examples
                     </Text>
                     
@@ -122,7 +122,7 @@ const groupedBackground = '#F2F2F7';`}
 
                 {/* Tailwind/NativeWind Classes */}
                 <View style={styles.section}>
-                    <Text style={[styles.sectionTitle, Typography.default('semiBold')]}>
+                    <Text style={[styles.sectionTitle, Typography.default('medium')]}>
                         NativeWind Classes
                     </Text>
                     

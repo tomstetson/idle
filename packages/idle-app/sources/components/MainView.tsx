@@ -77,7 +77,7 @@ const styles = StyleSheet.create((theme) => ({
         fontSize: 17,
         color: theme.colors.header.tint,
         fontWeight: '600',
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     statusContainer: {
         flexDirection: 'row',

@@ -22,7 +22,7 @@ const stylesheet = StyleSheet.create((theme) => ({
         color: theme.colors.text,
         textAlign: 'center',
         marginBottom: 4,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     pathText: {
         fontSize: 14,

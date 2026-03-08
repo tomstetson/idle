@@ -59,7 +59,7 @@ function JsonViewer({ title, data, defaultExpanded = false }: JsonViewerProps) {
                     color="#8E8E93"
                     style={{ marginRight: 8 }}
                 />
-                <Text style={{ flex: 1, fontSize: 16, ...Typography.default('semiBold') }}>
+                <Text style={{ flex: 1, fontSize: 16, ...Typography.default('medium') }}>
                     {title}
                 </Text>
                 <Pressable

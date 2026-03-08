@@ -16,7 +16,7 @@ export const PlusPlus: React.FC<PlusPlusProps> = ({ fontSize, style }) => {
             maskElement={
                 <Text style={{ 
                     fontSize: fontSize * 0.8,
-                    ...Typography.logo(),
+                    ...Typography.heading(),
                     fontWeight: 'bold'
                 }}>
                     ++

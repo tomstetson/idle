@@ -37,7 +37,7 @@ const styles = StyleSheet.create((theme) => ({
         fontSize: 34,
         fontWeight: '700',
         color: theme.colors.text,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     addFriendButton: {
         width: 40,
@@ -68,7 +68,7 @@ const styles = StyleSheet.create((theme) => ({
     headerTitle: {
         fontSize: 17,
         color: theme.colors.header.tint,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
 }));
 

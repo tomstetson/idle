@@ -111,7 +111,7 @@ export function EnvironmentVariableCard({
                     fontSize: 12,
                     fontWeight: '600',
                     color: theme.colors.text,
-                    ...Typography.default('semiBold')
+                    ...Typography.default('medium')
                 }}>
                     {variable.name}
                     {isSecret && (

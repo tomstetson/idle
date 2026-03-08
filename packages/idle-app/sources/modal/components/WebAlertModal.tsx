@@ -100,7 +100,7 @@ export function WebAlertModal({ config, onClose, onConfirm }: WebAlertModalProps
         <BaseModal visible={true} onClose={onClose} closeOnBackdrop={false}>
             <View style={styles.container}>
                 <View style={styles.content}>
-                    <Text style={[styles.title, Typography.default('semiBold')]}>
+                    <Text style={[styles.title, Typography.default('medium')]}>
                         {config.title}
                     </Text>
                     {config.message && (
@@ -125,7 +125,7 @@ export function WebAlertModal({ config, onClose, onConfirm }: WebAlertModalProps
                                     styles.buttonText,
                                     button.style === 'cancel' && styles.cancelText,
                                     button.style === 'destructive' && styles.destructiveText,
-                                    Typography.default(button.style === 'cancel' ? undefined : 'semiBold')
+                                    Typography.default(button.style === 'cancel' ? undefined : 'medium')
                                 ]}>
                                     {button.text}
                                 </Text>

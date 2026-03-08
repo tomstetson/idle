@@ -18,7 +18,7 @@ export default function MultiTextInputDemo() {
                     <Text style={{ 
                         fontSize: 16, 
                         marginBottom: 8,
-                        ...Typography.default('semiBold')
+                        ...Typography.default('medium')
                     }}>
                         Basic Usage
                     </Text>
@@ -55,7 +55,7 @@ export default function MultiTextInputDemo() {
                     <Text style={{ 
                         fontSize: 16, 
                         marginBottom: 8,
-                        ...Typography.default('semiBold')
+                        ...Typography.default('medium')
                     }}>
                         With Initial Value
                     </Text>
@@ -92,7 +92,7 @@ export default function MultiTextInputDemo() {
                     <Text style={{ 
                         fontSize: 16, 
                         marginBottom: 8,
-                        ...Typography.default('semiBold')
+                        ...Typography.default('medium')
                     }}>
                         Limited Height (60px)
                     </Text>
@@ -130,7 +130,7 @@ export default function MultiTextInputDemo() {
                     <Text style={{ 
                         fontSize: 16, 
                         marginBottom: 8,
-                        ...Typography.default('semiBold')
+                        ...Typography.default('medium')
                     }}>
                     Larger Height (200px)
                     </Text>
@@ -168,7 +168,7 @@ export default function MultiTextInputDemo() {
                     <Text style={{ 
                         fontSize: 16, 
                         marginBottom: 8,
-                        ...Typography.default('semiBold')
+                        ...Typography.default('medium')
                     }}>
                         With Keyboard Handling
                     </Text>

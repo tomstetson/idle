@@ -21,7 +21,7 @@ const styles = StyleSheet.create((theme, runtime) => ({
         marginBottom: 32,
     },
     versionHeader: {
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
         fontSize: 20,
         lineHeight: 28,
         color: theme.colors.text,
@@ -54,7 +54,7 @@ const styles = StyleSheet.create((theme, runtime) => ({
         marginBottom: 12,
     },
     bulletPoint: {
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
         fontSize: 16,
         color: theme.colors.textLink,
         marginRight: 10,

@@ -209,7 +209,7 @@ const style = StyleSheet.create((theme) => ({
         gap: 12,
     },
     errorText: {
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
         color: theme.colors.text,
         fontSize: 16,
     },

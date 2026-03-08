@@ -38,7 +38,7 @@ const stylesheet = StyleSheet.create((theme, runtime) => ({
         fontSize: 17,
         color: theme.colors.header.tint,
         fontWeight: '600',
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     subtitleText: {
         fontSize: 12,

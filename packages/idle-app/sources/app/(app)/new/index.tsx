@@ -165,7 +165,7 @@ const styles = StyleSheet.create((theme, rt) => ({
         color: theme.colors.text,
         marginBottom: 8,
         marginTop: 12,
-        ...Typography.default('semiBold')
+        ...Typography.default('medium')
     },
     sectionDescription: {
         fontSize: 12,
@@ -201,7 +201,7 @@ const styles = StyleSheet.create((theme, rt) => ({
         fontSize: 13,
         fontWeight: '600',
         color: theme.colors.text,
-        ...Typography.default('semiBold')
+        ...Typography.default('medium')
     },
     profileListDetails: {
         fontSize: 12,
@@ -223,7 +223,7 @@ const styles = StyleSheet.create((theme, rt) => ({
         fontWeight: '600',
         color: theme.colors.button.secondary.tint,
         marginLeft: 8,
-        ...Typography.default('semiBold')
+        ...Typography.default('medium')
     },
     selectorButton: {
         backgroundColor: theme.colors.input.background,
@@ -280,7 +280,7 @@ const styles = StyleSheet.create((theme, rt) => ({
         color: theme.colors.text,
         marginTop: 8,
         textAlign: 'center',
-        ...Typography.default('semiBold')
+        ...Typography.default('medium')
     },
     permissionButtonTextSelected: {
         color: theme.colors.button.primary.background,
@@ -1328,7 +1328,7 @@ function NewSessionWizard() {
                                     <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 6 }}>
                                         <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6, marginRight: 16 }}>
                                             <Ionicons name="warning" size={16} color={theme.colors.warning} />
-                                            <Text style={{ fontSize: 13, fontWeight: '600', color: theme.colors.text, ...Typography.default('semiBold') }}>
+                                            <Text style={{ fontSize: 13, fontWeight: '600', color: theme.colors.text, ...Typography.default('medium') }}>
                                                 Claude CLI Not Detected
                                             </Text>
                                             <View style={{ flex: 1, minWidth: 20 }} />
@@ -1400,7 +1400,7 @@ function NewSessionWizard() {
                                     <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 6 }}>
                                         <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6, marginRight: 16 }}>
                                             <Ionicons name="warning" size={16} color={theme.colors.warning} />
-                                            <Text style={{ fontSize: 13, fontWeight: '600', color: theme.colors.text, ...Typography.default('semiBold') }}>
+                                            <Text style={{ fontSize: 13, fontWeight: '600', color: theme.colors.text, ...Typography.default('medium') }}>
                                                 Codex CLI Not Detected
                                             </Text>
                                             <View style={{ flex: 1, minWidth: 20 }} />
@@ -1472,7 +1472,7 @@ function NewSessionWizard() {
                                     <View style={{ flexDirection: 'row', alignItems: 'flex-start', justifyContent: 'space-between', marginBottom: 6 }}>
                                         <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center', flexWrap: 'wrap', gap: 6, marginRight: 16 }}>
                                             <Ionicons name="warning" size={16} color={theme.colors.warning} />
-                                            <Text style={{ fontSize: 13, fontWeight: '600', color: theme.colors.text, ...Typography.default('semiBold') }}>
+                                            <Text style={{ fontSize: 13, fontWeight: '600', color: theme.colors.text, ...Typography.default('medium') }}>
                                                 Gemini CLI Not Detected
                                             </Text>
                                             <View style={{ flex: 1, minWidth: 20 }} />

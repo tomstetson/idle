@@ -318,7 +318,7 @@ export default function FileScreen() {
                     fontWeight: 'bold',
                     color: theme.colors.textDestructive,
                     marginBottom: 8,
-                    ...Typography.default('semiBold')
+                    ...Typography.default('medium')
                 }}>
                     {t('common.error')}
                 </Text>
@@ -348,7 +348,7 @@ export default function FileScreen() {
                     fontWeight: 'bold',
                     color: theme.colors.textSecondary,
                     marginBottom: 8,
-                    ...Typography.default('semiBold')
+                    ...Typography.default('medium')
                 }}>
                     {t('files.binaryFile')}
                 </Text>

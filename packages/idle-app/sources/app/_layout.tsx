@@ -101,21 +101,19 @@ async function loadFonts() {
         if (!isTauri) {
             // Normal font loading for non-Tauri environments (native and regular web)
             await Fonts.loadAsync({
-                // Keep existing font
+                // Legacy font
                 SpaceMono: require('@/assets/fonts/SpaceMono-Regular.ttf'),
 
-                // IBM Plex Sans family
-                'IBMPlexSans-Regular': require('@/assets/fonts/IBMPlexSans-Regular.ttf'),
-                'IBMPlexSans-Italic': require('@/assets/fonts/IBMPlexSans-Italic.ttf'),
-                'IBMPlexSans-SemiBold': require('@/assets/fonts/IBMPlexSans-SemiBold.ttf'),
+                // Inter family (default)
+                'Inter-Regular': require('@/assets/fonts/Inter-Regular.ttf'),
+                'Inter-Medium': require('@/assets/fonts/Inter-Medium.ttf'),
 
-                // IBM Plex Mono family  
-                'IBMPlexMono-Regular': require('@/assets/fonts/IBMPlexMono-Regular.ttf'),
-                'IBMPlexMono-Italic': require('@/assets/fonts/IBMPlexMono-Italic.ttf'),
-                'IBMPlexMono-SemiBold': require('@/assets/fonts/IBMPlexMono-SemiBold.ttf'),
+                // JetBrains Mono family (monospace)
+                'JetBrainsMono-Regular': require('@/assets/fonts/JetBrainsMono-Regular.ttf'),
+                'JetBrainsMono-Medium': require('@/assets/fonts/JetBrainsMono-Medium.ttf'),
 
-                // Bricolage Grotesque  
-                'BricolageGrotesque-Bold': require('@/assets/fonts/BricolageGrotesque-Bold.ttf'),
+                // Space Grotesk (headings)
+                'SpaceGrotesk-Bold': require('@/assets/fonts/SpaceGrotesk-Bold.ttf'),
 
                 ...FontAwesome.font,
             });
@@ -125,21 +123,19 @@ async function loadFonts() {
             (async () => {
                 try {
                     await Fonts.loadAsync({
-                        // Keep existing font
+                        // Legacy font
                         SpaceMono: require('@/assets/fonts/SpaceMono-Regular.ttf'),
 
-                        // IBM Plex Sans family
-                        'IBMPlexSans-Regular': require('@/assets/fonts/IBMPlexSans-Regular.ttf'),
-                        'IBMPlexSans-Italic': require('@/assets/fonts/IBMPlexSans-Italic.ttf'),
-                        'IBMPlexSans-SemiBold': require('@/assets/fonts/IBMPlexSans-SemiBold.ttf'),
+                        // Inter family (default)
+                        'Inter-Regular': require('@/assets/fonts/Inter-Regular.ttf'),
+                        'Inter-Medium': require('@/assets/fonts/Inter-Medium.ttf'),
 
-                        // IBM Plex Mono family  
-                        'IBMPlexMono-Regular': require('@/assets/fonts/IBMPlexMono-Regular.ttf'),
-                        'IBMPlexMono-Italic': require('@/assets/fonts/IBMPlexMono-Italic.ttf'),
-                        'IBMPlexMono-SemiBold': require('@/assets/fonts/IBMPlexMono-SemiBold.ttf'),
+                        // JetBrains Mono family (monospace)
+                        'JetBrainsMono-Regular': require('@/assets/fonts/JetBrainsMono-Regular.ttf'),
+                        'JetBrainsMono-Medium': require('@/assets/fonts/JetBrainsMono-Medium.ttf'),
 
-                        // Bricolage Grotesque  
-                        'BricolageGrotesque-Bold': require('@/assets/fonts/BricolageGrotesque-Bold.ttf'),
+                        // Space Grotesk (headings)
+                        'SpaceGrotesk-Bold': require('@/assets/fonts/SpaceGrotesk-Bold.ttf'),
 
                         ...FontAwesome.font,
                     });

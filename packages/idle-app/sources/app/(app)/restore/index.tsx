@@ -54,7 +54,7 @@ const stylesheet = StyleSheet.create((theme) => ({
         padding: 16,
         borderRadius: 8,
         marginBottom: 24,
-        fontFamily: 'IBMPlexMono-Regular',
+        fontFamily: 'JetBrainsMono-Regular',
         fontSize: 14,
         minHeight: 120,
         textAlignVertical: 'top',

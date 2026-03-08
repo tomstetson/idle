@@ -67,7 +67,7 @@ export default function TerminalConnectScreen() {
                             style={{ marginBottom: 16 }} 
                         />
                         <Text style={{ 
-                            ...Typography.default('semiBold'), 
+                            ...Typography.default('medium'), 
                             fontSize: 18, 
                             textAlign: 'center',
                             marginBottom: 12 
@@ -125,7 +125,7 @@ export default function TerminalConnectScreen() {
                             style={{ marginBottom: 16 }} 
                         />
                         <Text style={{ 
-                            ...Typography.default('semiBold'), 
+                            ...Typography.default('medium'), 
                             fontSize: 16, 
                             color: '#FF3B30',
                             textAlign: 'center',
@@ -165,7 +165,7 @@ export default function TerminalConnectScreen() {
                         style={{ marginBottom: 16 }} 
                     />
                     <Text style={{ 
-                        ...Typography.default('semiBold'), 
+                        ...Typography.default('medium'), 
                         fontSize: 20, 
                         textAlign: 'center',
                         marginBottom: 12

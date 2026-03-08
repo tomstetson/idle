@@ -11,7 +11,7 @@ import { RoundButton } from '@/components/RoundButton';
 function CustomContentModal({ onClose, title, message }: { onClose: () => void; title: string; message: string }) {
     return (
         <View style={styles.customModal}>
-            <Text style={[styles.customModalTitle, Typography.default('semiBold')]}>{title}</Text>
+            <Text style={[styles.customModalTitle, Typography.default('medium')]}>{title}</Text>
             <Text style={[styles.customModalMessage, Typography.default()]}>{message}</Text>
             <View style={styles.customModalButtons}>
                 <RoundButton
@@ -97,7 +97,7 @@ export default function ModalDemoScreen() {
     return (
         <ScrollView style={styles.container}>
             <View style={styles.header}>
-                <Text style={[styles.title, Typography.default('semiBold')]}>Modal Demo</Text>
+                <Text style={[styles.title, Typography.default('medium')]}>Modal Demo</Text>
                 <Text style={[styles.subtitle, Typography.default()]}>
                     Platform: {Platform.OS} ({Platform.OS === 'web' ? 'Custom modals' : 'Native alerts'})
                 </Text>

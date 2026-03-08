@@ -19,7 +19,7 @@ const stylesheet = StyleSheet.create((theme) => ({
         textAlign: 'center',
         fontSize: 24,
         color: theme.colors.text,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     terminalBlock: {
         backgroundColor: theme.colors.surfaceHighest,
@@ -63,7 +63,7 @@ const stylesheet = StyleSheet.create((theme) => ({
         marginRight: 12,
     },
     stepNumberText: {
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
         fontSize: 14,
         color: theme.colors.text,
     },

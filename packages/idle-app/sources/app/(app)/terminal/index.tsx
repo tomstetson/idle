@@ -64,7 +64,7 @@ export default function TerminalScreen() {
                                 style={{ marginBottom: 16 }}
                             />
                             <Text style={{
-                                ...Typography.default('semiBold'),
+                                ...Typography.default('medium'),
                                 fontSize: 16,
                                 color: theme.colors.textDestructive,
                                 textAlign: 'center',
@@ -106,7 +106,7 @@ export default function TerminalScreen() {
                             style={{ marginBottom: 16 }}
                         />
                         <Text style={{
-                            ...Typography.default('semiBold'),
+                            ...Typography.default('medium'),
                             fontSize: 20,
                             textAlign: 'center',
                             marginBottom: 12,

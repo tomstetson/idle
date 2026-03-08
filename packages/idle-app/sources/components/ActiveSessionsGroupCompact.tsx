@@ -174,7 +174,7 @@ const stylesheet = StyleSheet.create((theme, runtime) => ({
         fontSize: 12,
         color: '#FFFFFF',
         textAlign: 'center',
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
 }));
 

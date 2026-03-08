@@ -142,7 +142,7 @@ const stylesheet = StyleSheet.create((theme, runtime) => ({
         color: theme.colors.textSecondary,
         paddingHorizontal: 16,
         paddingBottom: 4,
-        ...Typography.default('semiBold'),
+        ...Typography.default('medium'),
     },
     overlayDivider: {
         height: 1,
@@ -637,7 +637,7 @@ export const AgentInput = React.memo(React.forwardRef<MultiTextInputHandle, Agen
                                         color: theme.colors.textSecondary,
                                         paddingHorizontal: 16,
                                         paddingBottom: 4,
-                                        ...Typography.default('semiBold')
+                                        ...Typography.default('medium')
                                     }}>
                                         {t('agentInput.model.title')}
                                     </Text>
@@ -895,7 +895,7 @@ export const AgentInput = React.memo(React.forwardRef<MultiTextInputHandle, Agen
                                     fontSize: 13,
                                     color: theme.colors.text,
                                     fontWeight: '600',
-                                    ...Typography.default('semiBold'),
+                                    ...Typography.default('medium'),
                                 }}>
                                     {props.machineName === null ? t('agentInput.noMachinesAvailable') : props.machineName}
                                 </Text>
@@ -930,7 +930,7 @@ export const AgentInput = React.memo(React.forwardRef<MultiTextInputHandle, Agen
                                     fontSize: 13,
                                     color: theme.colors.text,
                                     fontWeight: '600',
-                                    ...Typography.default('semiBold'),
+                                    ...Typography.default('medium'),
                                 }}>
                                     {props.currentPath}
                                 </Text>
@@ -1016,7 +1016,7 @@ export const AgentInput = React.memo(React.forwardRef<MultiTextInputHandle, Agen
                                             fontSize: 13,
                                             color: theme.colors.button.secondary.tint,
                                             fontWeight: '600',
-                                            ...Typography.default('semiBold'),
+                                            ...Typography.default('medium'),
                                         }}>
                                             {currentProfile?.name || 'Select Profile'}
                                         </Text>
@@ -1052,7 +1052,7 @@ export const AgentInput = React.memo(React.forwardRef<MultiTextInputHandle, Agen
                                             fontSize: 13,
                                             color: theme.colors.button.secondary.tint,
                                             fontWeight: '600',
-                                            ...Typography.default('semiBold'),
+                                            ...Typography.default('medium'),
                                         }}>
                                             {props.agentType === 'claude' ? t('agentInput.agent.claude') : props.agentType === 'codex' ? t('agentInput.agent.codex') : t('agentInput.agent.gemini')}
                                         </Text>
