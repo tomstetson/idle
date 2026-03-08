@@ -9,7 +9,7 @@ interface IdleLogoMarkProps {
 }
 
 /**
- * Idle logo mark (the "i" cursor symbol). Use in header, favicon, app icon.
+ * Idle logo mark (bridge: two bars + arc). Use in header, favicon, app icon.
  * Pass color from theme (e.g. theme.colors.header.tint) for light/dark.
  */
 export const IdleLogoMark = React.memo(({ size = 24, color = '#000000' }: IdleLogoMarkProps) => {
