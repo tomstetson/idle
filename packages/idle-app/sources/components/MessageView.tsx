@@ -12,6 +12,15 @@ import { sync } from '@/sync/sync';
 import { Option } from './markdown/MarkdownView';
 import { useSetting } from "@/sync/storage";
 
+const formatTime = (timestamp: number): string => {
+    try {
+        const date = new Date(timestamp * 1000); // Convert from Unix timestamp
+        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    } catch {
+        return t('message.unknownTime');
+    }
+};
+
 export const MessageView = (props: {
   message: Message;
   metadata: Metadata | null;
@@ -81,6 +90,11 @@ function UserTextBlock(props: {
           <Text style={styles.debugText}>{JSON.stringify(props.message.meta)}</Text>
         )} */}
       </View>
+      {props.message.createdAt > 0 && (
+        <Text style={styles.userTimestamp}>
+          {formatTime(props.message.createdAt)}
+        </Text>
+      )}
     </View>
   );
 }
@@ -103,24 +117,38 @@ function AgentTextBlock(props: {
   // Collapsible wrapper for thinking blocks
   if (props.message.isThinking) {
     return (
-      <View style={styles.thinkingContainer}>
-        <Pressable onPress={() => setExpanded(v => !v)} style={styles.thinkingHeader}>
-          <Text style={styles.agentEventText}>
-            {expanded ? t('message.thinkingExpanded') : t('message.thinkingCollapsed')}
+      <View>
+        <View style={styles.thinkingContainer}>
+          <Pressable onPress={() => setExpanded(v => !v)} style={styles.thinkingHeader}>
+            <Text style={styles.agentEventText}>
+              {expanded ? t('message.thinkingExpanded') : t('message.thinkingCollapsed')}
+            </Text>
+          </Pressable>
+          {expanded && (
+            <View style={[styles.agentMessageContainer, { opacity: 0.5 }]}>
+              <MarkdownView markdown={props.message.text} onOptionPress={handleOptionPress} />
+            </View>
+          )}
+        </View>
+        {props.message.createdAt > 0 && (
+          <Text style={styles.timestamp}>
+            {formatTime(props.message.createdAt)}
           </Text>
-        </Pressable>
-        {expanded && (
-          <View style={[styles.agentMessageContainer, { opacity: 0.5 }]}>
-            <MarkdownView markdown={props.message.text} onOptionPress={handleOptionPress} />
-          </View>
         )}
       </View>
     );
   }
 
   return (
-    <View style={styles.agentMessageContainer}>
-      <MarkdownView markdown={props.message.text} onOptionPress={handleOptionPress} />
+    <View>
+      <View style={styles.agentMessageContainer}>
+        <MarkdownView markdown={props.message.text} onOptionPress={handleOptionPress} />
+      </View>
+      {props.message.createdAt > 0 && (
+        <Text style={styles.timestamp}>
+          {formatTime(props.message.createdAt)}
+        </Text>
+      )}
     </View>
   );
 }
@@ -144,15 +172,6 @@ function AgentEventBlock(props: {
     );
   }
   if (props.event.type === 'limit-reached') {
-    const formatTime = (timestamp: number): string => {
-      try {
-        const date = new Date(timestamp * 1000); // Convert from Unix timestamp
-        return date.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-      } catch {
-        return t('message.unknownTime');
-      }
-    };
-
     return (
       <View style={styles.agentEventContainer}>
         <Text style={styles.agentEventText}>
@@ -213,12 +232,12 @@ const styles = StyleSheet.create((theme) => ({
     paddingHorizontal: 12,
     paddingVertical: 4,
     borderRadius: 12,
-    marginBottom: 12,
+    marginBottom: 2,
     maxWidth: '100%',
   },
   agentMessageContainer: {
     marginHorizontal: 16,
-    marginBottom: 12,
+    marginBottom: 2,
     borderRadius: 16,
     alignSelf: 'flex-start',
   },
@@ -236,7 +255,7 @@ const styles = StyleSheet.create((theme) => ({
   },
   thinkingContainer: {
     marginHorizontal: 16,
-    marginBottom: 12,
+    marginBottom: 2,
   },
   thinkingHeader: {
     paddingVertical: 6,
@@ -245,5 +264,20 @@ const styles = StyleSheet.create((theme) => ({
   debugText: {
     color: theme.colors.agentEventText,
     fontSize: 12,
+  },
+  timestamp: {
+    fontSize: 11,
+    color: theme.colors.textSecondary,
+    marginTop: 2,
+    marginBottom: 8,
+    marginHorizontal: 16,
+  },
+  userTimestamp: {
+    fontSize: 11,
+    color: theme.colors.textSecondary,
+    marginTop: 2,
+    marginBottom: 8,
+    marginHorizontal: 16,
+    textAlign: 'right',
   },
 }));
