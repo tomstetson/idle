@@ -10,6 +10,7 @@ import { logger } from '@/ui/logger'
 export interface SDKMetadata {
     tools?: string[]
     slashCommands?: string[]
+    commandDescriptions?: Record<string, string>
 }
 
 /**
@@ -39,7 +40,8 @@ export async function extractSDKMetadata(): Promise<SDKMetadata> {
                 
                 const metadata: SDKMetadata = {
                     tools: systemMessage.tools,
-                    slashCommands: systemMessage.slash_commands
+                    slashCommands: systemMessage.slash_commands,
+                    commandDescriptions: systemMessage.slash_command_descriptions
                 }
                 
                 logger.debug('[metadataExtractor] Captured SDK metadata:', metadata)
@@ -72,7 +74,7 @@ export async function extractSDKMetadata(): Promise<SDKMetadata> {
 export function extractSDKMetadataAsync(onComplete: (metadata: SDKMetadata) => void): void {
     extractSDKMetadata()
         .then(metadata => {
-            if (metadata.tools || metadata.slashCommands) {
+            if (metadata.tools || metadata.slashCommands || metadata.commandDescriptions) {
                 onComplete(metadata)
             }
         })

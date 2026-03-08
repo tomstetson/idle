@@ -58,23 +58,30 @@ const DEFAULT_COMMANDS: CommandItem[] = [
     { command: 'clear', description: 'Clear the conversation' }
 ];
 
-// Command descriptions for known tools/commands
+// Static fallback descriptions for known slash commands.
+// Dynamic descriptions from CLI metadata take priority when available.
 const COMMAND_DESCRIPTIONS: Record<string, string> = {
-    // Default commands
     compact: 'Compact the conversation history',
-    
-    // Common tool commands
-    help: 'Show available commands',
     clear: 'Clear the conversation',
-    reset: 'Reset the session',
+    help: 'Show available commands',
+    review: 'Request a code review',
+    bug: 'Report a bug',
+    init: 'Initialize project configuration',
+    memory: 'Manage Claude memory',
+    model: 'Switch AI model',
+    config: 'Edit configuration',
+    cost: 'Show token usage and costs',
+    doctor: 'Diagnose issues',
+    permissions: 'Manage tool permissions',
+    hooks: 'Manage event hooks',
+    status: 'Show session status',
+    resume: 'Resume a previous session',
     export: 'Export conversation',
-    debug: 'Show debug information',
-    status: 'Show connection status',
-    stop: 'Stop current operation',
-    abort: 'Abort current operation',
-    cancel: 'Cancel current operation',
-    
-    // Add more descriptions as needed
+    login: 'Log in to your account',
+    logout: 'Log out of your account',
+    vim: 'Toggle vim keybindings',
+    mcp: 'Manage MCP servers',
+    terminal: 'Terminal setup',
 };
 
 // Get commands from session metadata
@@ -86,23 +93,22 @@ function getCommandsFromSession(sessionId: string): CommandItem[] {
     }
 
     const commands: CommandItem[] = [...DEFAULT_COMMANDS];
-    
-    // Add commands from metadata.slashCommands (filter with ignore list)
+
+    // Merge descriptions: dynamic from CLI metadata takes priority over static fallback
+    const dynamicDescriptions = session.metadata.commandDescriptions || {};
+
     if (session.metadata.slashCommands) {
         for (const cmd of session.metadata.slashCommands) {
-            // Skip if in ignore list
             if (IGNORED_COMMANDS.includes(cmd)) continue;
-            
-            // Check if it's already in default commands
             if (!commands.find(c => c.command === cmd)) {
                 commands.push({
                     command: cmd,
-                    description: COMMAND_DESCRIPTIONS[cmd]  // Optional description
+                    description: dynamicDescriptions[cmd] || COMMAND_DESCRIPTIONS[cmd]
                 });
             }
         }
     }
-    
+
     return commands;
 }
 

@@ -52,6 +52,7 @@ export interface SDKSystemMessage extends SDKMessage {
     cwd?: string
     tools?: string[]
     slash_commands?: string[]
+    slash_command_descriptions?: Record<string, string>
 }
 
 export interface SDKResultMessage extends SDKMessage {

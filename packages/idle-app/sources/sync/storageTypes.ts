@@ -36,6 +36,7 @@ export const MetadataSchema = z.object({
     claudeSessionId: z.string().optional(), // Claude Code session ID
     tools: z.array(z.string()).optional(),
     slashCommands: z.array(z.string()).optional(),
+    commandDescriptions: z.record(z.string(), z.string()).optional(),
     homeDir: z.string().optional(), // User's home directory on the machine
     idleHomeDir: z.string().optional(), // Idle configuration directory 
     hostPid: z.number().optional(), // Process ID of the session
