@@ -26,16 +26,16 @@ describe('Brand exports', () => {
             expect(typeof idleBrandColors).toBe('object');
         });
 
-        it('contains the core teal color', () => {
-            expect(idleBrandColors.teal).toBe('#0D3B47');
+        it('contains the ink color (deep dark primary)', () => {
+            expect(idleBrandColors.ink).toBe('#0A0F1A');
         });
 
-        it('contains the accent cyan color', () => {
-            expect(idleBrandColors.cyan).toBe('#00C9B1');
+        it('contains the amber accent color', () => {
+            expect(idleBrandColors.amber).toBe('#C9A84C');
         });
 
-        it('contains the amber highlight', () => {
-            expect(idleBrandColors.amber).toBe('#E8B84C');
+        it('contains the silver neutral color', () => {
+            expect(idleBrandColors.silver).toBe('#8B949E');
         });
 
         it('all color values are valid hex strings', () => {
