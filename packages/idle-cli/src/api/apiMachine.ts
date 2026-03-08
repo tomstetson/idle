@@ -8,6 +8,7 @@ import { logger } from '@/ui/logger';
 import { configuration } from '@/configuration';
 import { MachineMetadata, DaemonState, Machine, Update, UpdateMachineBody } from './types';
 import { registerCommonHandlers, SpawnSessionOptions, SpawnSessionResult } from '../modules/common/registerCommonHandlers';
+import { readDaemonStateSync } from '../persistence';
 import { encodeBase64, decodeBase64, encrypt, decrypt } from './encryption';
 import { backoff } from '@/utils/time';
 import { RpcHandlerManager } from './rpc/RpcHandlerManager';
@@ -153,6 +154,64 @@ export class ApiMachineClient {
             }, 100);
 
             return { message: 'Daemon stop request acknowledged, starting shutdown sequence...' };
+        });
+
+        // Register resume session handler — resumes a previously persisted session
+        this.rpcHandlerManager.registerHandler('resume-session', async (params: any) => {
+            const { sessionId } = params || {};
+            logger.debug(`[API MACHINE] Resume session request for Idle session: ${sessionId}`);
+
+            if (!sessionId) {
+                throw new Error('Session ID is required');
+            }
+
+            // Look up the persisted session from daemon state on disk
+            const daemonState = readDaemonStateSync();
+            if (!daemonState?.activeSessions) {
+                throw new Error('No persisted sessions found');
+            }
+
+            const persisted = daemonState.activeSessions.find(s => s.idleSessionId === sessionId);
+            if (!persisted) {
+                throw new Error(`Session ${sessionId} not found in persisted daemon state`);
+            }
+
+            if (!persisted.claudeSessionId) {
+                throw new Error(`Session ${sessionId} has no Claude session ID — cannot resume`);
+            }
+
+            if (!persisted.workingDirectory) {
+                throw new Error(`Session ${sessionId} has no working directory — cannot resume`);
+            }
+
+            // Spawn a new Idle process that resumes the Claude session
+            const result = await spawnSession({
+                directory: persisted.workingDirectory,
+                sessionId: persisted.claudeSessionId,
+            });
+
+            switch (result.type) {
+                case 'success':
+                    logger.debug(`[API MACHINE] Resumed session ${sessionId} → new Idle session ${result.sessionId}`);
+                    return { type: 'success', sessionId: result.sessionId };
+
+                case 'error':
+                    throw new Error(result.errorMessage);
+
+                default:
+                    throw new Error(`Unexpected spawn result type: ${(result as any).type}`);
+            }
+        });
+
+        // Register list sessions handler — returns persisted sessions available for resume
+        this.rpcHandlerManager.registerHandler('list-sessions', () => {
+            logger.debug('[API MACHINE] List sessions request');
+
+            const daemonState = readDaemonStateSync();
+            const sessions = daemonState?.activeSessions ?? [];
+
+            logger.debug(`[API MACHINE] Returning ${sessions.length} persisted sessions`);
+            return { sessions };
         });
     }
 

@@ -458,7 +458,8 @@ export async function startDaemon(): Promise<void> {
           const cliPath = join(projectPath(), 'dist', 'index.mjs');
           // Determine agent command - support claude, codex, and gemini
           const agent = options.agent === 'gemini' ? 'gemini' : (options.agent === 'codex' ? 'codex' : 'claude');
-          const fullCommand = `node --no-warnings --no-deprecation ${cliPath} ${agent} --idle-starting-mode remote --started-by daemon`;
+          const resumeFlag = sessionId ? ` --resume ${sessionId}` : '';
+          const fullCommand = `node --no-warnings --no-deprecation ${cliPath} ${agent} --idle-starting-mode remote --started-by daemon${resumeFlag}`;
 
           // Spawn in tmux with environment variables
           // IMPORTANT: Pass complete environment (process.env + extraEnv) because:
@@ -565,8 +566,12 @@ export async function startDaemon(): Promise<void> {
             '--started-by', 'daemon'
           ];
 
-          // TODO: In future, sessionId could be used with --resume to continue existing sessions
-          // For now, we ignore it - each spawn creates a new session
+          // When a Claude session ID is provided, resume that session instead of creating a new one
+          if (sessionId) {
+            args.push('--resume', sessionId);
+            logger.debug(`[DAEMON RUN] Resuming Claude session: ${sessionId}`);
+          }
+
           const idleProcess = spawnIdleCLI(args, {
             cwd: directory,
             detached: true,  // Sessions stay alive when daemon stops
