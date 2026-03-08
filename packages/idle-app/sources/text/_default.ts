@@ -728,6 +728,7 @@ export const en = {
         createAccount: 'Create account',
         linkOrRestoreAccount: 'Link or restore account',
         loginWithMobileApp: 'Login with mobile app',
+        webSessionNote: 'For persistent sessions, use the Idle iOS app.',
     },
 
     review: {

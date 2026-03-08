@@ -729,6 +729,7 @@ export const pt: TranslationStructure = {
         createAccount: 'Criar conta',
         linkOrRestoreAccount: 'Vincular ou restaurar conta',
         loginWithMobileApp: 'Fazer login com aplicativo móvel',
+        webSessionNote: 'Para sessões persistentes, use o app Idle para iOS.',
     },
 
     review: {

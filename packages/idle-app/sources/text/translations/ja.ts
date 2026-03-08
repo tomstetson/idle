@@ -761,6 +761,7 @@ export const ja: TranslationStructure = {
         createAccount: 'アカウントを作成',
         linkOrRestoreAccount: 'アカウントをリンクまたは復元',
         loginWithMobileApp: 'モバイルアプリでログイン',
+        webSessionNote: '永続的なセッションにはIdle iOSアプリをご利用ください。',
     },
 
     review: {

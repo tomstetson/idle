@@ -81,6 +81,9 @@ function NotAuthenticated() {
                             display="inverted"
                         />
                     </View>
+                    <Text style={styles.webSessionNote}>
+                        {t('welcome.webSessionNote')}
+                    </Text>
                 </>
             ) : (
                 <>
@@ -142,6 +145,9 @@ function NotAuthenticated() {
                                     display="inverted"
                                 />
                             </View>
+                            <Text style={styles.webSessionNote}>
+                                {t('welcome.webSessionNote')}
+                            </Text>
                         </>)
                         : (<>
                             <View style={styles.landscapeButtonContainer}>
@@ -260,5 +266,14 @@ const styles = StyleSheet.create((theme) => ({
     },
     landscapeButtonContainerSecondary: {
         width: 280,
+    },
+    // Subtle hint shown only on web — persistent sessions require the native app
+    webSessionNote: {
+        ...Typography.default(),
+        fontSize: 13,
+        color: theme.colors.textSecondary,
+        marginTop: 20,
+        textAlign: 'center',
+        opacity: 0.7,
     },
 }));

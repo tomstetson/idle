@@ -729,6 +729,7 @@ export const ca: TranslationStructure = {
         createAccount: 'Crea un compte',
         linkOrRestoreAccount: 'Enllaça o restaura un compte',
         loginWithMobileApp: 'Inicia sessió amb l\'aplicació mòbil',
+        webSessionNote: 'Per a sessions persistents, utilitza l\'app d\'Idle per a iOS.',
     },
 
     review: {

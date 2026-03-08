@@ -758,6 +758,7 @@ export const it: TranslationStructure = {
         createAccount: 'Crea account',
         linkOrRestoreAccount: 'Collega o ripristina account',
         loginWithMobileApp: 'Accedi con l\'app mobile',
+        webSessionNote: 'Per sessioni persistenti, usa l\'app Idle per iOS.',
     },
 
     review: {

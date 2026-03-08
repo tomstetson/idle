@@ -731,6 +731,7 @@ export const zhHans: TranslationStructure = {
         createAccount: '创建账户',
         linkOrRestoreAccount: '链接或恢复账户',
         loginWithMobileApp: '使用移动应用登录',
+        webSessionNote: '如需持久会话，请使用 Idle iOS 应用。',
     },
 
     review: {

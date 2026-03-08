@@ -730,6 +730,7 @@ export const zhHant: TranslationStructure = {
         createAccount: '建立帳戶',
         linkOrRestoreAccount: '連結或恢復帳戶',
         loginWithMobileApp: '使用行動應用程式登入',
+        webSessionNote: '如需持久工作階段，請使用 Idle iOS 應用程式。',
     },
 
     review: {
