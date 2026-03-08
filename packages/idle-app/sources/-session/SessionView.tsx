@@ -78,7 +78,11 @@ export const SessionView = React.memo((props: { id: string }) => {
         }
 
         // Normal state - show session info
-        const isConnected = session.presence === 'online';
+        // Require both online presence AND metadata to consider fully connected.
+        // Presence goes online as soon as CLI sends heartbeats, but metadata
+        // confirms the session encryption handshake completed and the session
+        // is genuinely operational (metadata is null if decryption failed).
+        const isConnected = session.presence === 'online' && session.metadata !== null;
         return {
             title: getSessionName(session),
             subtitle: session.metadata?.path ? formatPathRelativeToHome(session.metadata.path, session.metadata?.homeDir) : undefined,
@@ -310,6 +314,7 @@ function SessionViewLoaded({ sessionId, session }: { sessionId: string, session:
             availableModels={availableModels}
             onModelModeChange={updateModelMode}
             metadata={session.metadata}
+            isSendDisabled={session.presence !== 'online'}
             connectionStatus={{
                 text: sessionStatus.statusText,
                 color: sessionStatus.statusColor,
