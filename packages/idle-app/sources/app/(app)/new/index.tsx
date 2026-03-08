@@ -99,6 +99,40 @@ const getRecentPathForMachine = (machineId: string | null, recentPaths: Array<{ 
     return pathsWithTimestamps[0]?.path || defaultPath;
 };
 
+// Show a one-time prompt asking the user whether to keep Co-Authored-By attribution on.
+// Both choices persist the answer and resolve the promise so session creation continues.
+function showAttributionPrompt(): Promise<void> {
+    return new Promise((resolve) => {
+        Modal.alert(
+            'Help Others Find Idle',
+            'Idle is free to use, but costs us to run. When attribution is on, your commits include a small Co-Authored-By: Idle tag — helping other developers discover the tool. You can change this anytime in Settings.',
+            [
+                {
+                    text: 'Turn Off',
+                    style: 'cancel',
+                    onPress: () => {
+                        sync.applySettings({
+                            includeCoAuthoredBy: false,
+                            attributionPromptAnswered: true,
+                        });
+                        resolve();
+                    },
+                },
+                {
+                    text: 'Keep Attribution On',
+                    onPress: () => {
+                        sync.applySettings({
+                            includeCoAuthoredBy: true,
+                            attributionPromptAnswered: true,
+                        });
+                        resolve();
+                    },
+                },
+            ]
+        );
+    });
+}
+
 // Configuration constants
 const RECENT_PATHS_DEFAULT_VISIBLE = 5;
 const STATUS_ITEM_GAP = 11; // Spacing between status items (machine, CLI) - ~2 character spaces at 11px font
@@ -298,6 +332,7 @@ function NewSessionWizard() {
     const [favoriteDirectories, setFavoriteDirectories] = useSettingMutable('favoriteDirectories');
     const [favoriteMachines, setFavoriteMachines] = useSettingMutable('favoriteMachines');
     const [dismissedCLIWarnings, setDismissedCLIWarnings] = useSettingMutable('dismissedCLIWarnings');
+    const attributionPromptAnswered = useSetting('attributionPromptAnswered');
 
     // Combined profiles (built-in + custom)
     const allProfiles = React.useMemo(() => {
@@ -1029,6 +1064,11 @@ function NewSessionWizard() {
                 if (selectedProfile) {
                     environmentVariables = transformProfileToEnvironmentVars(selectedProfile, agentType);
                 }
+            }
+
+            // Show attribution prompt on first session creation
+            if (!attributionPromptAnswered) {
+                await showAttributionPrompt();
             }
 
             const result = await machineSpawnNewSession({
