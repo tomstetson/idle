@@ -189,11 +189,11 @@ export function artifactsRoutes(app: Fastify) {
                 data: {
                     id,
                     accountId: userId,
-                    header: Buffer.from(privacyKit.decodeBase64(header)),
+                    header: header as any,
                     headerVersion: 1,
-                    body: Buffer.from(privacyKit.decodeBase64(body)),
+                    body: body as any,
                     bodyVersion: 1,
-                    dataEncryptionKey: Buffer.from(privacyKit.decodeBase64(dataEncryptionKey)),
+                    dataEncryptionKey: dataEncryptionKey as any,
                     seq: 0
                 }
             });
@@ -309,7 +309,7 @@ export function artifactsRoutes(app: Fastify) {
             let bodyUpdate: { value: string; version: number } | undefined;
 
             if (header !== undefined && expectedHeaderVersion !== undefined) {
-                updateData.header = Buffer.from(privacyKit.decodeBase64(header));
+                updateData.header = header as any;
                 updateData.headerVersion = expectedHeaderVersion + 1;
                 headerUpdate = {
                     value: header,
@@ -318,7 +318,7 @@ export function artifactsRoutes(app: Fastify) {
             }
 
             if (body !== undefined && expectedBodyVersion !== undefined) {
-                updateData.body = Buffer.from(privacyKit.decodeBase64(body));
+                updateData.body = body as any;
                 updateData.bodyVersion = expectedBodyVersion + 1;
                 bodyUpdate = {
                     value: body,

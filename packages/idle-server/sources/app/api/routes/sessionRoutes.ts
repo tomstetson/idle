@@ -266,7 +266,7 @@ export function sessionRoutes(app: Fastify) {
                     accountId: userId,
                     tag: tag,
                     metadata: metadata,
-                    dataEncryptionKey: dataEncryptionKey ? Buffer.from(dataEncryptionKey, 'base64') : undefined
+                    dataEncryptionKey: dataEncryptionKey ? dataEncryptionKey as any : undefined
                 }
             });
             log({ module: 'session-create', sessionId: session.id, userId }, `Session created: ${session.id}`);
