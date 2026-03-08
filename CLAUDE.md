@@ -95,7 +95,11 @@ Remote `upstream` points to `https://github.com/slopus/happy`.
 - **Yarn 1**: Not yarn berry. Use `yarn` not `yarn install --immutable`
 - **Import aliases**: All packages use `@/` → `src/` via tsconfig paths
 - **Unistyles**: App uses `react-native-unistyles` for theming, not StyleSheet directly
-- **PGlite Bytes fields**: Use `Buffer.from()`, NEVER `new Uint8Array(Buffer.from())` — PGlite serializes Uint8Array as JSON objects instead of binary
+- **PGlite Bytes bug (CRITICAL)**: Prisma 6 + PGlite has a two-sided Bytes field bug:
+  - **WRITES**: Prisma serializes Uint8Array as JSON `{"0":199,...}`. Fix: raw SQL `decode($1, 'base64')`
+  - **READS**: pglite-prisma-adapter returns bytea as JSON objects, causing P2023. Fix: exclude Bytes from ALL Prisma selects, fetch via raw SQL `encode(col, 'base64')`
+  - See `encodeBytesField.ts` for helpers: `fetchBytesField`, `fetchBytesFieldMap`, `fetchMultipleBytesFields`
+  - Pattern: define `*SelectNoBytes` constant per model, use in all Prisma queries
 - **Dev workflow**: `yarn web` runs local Expo with hot reload, already points at VPS API (no config needed)
 
 ## Code Style (from upstream)
