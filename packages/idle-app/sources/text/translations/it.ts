@@ -237,6 +237,9 @@ export const it: TranslationStructure = {
         enhancedSessionWizard: 'Wizard sessione avanzato',
         enhancedSessionWizardEnabled: 'Avvio sessioni con profili attivo',
         enhancedSessionWizardDisabled: 'Usando avvio sessioni standard',
+        showThinking: 'Mostra pensiero AI',
+        showThinkingEnabled: 'Blocchi di ragionamento AI visibili nei messaggi',
+        showThinkingDisabled: 'Blocchi di ragionamento AI nascosti',
     },
 
     errors: {
@@ -782,6 +785,8 @@ export const it: TranslationStructure = {
         unknownEvent: 'Evento sconosciuto',
         usageLimitUntil: ({ time }: { time: string }) => `Limite di utilizzo raggiunto fino a ${time}`,
         unknownTime: 'ora sconosciuta',
+        thinkingExpanded: 'Pensiero (tocca per comprimere)',
+        thinkingCollapsed: 'Pensiero... (tocca per espandere)',
     },
 
     codex: {

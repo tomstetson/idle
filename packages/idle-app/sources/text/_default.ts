@@ -207,6 +207,9 @@ export const en = {
         enhancedSessionWizard: 'Enhanced Session Wizard',
         enhancedSessionWizardEnabled: 'Profile-first session launcher active',
         enhancedSessionWizardDisabled: 'Using standard session launcher',
+        showThinking: 'Show AI Thinking',
+        showThinkingEnabled: 'AI reasoning blocks visible in messages',
+        showThinkingDisabled: 'AI reasoning blocks hidden',
     },
 
     errors: {
@@ -752,6 +755,8 @@ export const en = {
         unknownEvent: 'Unknown event',
         usageLimitUntil: ({ time }: { time: string }) => `Usage limit reached until ${time}`,
         unknownTime: 'unknown time',
+        thinkingExpanded: 'Thinking (tap to collapse)',
+        thinkingCollapsed: 'Thinking... (tap to expand)',
     },
 
     codex: {

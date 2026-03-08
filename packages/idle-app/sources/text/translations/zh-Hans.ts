@@ -210,6 +210,9 @@ export const zhHans: TranslationStructure = {
         enhancedSessionWizard: '增强会话向导',
         enhancedSessionWizardEnabled: '配置文件优先启动器已激活',
         enhancedSessionWizardDisabled: '使用标准会话启动器',
+        showThinking: '显示AI思考',
+        showThinkingEnabled: 'AI推理块在消息中可见',
+        showThinkingDisabled: 'AI推理块已隐藏',
     },
 
     errors: {
@@ -755,6 +758,8 @@ export const zhHans: TranslationStructure = {
         unknownEvent: '未知事件',
         usageLimitUntil: ({ time }: { time: string }) => `使用限制到 ${time}`,
         unknownTime: '未知时间',
+        thinkingExpanded: '思考中（点击折叠）',
+        thinkingCollapsed: '思考中...（点击展开）',
     },
 
     codex: {

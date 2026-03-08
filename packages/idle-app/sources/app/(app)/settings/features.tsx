@@ -9,6 +9,7 @@ import { t } from '@/text';
 
 export default function FeaturesSettingsScreen() {
     const [experiments, setExperiments] = useSettingMutable('experiments');
+    const [showThinking, setShowThinking] = useSettingMutable('showThinking');
     const [agentInputEnterToSend, setAgentInputEnterToSend] = useSettingMutable('agentInputEnterToSend');
     const [commandPaletteEnabled, setCommandPaletteEnabled] = useLocalSettingMutable('commandPaletteEnabled');
     const [markdownCopyV2, setMarkdownCopyV2] = useLocalSettingMutable('markdownCopyV2');
@@ -30,6 +31,18 @@ export default function FeaturesSettingsScreen() {
                         <Switch
                             value={experiments}
                             onValueChange={setExperiments}
+                        />
+                    }
+                    showChevron={false}
+                />
+                <Item
+                    title={t('settingsFeatures.showThinking')}
+                    subtitle={showThinking ? t('settingsFeatures.showThinkingEnabled') : t('settingsFeatures.showThinkingDisabled')}
+                    icon={<Ionicons name="bulb-outline" size={29} color="#FF9500" />}
+                    rightElement={
+                        <Switch
+                            value={showThinking}
+                            onValueChange={setShowThinking}
                         />
                     }
                     showChevron={false}

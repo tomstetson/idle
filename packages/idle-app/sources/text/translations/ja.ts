@@ -240,6 +240,9 @@ export const ja: TranslationStructure = {
         enhancedSessionWizard: '拡張セッションウィザード',
         enhancedSessionWizardEnabled: 'プロファイル優先セッションランチャーが有効',
         enhancedSessionWizardDisabled: '標準セッションランチャーを使用',
+        showThinking: 'AI思考を表示',
+        showThinkingEnabled: 'AIの推論ブロックをメッセージに表示',
+        showThinkingDisabled: 'AIの推論ブロックを非表示',
     },
 
     errors: {
@@ -785,6 +788,8 @@ export const ja: TranslationStructure = {
         unknownEvent: '不明なイベント',
         usageLimitUntil: ({ time }: { time: string }) => `${time}まで使用制限中`,
         unknownTime: '不明な時間',
+        thinkingExpanded: '思考中（タップして折りたたむ）',
+        thinkingCollapsed: '思考中...（タップして展開）',
     },
 
     codex: {

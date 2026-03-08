@@ -208,6 +208,9 @@ export const ca: TranslationStructure = {
         enhancedSessionWizard: 'Assistent de sessió millorat',
         enhancedSessionWizardEnabled: 'Llançador de sessió amb perfil actiu',
         enhancedSessionWizardDisabled: 'Usant el llançador de sessió estàndard',
+        showThinking: 'Mostrar pensament de la IA',
+        showThinkingEnabled: 'Blocs de raonament de la IA visibles als missatges',
+        showThinkingDisabled: 'Blocs de raonament de la IA ocults',
     },
 
     errors: {
@@ -753,6 +756,8 @@ export const ca: TranslationStructure = {
         unknownEvent: 'Esdeveniment desconegut',
         usageLimitUntil: ({ time }: { time: string }) => `Límit d'ús assolit fins a ${time}`,
         unknownTime: 'temps desconegut',
+        thinkingExpanded: 'Pensant (toca per plegar)',
+        thinkingCollapsed: 'Pensant... (toca per desplegar)',
     },
 
     codex: {

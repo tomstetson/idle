@@ -1,5 +1,5 @@
 import * as React from "react";
-import { View, Text } from "react-native";
+import { View, Text, Pressable } from "react-native";
 import { StyleSheet } from 'react-native-unistyles';
 import { MarkdownView } from "./markdown/MarkdownView";
 import { t } from '@/text';
@@ -89,18 +89,37 @@ function AgentTextBlock(props: {
   message: AgentTextMessage;
   sessionId: string;
 }) {
-  const experiments = useSetting('experiments');
+  const showThinking = useSetting('showThinking');
+  const [expanded, setExpanded] = React.useState(false);
   const handleOptionPress = React.useCallback((option: Option) => {
     sync.sendMessage(props.sessionId, option.title);
   }, [props.sessionId]);
 
-  // Hide thinking messages unless experiments is enabled
-  if (props.message.isThinking && !experiments) {
+  // Hide thinking messages unless showThinking is enabled
+  if (props.message.isThinking && !showThinking) {
     return null;
   }
 
+  // Collapsible wrapper for thinking blocks
+  if (props.message.isThinking) {
+    return (
+      <View style={styles.thinkingContainer}>
+        <Pressable onPress={() => setExpanded(v => !v)} style={styles.thinkingHeader}>
+          <Text style={styles.agentEventText}>
+            {expanded ? t('message.thinkingExpanded') : t('message.thinkingCollapsed')}
+          </Text>
+        </Pressable>
+        {expanded && (
+          <View style={[styles.agentMessageContainer, { opacity: 0.5 }]}>
+            <MarkdownView markdown={props.message.text} onOptionPress={handleOptionPress} />
+          </View>
+        )}
+      </View>
+    );
+  }
+
   return (
-    <View style={[styles.agentMessageContainer, props.message.isThinking && { opacity: 0.3 }]}>
+    <View style={styles.agentMessageContainer}>
       <MarkdownView markdown={props.message.text} onOptionPress={handleOptionPress} />
     </View>
   );
@@ -214,6 +233,14 @@ const styles = StyleSheet.create((theme) => ({
   },
   toolContainer: {
     marginHorizontal: 8,
+  },
+  thinkingContainer: {
+    marginHorizontal: 16,
+    marginBottom: 12,
+  },
+  thinkingHeader: {
+    paddingVertical: 6,
+    paddingHorizontal: 4,
   },
   debugText: {
     color: theme.colors.agentEventText,

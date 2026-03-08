@@ -209,6 +209,9 @@ export const zhHant: TranslationStructure = {
         enhancedSessionWizard: '增強工作階段精靈',
         enhancedSessionWizardEnabled: '設定檔優先的工作階段啟動器已啟用',
         enhancedSessionWizardDisabled: '使用標準工作階段啟動器',
+        showThinking: '顯示AI思考',
+        showThinkingEnabled: 'AI推理區塊在訊息中可見',
+        showThinkingDisabled: 'AI推理區塊已隱藏',
     },
 
     errors: {
@@ -754,6 +757,8 @@ export const zhHant: TranslationStructure = {
         unknownEvent: '未知事件',
         usageLimitUntil: ({ time }: { time: string }) => `使用限制到 ${time}`,
         unknownTime: '未知時間',
+        thinkingExpanded: '思考中（點擊收合）',
+        thinkingCollapsed: '思考中...（點擊展開）',
     },
 
     codex: {

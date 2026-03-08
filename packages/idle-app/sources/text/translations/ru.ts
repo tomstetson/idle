@@ -190,6 +190,9 @@ export const ru: TranslationStructure = {
         enhancedSessionWizard: 'Улучшенный мастер сессий',
         enhancedSessionWizardEnabled: 'Лаунчер с профилем активен',
         enhancedSessionWizardDisabled: 'Используется стандартный лаунчер',
+        showThinking: 'Показать мышление AI',
+        showThinkingEnabled: 'Блоки рассуждений AI видны в сообщениях',
+        showThinkingDisabled: 'Блоки рассуждений AI скрыты',
     },
 
     errors: {
@@ -751,6 +754,8 @@ export const ru: TranslationStructure = {
         unknownEvent: 'Неизвестное событие',
         usageLimitUntil: ({ time }: { time: string }) => `Лимит использования достигнут до ${time}`,
         unknownTime: 'неизвестное время',
+        thinkingExpanded: 'Размышление (нажмите, чтобы свернуть)',
+        thinkingCollapsed: 'Размышление... (нажмите, чтобы развернуть)',
     },
 
     codex: {
