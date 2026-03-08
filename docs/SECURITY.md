@@ -13,8 +13,10 @@ This is the same model used by Signal: the server operator is untrusted by desig
 | All messages (your prompts, Claude's responses) | AES-256-GCM | Only your devices |
 | Session metadata (titles, summaries) | AES-256-GCM | Only your devices |
 | Claude's agent state | AES-256-GCM | Only your devices |
-| API keys you store (Claude, OpenAI, etc.) | privacy-kit sealed box | Only your devices |
+| Vendor API tokens (Anthropic, OpenAI, etc.) | AES-256 (server-side) | Server + your devices |
 | File contents you share | AES-256-GCM | Only your devices |
+
+> **Note on vendor API tokens:** Vendor API tokens are encrypted at rest on the server using the server's master secret. Unlike session content, these are *not* end-to-end encrypted — the server can decrypt them because it needs to make API calls to vendors (e.g., Anthropic, OpenAI) on your behalf. Session content and messages remain end-to-end encrypted and are readable only by your devices.
 
 ## What the Server CAN See
 
@@ -126,7 +128,7 @@ Being transparent about what isn't perfect:
 
 If you run your own Idle server:
 - **You still can't read user messages** — the encryption is client-side, not server-side
-- **Protect `IDLE_MASTER_SECRET`** — this is used for auth token signing, not message encryption. If leaked, an attacker could forge auth tokens (but still not read messages)
+- **Protect `IDLE_MASTER_SECRET`** — this is used for auth token signing and encrypting vendor API tokens at rest. If leaked, an attacker could forge auth tokens and decrypt stored vendor API keys (but still not read session messages, which are end-to-end encrypted)
 - **Back up PGlite data** — `data/pglite/` contains encrypted session data. Loss = loss of session history (but keys live on client devices)
 
 ## Technical Details
