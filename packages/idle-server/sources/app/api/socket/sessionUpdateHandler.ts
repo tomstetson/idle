@@ -24,7 +24,8 @@ export function sessionUpdateHandler(userId: string, socket: Socket, connection:
 
             // Resolve session
             const session = await db.session.findUnique({
-                where: { id: sid, accountId: userId }
+                where: { id: sid, accountId: userId },
+                select: { id: true, metadataVersion: true, metadata: true }
             });
             if (!session) {
                 return;
@@ -89,7 +90,8 @@ export function sessionUpdateHandler(userId: string, socket: Socket, connection:
                 where: {
                     id: sid,
                     accountId: userId
-                }
+                },
+                select: { id: true, agentStateVersion: true, agentState: true }
             });
             if (!session) {
                 callback({ result: 'error' });
@@ -194,7 +196,8 @@ export function sessionUpdateHandler(userId: string, socket: Socket, connection:
 
                 // Resolve session
                 const session = await db.session.findUnique({
-                    where: { id: sid, accountId: userId }
+                    where: { id: sid, accountId: userId },
+                    select: { id: true }
                 });
                 if (!session) {
                     return;
@@ -277,7 +280,8 @@ export function sessionUpdateHandler(userId: string, socket: Socket, connection:
 
             // Resolve session
             const session = await db.session.findUnique({
-                where: { id: sid, accountId: userId }
+                where: { id: sid, accountId: userId },
+                select: { id: true }
             });
             if (!session) {
                 return;
@@ -286,7 +290,8 @@ export function sessionUpdateHandler(userId: string, socket: Socket, connection:
             // Update last active at
             await db.session.update({
                 where: { id: sid },
-                data: { lastActiveAt: new Date(t), active: false }
+                data: { lastActiveAt: new Date(t), active: false },
+                select: { id: true }
             });
 
             // Emit session activity update

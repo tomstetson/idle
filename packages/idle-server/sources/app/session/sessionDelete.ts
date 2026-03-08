@@ -25,7 +25,8 @@ export async function sessionDelete(ctx: Context, sessionId: string): Promise<bo
             where: {
                 id: sessionId,
                 accountId: ctx.uid
-            }
+            },
+            select: { id: true }
         });
 
         if (!session) {

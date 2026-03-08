@@ -61,7 +61,8 @@ class ActivityCache {
         // Cache miss - check database
         try {
             const session = await db.session.findUnique({
-                where: { id: sessionId, accountId: userId }
+                where: { id: sessionId, accountId: userId },
+                select: { id: true, lastActiveAt: true }
             });
             
             if (session) {
@@ -102,7 +103,8 @@ class ActivityCache {
                         accountId: userId,
                         id: machineId
                     }
-                }
+                },
+                select: { id: true, lastActiveAt: true }
             });
             
             if (machine) {
@@ -189,7 +191,8 @@ class ActivityCache {
                 await Promise.all(sessionUpdates.map(update =>
                     db.session.update({
                         where: { id: update.id },
-                        data: { lastActiveAt: new Date(update.timestamp), active: true }
+                        data: { lastActiveAt: new Date(update.timestamp), active: true },
+                        select: { id: true }
                     })
                 ));
                 
@@ -210,7 +213,8 @@ class ActivityCache {
                                 id: update.id
                             }
                         },
-                        data: { lastActiveAt: new Date(update.timestamp) }
+                        data: { lastActiveAt: new Date(update.timestamp) },
+                        select: { id: true }
                     })
                 ));
                 
