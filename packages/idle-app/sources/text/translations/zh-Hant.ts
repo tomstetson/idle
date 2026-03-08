@@ -310,6 +310,8 @@ export const zhHant: TranslationStructure = {
         resumeConfirm: '在已連線的終端上恢復此工作階段？',
         resuming: '正在恢復工作階段...',
         resumeFailed: '恢復工作階段失敗',
+        machineGroupSessions: ({ count }: { count: number }) => `${count} 個工作階段`,
+        unknownMachine: '未知機器',
     },
 
     commandPalette: {

@@ -341,6 +341,8 @@ export const ja: TranslationStructure = {
         resumeConfirm: '接続されたターミナルでこのセッションを再開しますか？',
         resuming: 'セッションを再開中...',
         resumeFailed: 'セッションの再開に失敗しました',
+        machineGroupSessions: ({ count }: { count: number }) => `${count} セッション`,
+        unknownMachine: '不明なマシン',
     },
 
     commandPalette: {

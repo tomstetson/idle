@@ -401,6 +401,8 @@ export const ru: TranslationStructure = {
         resumeConfirm: 'Возобновить эту сессию на подключённом терминале?',
         resuming: 'Возобновление сессии...',
         resumeFailed: 'Не удалось возобновить сессию',
+        machineGroupSessions: ({ count }: { count: number }) => count === 1 ? '1 сессия' : `${count} сессий`,
+        unknownMachine: 'Неизвестная машина',
     },
 
     commandPalette: {

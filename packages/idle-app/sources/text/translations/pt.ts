@@ -309,6 +309,8 @@ export const pt: TranslationStructure = {
         resumeConfirm: 'Retomar esta sessão no terminal conectado?',
         resuming: 'Retomando sessão...',
         resumeFailed: 'Falha ao retomar a sessão',
+        machineGroupSessions: ({ count }: { count: number }) => count === 1 ? '1 sessão' : `${count} sessões`,
+        unknownMachine: 'Máquina desconhecida',
     },
 
     commandPalette: {

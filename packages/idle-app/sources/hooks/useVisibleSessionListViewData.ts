@@ -15,6 +15,7 @@ export function useVisibleSessionListViewData(): SessionListViewItem[] | null {
 
         const filtered: SessionListViewItem[] = [];
         let pendingProjectGroup: SessionListViewItem | null = null;
+        let pendingMachineGroup: SessionListViewItem | null = null;
 
         for (const item of data) {
             if (item.type === 'project-group') {
@@ -22,8 +23,17 @@ export function useVisibleSessionListViewData(): SessionListViewItem[] | null {
                 continue;
             }
 
+            if (item.type === 'machine-group') {
+                pendingMachineGroup = item;
+                continue;
+            }
+
             if (item.type === 'session') {
                 if (item.session.active) {
+                    if (pendingMachineGroup) {
+                        filtered.push(pendingMachineGroup);
+                        pendingMachineGroup = null;
+                    }
                     if (pendingProjectGroup) {
                         filtered.push(pendingProjectGroup);
                         pendingProjectGroup = null;
@@ -36,6 +46,7 @@ export function useVisibleSessionListViewData(): SessionListViewItem[] | null {
             pendingProjectGroup = null;
 
             if (item.type === 'active-sessions') {
+                pendingMachineGroup = null;
                 filtered.push(item);
             }
         }

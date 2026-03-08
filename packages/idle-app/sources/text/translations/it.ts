@@ -338,6 +338,8 @@ export const it: TranslationStructure = {
         resumeConfirm: 'Riprendere questa sessione sul terminale connesso?',
         resuming: 'Ripresa sessione...',
         resumeFailed: 'Impossibile riprendere la sessione',
+        machineGroupSessions: ({ count }: { count: number }) => count === 1 ? '1 sessione' : `${count} sessioni`,
+        unknownMachine: 'Macchina sconosciuta',
     },
 
     commandPalette: {

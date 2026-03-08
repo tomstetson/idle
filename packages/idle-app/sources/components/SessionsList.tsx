@@ -5,7 +5,7 @@ import { Text } from '@/components/StyledText';
 import { usePathname } from 'expo-router';
 import { SessionListViewItem } from '@/sync/storage';
 import { Ionicons } from '@expo/vector-icons';
-import { getSessionName, useSessionStatus, getSessionSubtitle, getSessionAvatarId } from '@/utils/sessionUtils';
+import { getSessionName, useSessionStatus, getSessionSubtitle, getSessionAvatarId, getOSIconName } from '@/utils/sessionUtils';
 import { Avatar } from './Avatar';
 import { ActiveSessionsGroup } from './ActiveSessionsGroup';
 import { ActiveSessionsGroupCompact } from './ActiveSessionsGroupCompact';
@@ -70,6 +70,35 @@ const stylesheet = StyleSheet.create((theme) => ({
         fontSize: 11,
         color: theme.colors.textSecondary,
         marginTop: 2,
+        ...Typography.default(),
+    },
+    machineGroupHeader: {
+        flexDirection: 'row',
+        alignItems: 'center',
+        paddingHorizontal: 24,
+        paddingTop: 20,
+        paddingBottom: 8,
+        backgroundColor: theme.colors.groupped.background,
+    },
+    machineGroupChevron: {
+        marginRight: 6,
+        color: theme.colors.groupped.sectionTitle,
+    },
+    machineGroupIcon: {
+        marginRight: 6,
+        color: theme.colors.groupped.sectionTitle,
+    },
+    machineGroupName: {
+        fontSize: 14,
+        fontWeight: '600',
+        color: theme.colors.groupped.sectionTitle,
+        letterSpacing: 0.1,
+        flex: 1,
+        ...Typography.default('semiBold'),
+    },
+    machineGroupCount: {
+        fontSize: 12,
+        color: theme.colors.textSecondary,
         ...Typography.default(),
     },
     sessionItem: {
@@ -205,12 +234,53 @@ export function SessionsList() {
     const router = useRouter();
     const selectable = isTablet;
     const experiments = useSetting('experiments');
+
+    // Track which machine groups are collapsed (by machineId)
+    const [collapsedMachines, setCollapsedMachines] = React.useState<Set<string>>(new Set());
+    const toggleMachineCollapsed = React.useCallback((machineId: string) => {
+        setCollapsedMachines(prev => {
+            const next = new Set(prev);
+            if (next.has(machineId)) {
+                next.delete(machineId);
+            } else {
+                next.add(machineId);
+            }
+            return next;
+        });
+    }, []);
+
+    // Filter out items belonging to collapsed machine groups
+    const visibleData = React.useMemo(() => {
+        if (!data || collapsedMachines.size === 0) return data;
+
+        const result: SessionListViewItem[] = [];
+        let currentCollapsedMachine: string | null = null;
+
+        for (const item of data) {
+            if (item.type === 'machine-group') {
+                // Always show machine group headers
+                result.push(item);
+                currentCollapsedMachine = collapsedMachines.has(item.machineId) ? item.machineId : null;
+                continue;
+            }
+
+            // If we're inside a collapsed machine group, skip non-machine-group items
+            if (currentCollapsedMachine !== null) {
+                continue;
+            }
+
+            result.push(item);
+        }
+
+        return result;
+    }, [data, collapsedMachines]);
+
     const dataWithSelected = selectable ? React.useMemo(() => {
-        return data?.map(item => ({
+        return visibleData?.map(item => ({
             ...item,
             selected: pathname.startsWith(`/session/${item.type === 'session' ? item.session.id : ''}`)
         }));
-    }, [data, pathname]) : data;
+    }, [visibleData, pathname]) : visibleData;
 
     // Request review
     React.useEffect(() => {
@@ -231,6 +301,7 @@ export function SessionsList() {
             case 'header': return `header-${item.title}-${index}`;
             case 'active-sessions': return 'active-sessions';
             case 'project-group': return `project-group-${item.machine.id}-${item.displayPath}-${index}`;
+            case 'machine-group': return `machine-group-${item.machineId}`;
             case 'session': return `session-${item.session.id}`;
         }
     }, []);
@@ -274,13 +345,41 @@ export function SessionsList() {
                     </View>
                 );
 
+            case 'machine-group': {
+                const isCollapsed = collapsedMachines.has(item.machineId);
+                const displayName = item.machineName || t('session.unknownMachine');
+                return (
+                    <Pressable
+                        style={styles.machineGroupHeader}
+                        onPress={() => toggleMachineCollapsed(item.machineId)}
+                    >
+                        <Ionicons
+                            name={isCollapsed ? 'chevron-forward' : 'chevron-down'}
+                            size={14}
+                            style={styles.machineGroupChevron}
+                        />
+                        <Ionicons
+                            name={getOSIconName(item.platform) as any}
+                            size={14}
+                            style={styles.machineGroupIcon}
+                        />
+                        <Text style={styles.machineGroupName} numberOfLines={1}>
+                            {displayName}
+                        </Text>
+                        <Text style={styles.machineGroupCount}>
+                            {t('session.machineGroupSessions', { count: item.sessionCount })}
+                        </Text>
+                    </Pressable>
+                );
+            }
+
             case 'session':
                 // Determine card styling based on position within date group
                 const prevItem = index > 0 && dataWithSelected ? dataWithSelected[index - 1] : null;
                 const nextItem = index < (dataWithSelected?.length || 0) - 1 && dataWithSelected ? dataWithSelected[index + 1] : null;
 
                 const isFirst = prevItem?.type === 'header';
-                const isLast = nextItem?.type === 'header' || nextItem == null || nextItem?.type === 'active-sessions';
+                const isLast = nextItem?.type === 'header' || nextItem == null || nextItem?.type === 'active-sessions' || nextItem?.type === 'machine-group';
                 const isSingle = isFirst && isLast;
 
                 return (
@@ -293,7 +392,7 @@ export function SessionsList() {
                     />
                 );
         }
-    }, [pathname, dataWithSelected, compactSessionView]);
+    }, [pathname, dataWithSelected, compactSessionView, collapsedMachines, toggleMachineCollapsed]);
 
 
     // Remove this section as we'll use FlatList for all items now

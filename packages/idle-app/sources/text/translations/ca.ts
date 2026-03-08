@@ -309,6 +309,8 @@ export const ca: TranslationStructure = {
         resumeConfirm: 'Reprendre aquesta sessió al terminal connectat?',
         resuming: 'Reprenent sessió...',
         resumeFailed: 'No s\'ha pogut reprendre la sessió',
+        machineGroupSessions: ({ count }: { count: number }) => count === 1 ? '1 sessió' : `${count} sessions`,
+        unknownMachine: 'Màquina desconeguda',
     },
 
     commandPalette: {

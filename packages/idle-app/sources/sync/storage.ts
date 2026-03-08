@@ -64,6 +64,7 @@ export type SessionListViewItem =
     | { type: 'header'; title: string }
     | { type: 'active-sessions'; sessions: Session[] }
     | { type: 'project-group'; displayPath: string; machine: Machine }
+    | { type: 'machine-group'; machineId: string; machineName: string; platform?: string; sessionCount: number }
     | { type: 'session'; session: Session; variant?: 'default' | 'no-path' };
 
 // Legacy type for backward compatibility - to be removed
@@ -150,7 +151,8 @@ interface StorageState {
 
 // Helper function to build unified list view data from sessions and machines
 function buildSessionListViewData(
-    sessions: Record<string, Session>
+    sessions: Record<string, Session>,
+    machines: Record<string, Machine>
 ): SessionListViewItem[] {
     // Separate active and inactive sessions
     const activeSessions: Session[] = [];
@@ -176,69 +178,104 @@ function buildSessionListViewData(
         listData.push({ type: 'active-sessions', sessions: activeSessions });
     }
 
-    // Group inactive sessions by date
+    // Group inactive sessions by machine, then by date within each machine group
+    const machineGroups = new Map<string, Session[]>();
+
+    for (const session of inactiveSessions) {
+        const machineId = session.metadata?.machineId || 'unknown';
+        let group = machineGroups.get(machineId);
+        if (!group) {
+            group = [];
+            machineGroups.set(machineId, group);
+        }
+        group.push(session);
+    }
+
+    // Sort machine groups by most recent session (newest first)
+    const sortedMachineGroups = Array.from(machineGroups.entries()).sort(
+        ([, sessionsA], [, sessionsB]) => sessionsB[0].updatedAt - sessionsA[0].updatedAt
+    );
+
     const now = new Date();
     const today = new Date(now.getFullYear(), now.getMonth(), now.getDate());
     const yesterday = new Date(today.getTime() - 24 * 60 * 60 * 1000);
 
-    let currentDateGroup: Session[] = [];
-    let currentDateString: string | null = null;
+    for (const [machineId, machineSessions] of sortedMachineGroups) {
+        // Resolve machine display name
+        const machine = machineId !== 'unknown' ? machines[machineId] : null;
+        const machineName = machine?.metadata?.displayName
+            || machine?.metadata?.host
+            || (machineId !== 'unknown' ? machineId : '');
 
-    for (const session of inactiveSessions) {
-        const sessionDate = new Date(session.updatedAt);
-        const dateString = sessionDate.toDateString();
+        // Add machine group header
+        listData.push({
+            type: 'machine-group',
+            machineId,
+            machineName,
+            platform: machine?.metadata?.platform,
+            sessionCount: machineSessions.length,
+        });
 
-        if (currentDateString !== dateString) {
-            // Process previous group
-            if (currentDateGroup.length > 0 && currentDateString) {
-                const groupDate = new Date(currentDateString);
-                const sessionDateOnly = new Date(groupDate.getFullYear(), groupDate.getMonth(), groupDate.getDate());
+        // Group sessions within this machine by date
+        let currentDateGroup: Session[] = [];
+        let currentDateString: string | null = null;
 
-                let headerTitle: string;
-                if (sessionDateOnly.getTime() === today.getTime()) {
-                    headerTitle = 'Today';
-                } else if (sessionDateOnly.getTime() === yesterday.getTime()) {
-                    headerTitle = 'Yesterday';
-                } else {
-                    const diffTime = today.getTime() - sessionDateOnly.getTime();
-                    const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-                    headerTitle = `${diffDays} days ago`;
+        for (const session of machineSessions) {
+            const sessionDate = new Date(session.updatedAt);
+            const dateString = sessionDate.toDateString();
+
+            if (currentDateString !== dateString) {
+                // Process previous date group
+                if (currentDateGroup.length > 0 && currentDateString) {
+                    const groupDate = new Date(currentDateString);
+                    const sessionDateOnly = new Date(groupDate.getFullYear(), groupDate.getMonth(), groupDate.getDate());
+
+                    let headerTitle: string;
+                    if (sessionDateOnly.getTime() === today.getTime()) {
+                        headerTitle = 'Today';
+                    } else if (sessionDateOnly.getTime() === yesterday.getTime()) {
+                        headerTitle = 'Yesterday';
+                    } else {
+                        const diffTime = today.getTime() - sessionDateOnly.getTime();
+                        const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                        headerTitle = `${diffDays} days ago`;
+                    }
+
+                    listData.push({ type: 'header', title: headerTitle });
+                    currentDateGroup.forEach(sess => {
+                        listData.push({ type: 'session', session: sess });
+                    });
                 }
 
-                listData.push({ type: 'header', title: headerTitle });
-                currentDateGroup.forEach(sess => {
-                    listData.push({ type: 'session', session: sess });
-                });
+                // Start new date group
+                currentDateString = dateString;
+                currentDateGroup = [session];
+            } else {
+                currentDateGroup.push(session);
+            }
+        }
+
+        // Process final date group for this machine
+        if (currentDateGroup.length > 0 && currentDateString) {
+            const groupDate = new Date(currentDateString);
+            const sessionDateOnly = new Date(groupDate.getFullYear(), groupDate.getMonth(), groupDate.getDate());
+
+            let headerTitle: string;
+            if (sessionDateOnly.getTime() === today.getTime()) {
+                headerTitle = 'Today';
+            } else if (sessionDateOnly.getTime() === yesterday.getTime()) {
+                headerTitle = 'Yesterday';
+            } else {
+                const diffTime = today.getTime() - sessionDateOnly.getTime();
+                const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+                headerTitle = `${diffDays} days ago`;
             }
 
-            // Start new group
-            currentDateString = dateString;
-            currentDateGroup = [session];
-        } else {
-            currentDateGroup.push(session);
+            listData.push({ type: 'header', title: headerTitle });
+            currentDateGroup.forEach(sess => {
+                listData.push({ type: 'session', session: sess });
+            });
         }
-    }
-
-    // Process final group
-    if (currentDateGroup.length > 0 && currentDateString) {
-        const groupDate = new Date(currentDateString);
-        const sessionDateOnly = new Date(groupDate.getFullYear(), groupDate.getMonth(), groupDate.getDate());
-
-        let headerTitle: string;
-        if (sessionDateOnly.getTime() === today.getTime()) {
-            headerTitle = 'Today';
-        } else if (sessionDateOnly.getTime() === yesterday.getTime()) {
-            headerTitle = 'Yesterday';
-        } else {
-            const diffTime = today.getTime() - sessionDateOnly.getTime();
-            const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
-            headerTitle = `${diffDays} days ago`;
-        }
-
-        listData.push({ type: 'header', title: headerTitle });
-        currentDateGroup.forEach(sess => {
-            listData.push({ type: 'session', session: sess });
-        });
     }
 
     return listData;
@@ -449,7 +486,8 @@ export const storage = create<StorageState>()((set, get) => {
 
             // Build new unified list view data
             const sessionListViewData = buildSessionListViewData(
-                mergedSessions
+                mergedSessions,
+                state.machines
             );
 
             // Update project manager with current sessions and machines
@@ -768,7 +806,8 @@ export const storage = create<StorageState>()((set, get) => {
 
             // Rebuild sessionListViewData to update the UI immediately
             const sessionListViewData = buildSessionListViewData(
-                updatedSessions
+                updatedSessions,
+                state.machines
             );
 
             return {
@@ -859,7 +898,8 @@ export const storage = create<StorageState>()((set, get) => {
 
             // Rebuild sessionListViewData to reflect machine changes
             const sessionListViewData = buildSessionListViewData(
-                state.sessions
+                state.sessions,
+                mergedMachines
             );
 
             return {
@@ -932,7 +972,7 @@ export const storage = create<StorageState>()((set, get) => {
             saveSessionPermissionModes(modes);
             
             // Rebuild sessionListViewData without the deleted session
-            const sessionListViewData = buildSessionListViewData(remainingSessions);
+            const sessionListViewData = buildSessionListViewData(remainingSessions, state.machines);
             
             return {
                 ...state,

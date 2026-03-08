@@ -311,6 +311,8 @@ export const zhHans: TranslationStructure = {
         resumeConfirm: '在已连接的终端上恢复此会话？',
         resuming: '正在恢复会话...',
         resumeFailed: '恢复会话失败',
+        machineGroupSessions: ({ count }: { count: number }) => `${count} 个会话`,
+        unknownMachine: '未知机器',
     },
 
     commandPalette: {

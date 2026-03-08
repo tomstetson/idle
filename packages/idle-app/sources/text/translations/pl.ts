@@ -320,6 +320,8 @@ export const pl: TranslationStructure = {
         resumeConfirm: 'Wznowić tę sesję na podłączonym terminalu?',
         resuming: 'Wznawianie sesji...',
         resumeFailed: 'Nie udało się wznowić sesji',
+        machineGroupSessions: ({ count }: { count: number }) => count === 1 ? '1 sesja' : `${count} sesji`,
+        unknownMachine: 'Nieznana maszyna',
     },
 
     commandPalette: {

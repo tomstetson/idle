@@ -309,6 +309,8 @@ export const es: TranslationStructure = {
         resumeConfirm: '¿Reanudar esta sesión en el terminal conectado?',
         resuming: 'Reanudando sesión...',
         resumeFailed: 'No se pudo reanudar la sesión',
+        machineGroupSessions: ({ count }: { count: number }) => count === 1 ? '1 sesión' : `${count} sesiones`,
+        unknownMachine: 'Máquina desconocida',
     },
 
     commandPalette: {

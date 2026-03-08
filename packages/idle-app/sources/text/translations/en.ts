@@ -324,6 +324,8 @@ export const en: TranslationStructure = {
         resumeConfirm: 'Resume this session on the connected terminal?',
         resuming: 'Resuming session...',
         resumeFailed: 'Failed to resume session',
+        machineGroupSessions: ({ count }: { count: number }) => count === 1 ? '1 session' : `${count} sessions`,
+        unknownMachine: 'Unknown Machine',
     },
 
     commandPalette: {
