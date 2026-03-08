@@ -39,17 +39,17 @@ test.describe('Terminal Connect Flow', () => {
 
         await page.goto(`/terminal/connect#key=${publicKeyB64url}`);
 
-        // The page should render the terminal connect UI.
-        // Look for key UI elements: the "Accept Connection" button or the
-        // "Connect Terminal" heading text.
-        const acceptButton = page.getByRole('button', { name: /accept connection/i });
-        const connectHeading = page.getByText(/connect terminal/i);
+        // React Native Web renders Pressable as <div role="button"> without
+        // standard button semantics. Use text content matching instead.
+        // Wait for the page to render the connect UI.
+        await page.waitForTimeout(2000);
 
-        // At least one of these should be visible — the page loaded successfully
-        const hasAcceptButton = await acceptButton.isVisible().catch(() => false);
-        const hasConnectHeading = await connectHeading.isVisible().catch(() => false);
+        // Check page content for key UI text
+        const pageContent = await page.textContent('body') ?? '';
+        const hasAcceptText = /accept connection/i.test(pageContent);
+        const hasConnectText = /connect terminal/i.test(pageContent);
 
-        expect(hasAcceptButton || hasConnectHeading).toBe(true);
+        expect(hasAcceptText || hasConnectText).toBe(true);
     });
 
     test('terminal connect page without key handles gracefully', async ({ page }) => {
@@ -98,8 +98,11 @@ test.describe('Terminal Connect Flow', () => {
         const publicKeyB64url = toBase64url(publicKeyB64);
         await page.goto(`/terminal/connect#key=${publicKeyB64url}`);
 
-        // Step 4: Look for the "Accept Connection" button and click it
-        const acceptButton = page.getByRole('button', { name: /accept connection/i });
+        // Step 4: Look for the "Accept Connection" button and click it.
+        // React Native Web renders Pressable with role="button" but Playwright
+        // getByRole doesn't match it reliably. Use locator with text matching.
+        await page.waitForTimeout(2000);
+        const acceptButton = page.locator('[role="button"]', { hasText: /accept connection/i });
         const isVisible = await acceptButton.isVisible().catch(() => false);
 
         if (isVisible) {
