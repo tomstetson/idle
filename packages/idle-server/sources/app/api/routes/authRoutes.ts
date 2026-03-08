@@ -60,6 +60,9 @@ export function authRoutes(app: Fastify) {
                 })]),
                 401: z.object({
                     error: z.literal('Invalid public key')
+                }),
+                410: z.object({
+                    error: z.literal('Auth request expired')
                 })
             }
         },
@@ -78,13 +81,23 @@ export function authRoutes(app: Fastify) {
         }
 
         const publicKeyHex = privacyKit.encodeHex(publicKey);
-        log({ module: 'auth-request' }, `Terminal auth request - publicKey hex: ${publicKeyHex}`);
+        log({ module: 'auth-request' }, `Terminal auth request - publicKey hex: ${publicKeyHex.substring(0, 8)}...`);
 
         const answer = await db.terminalAuthRequest.upsert({
             where: { publicKey: publicKeyHex },
             update: {},
             create: { publicKey: publicKeyHex, supportsV2: request.body.supportsV2 ?? false }
         });
+
+        // D11: Reject expired terminal auth requests (24-hour TTL)
+        const AUTH_REQUEST_TTL_MS = 24 * 60 * 60 * 1000;
+        const isExpired = Date.now() - answer.createdAt.getTime() > AUTH_REQUEST_TTL_MS;
+        if (isExpired) {
+            // Clean up the expired request so a fresh one can be created
+            await db.terminalAuthRequest.delete({ where: { id: answer.id } });
+            log({ module: 'auth-request' }, `Terminal auth request expired (created ${answer.createdAt.toISOString()}), deleted`);
+            return reply.code(410).send({ error: 'Auth request expired' });
+        }
 
         if (answer.response && answer.responseAccountId) {
             const token = await auth.createToken(answer.responseAccountId!, { session: answer.id });
@@ -145,7 +158,7 @@ export function authRoutes(app: Fastify) {
             })
         }
     }, async (request, reply) => {
-        log({ module: 'auth-response' }, `Auth response endpoint hit - user: ${request.userId}, publicKey: ${request.body.publicKey.substring(0, 20)}...`);
+        log({ module: 'auth-response' }, `Auth response endpoint hit - user: ${request.userId}, publicKey: ${request.body.publicKey.substring(0, 8)}...`);
         const tweetnacl = (await import("tweetnacl")).default;
         const publicKey = privacyKit.decodeBase64(request.body.publicKey);
         const isValid = tweetnacl.box.publicKeyLength === publicKey.length;
@@ -154,18 +167,18 @@ export function authRoutes(app: Fastify) {
             return reply.code(401).send({ error: 'Invalid public key' });
         }
         const publicKeyHex = privacyKit.encodeHex(publicKey);
-        log({ module: 'auth-response' }, `Looking for auth request with publicKey hex: ${publicKeyHex}`);
+        log({ module: 'auth-response' }, `Looking for auth request with publicKey hex: ${publicKeyHex.substring(0, 8)}...`);
         const authRequest = await db.terminalAuthRequest.findUnique({
             where: { publicKey: publicKeyHex }
         });
         if (!authRequest) {
-            log({ module: 'auth-response' }, `Auth request not found for publicKey: ${publicKeyHex}`);
+            log({ module: 'auth-response' }, `Auth request not found for publicKey: ${publicKeyHex.substring(0, 8)}...`);
             // Let's also check what auth requests exist
             const allRequests = await db.terminalAuthRequest.findMany({
                 take: 5,
                 orderBy: { createdAt: 'desc' }
             });
-            log({ module: 'auth-response' }, `Recent auth requests in DB: ${JSON.stringify(allRequests.map(r => ({ id: r.id, publicKey: r.publicKey.substring(0, 20) + '...', hasResponse: !!r.response })))}`);
+            log({ module: 'auth-response' }, `Recent auth requests in DB: ${JSON.stringify(allRequests.map(r => ({ id: r.id, publicKey: r.publicKey.substring(0, 8) + '...', hasResponse: !!r.response })))}`);
             return reply.code(404).send({ error: 'Request not found' });
         }
         if (!authRequest.response) {
