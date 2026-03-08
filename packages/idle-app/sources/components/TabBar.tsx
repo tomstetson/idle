@@ -2,11 +2,11 @@ import * as React from 'react';
 import { Platform, View, Pressable, Text } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
-import { Image } from 'expo-image';
 import { t } from '@/text';
 import { Typography } from '@/constants/Typography';
 import { layout } from '@/components/layout';
 import { useInboxHasContent } from '@/hooks/useInboxHasContent';
+import { IdleTabIcon, type IdleTabIconType } from '@/brand/IdleTabIcon';
 
 export type TabType = 'inbox' | 'sessions' | 'settings';
 
@@ -85,12 +85,11 @@ export const TabBar = React.memo(({ activeTab, onTabPress, inboxBadgeCount = 0 }
     const insets = useSafeAreaInsets();
     const inboxHasContent = useInboxHasContent();
 
-    const tabs: { key: TabType; icon: any; label: string }[] = React.useMemo(() => {
-        // NOTE: Zen tab removed - the feature never got to a useful state
+    const tabs: { key: TabType; label: string }[] = React.useMemo(() => {
         return [
-            { key: 'inbox', icon: require('@/assets/images/brutalist/Brutalism 27.png'), label: t('tabs.inbox') },
-            { key: 'sessions', icon: require('@/assets/images/brutalist/Brutalism 15.png'), label: t('tabs.sessions') },
-            { key: 'settings', icon: require('@/assets/images/brutalist/Brutalism 9.png'), label: t('tabs.settings') },
+            { key: 'inbox', label: t('tabs.inbox') },
+            { key: 'sessions', label: t('tabs.sessions') },
+            { key: 'settings', label: t('tabs.settings') },
         ];
     }, []);
 
@@ -99,7 +98,7 @@ export const TabBar = React.memo(({ activeTab, onTabPress, inboxBadgeCount = 0 }
             <View style={styles.innerContainer}>
                 {tabs.map((tab) => {
                     const isActive = activeTab === tab.key;
-                    
+                    const iconColor = isActive ? theme.colors.text : theme.colors.textSecondary;
                     return (
                         <Pressable
                             key={tab.key}
@@ -108,11 +107,10 @@ export const TabBar = React.memo(({ activeTab, onTabPress, inboxBadgeCount = 0 }
                             hitSlop={8}
                         >
                             <View style={styles.tabContent}>
-                                <Image
-                                    source={tab.icon}
-                                    contentFit="contain"
-                                    style={[{ width: 24, height: 24 }]}
-                                    tintColor={isActive ? theme.colors.text : theme.colors.textSecondary}
+                                <IdleTabIcon
+                                    tab={tab.key as IdleTabIconType}
+                                    size={24}
+                                    color={iconColor}
                                 />
                                 {tab.key === 'inbox' && inboxBadgeCount > 0 && (
                                     <View style={styles.badge}>

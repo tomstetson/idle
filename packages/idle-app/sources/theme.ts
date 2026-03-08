@@ -41,7 +41,7 @@ export const lightTheme = {
         text: '#000000',
         textDestructive: Platform.select({ ios: '#FF3B30', web: '#FF3B30', default: '#F44336' }),
         textSecondary: Platform.select({ ios: '#8E8E93', web: '#8E8E93', default: '#49454F' }),
-        textLink: '#2BACCC',
+        textLink: '#00C9B1', // Idle Cyan (brand accent)
         deleteAction: '#FF6B6B', // Delete/remove button color
         warningCritical: '#FF3B30',
         warning: '#8E8E93',
@@ -70,7 +70,7 @@ export const lightTheme = {
         },
         header: {
             background: '#ffffff',
-            tint: '#18171C'
+            tint: '#0D3B47', // Idle Teal (brand)
         },
         switch: {
             track: {
@@ -250,7 +250,7 @@ export const darkTheme = {
         text: '#ffffff',
         textDestructive: Platform.select({ ios: '#FF453A', web: '#FF453A', default: '#F48FB1' }),
         textSecondary: Platform.select({ ios: '#8E8E93', web: '#8E8E93', default: '#CAC4D0' }),
-        textLink: '#2BACCC',
+        textLink: '#00C9B1', // Idle Cyan (brand accent)
         deleteAction: '#FF6B6B', // Delete/remove button color (same in both themes)
         warningCritical: '#FF453A',
         warning: '#8E8E93',
@@ -275,7 +275,7 @@ export const darkTheme = {
 
         header: {
             background: Platform.select({ ios: '#18171C', web: '#18171C', default: '#212121' }),
-            tint: '#ffffff'
+            tint: '#FFFFFF',
         },
         switch: {
             track: {

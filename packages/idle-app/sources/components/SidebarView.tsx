@@ -10,8 +10,9 @@ import { FABWide } from './FABWide';
 import { VoiceAssistantStatusBar } from './VoiceAssistantStatusBar';
 import { useRealtimeStatus } from '@/sync/storage';
 import { MainView } from './MainView';
-import { Image } from 'expo-image';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
+import { IdleLogoMark } from '@/brand/IdleLogoMark';
+import { IdleTabIcon } from '@/brand/IdleTabIcon';
 import { t } from '@/text';
 import { useInboxHasContent } from '@/hooks/useInboxHasContent';
 import { Ionicons } from '@expo/vector-icons';
@@ -221,11 +222,7 @@ export const SidebarView = React.memo(() => {
                 <View style={[styles.header, { height: headerHeight }]}>
                     {/* Logo - always first */}
                     <View style={styles.logoContainer}>
-                        <Image
-                            source={theme.dark ? require('@/assets/images/logo-white.png') : require('@/assets/images/logo-black.png')}
-                            contentFit="contain"
-                            style={[styles.logo, { height: 24, width: 24 }]}
-                        />
+                        <IdleLogoMark size={24} color={theme.colors.header.tint} />
                     </View>
 
                     {/* Left-justified title - in document flow, prevents overlap */}
@@ -242,12 +239,7 @@ export const SidebarView = React.memo(() => {
                             hitSlop={15}
                             style={styles.notificationButton}
                         >
-                            <Image
-                                source={require('@/assets/images/brutalist/Brutalism 27.png')}
-                                contentFit="contain"
-                                style={[{ width: 32, height: 32 }]}
-                                tintColor={theme.colors.header.tint}
-                            />
+                            <IdleTabIcon tab="inbox" size={32} color={theme.colors.header.tint} />
                             {friendRequests.length > 0 && (
                                 <View style={styles.badge}>
                                     <Text style={styles.badgeText}>
@@ -263,12 +255,7 @@ export const SidebarView = React.memo(() => {
                             onPress={() => router.push('/settings')}
                             hitSlop={15}
                         >
-                            <Image
-                                source={require('@/assets/images/brutalist/Brutalism 9.png')}
-                                contentFit="contain"
-                                style={[{ width: 32, height: 32 }]}
-                                tintColor={theme.colors.header.tint}
-                            />
+                            <IdleTabIcon tab="settings" size={32} color={theme.colors.header.tint} />
                         </Pressable>
                         <Pressable
                             onPress={handleNewSession}

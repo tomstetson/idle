@@ -1,6 +1,7 @@
 import { View, ScrollView, Pressable, Platform, Linking } from 'react-native';
 import { Image } from 'expo-image';
 import * as React from 'react';
+import { IdleWordmark } from '@/brand/IdleWordmark';
 import { Text } from '@/components/StyledText';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -154,13 +155,10 @@ export const SettingsView = React.memo(function SettingsView() {
                             )}
                         </>
                     ) : (
-                        // Logo view: Original logo + version
+                        // Logo view: Idle wordmark + version
                         <>
-                            <Image
-                                source={theme.dark ? require('@/assets/images/logotype-light.png') : require('@/assets/images/logotype-dark.png')}
-                                contentFit="contain"
-                                style={{ width: 300, height: 90, marginBottom: 12 }}
-                            />
+                            <IdleWordmark fontSize={32} />
+                            <View style={{ height: 12 }} />
                         </>
                     )}
                 </View>

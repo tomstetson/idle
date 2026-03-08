@@ -53,3 +53,6 @@ CLAUDE.local.md
 notes/
 # ralphex progress logs
 progress*.txt
+
+# Added by ggshield
+.cache_ggshield
