@@ -6,6 +6,7 @@ import { log } from "@/utils/log";
 import { randomKeyNaked } from "@/utils/randomKeyNaked";
 import { allocateUserSeq } from "@/storage/seq";
 import { buildNewMachineUpdate, buildUpdateMachineUpdate } from "@/app/events/eventRouter";
+import { encodeBytesField } from "@/utils/encodeBytesField";
 
 export function machinesRoutes(app: Fastify) {
     app.post('/v1/machines', {
@@ -40,9 +41,9 @@ export function machinesRoutes(app: Fastify) {
                     metadataVersion: machine.metadataVersion,
                     daemonState: machine.daemonState,
                     daemonStateVersion: machine.daemonStateVersion,
-                    dataEncryptionKey: machine.dataEncryptionKey ? Buffer.from(machine.dataEncryptionKey).toString('base64') : null,
+                    dataEncryptionKey: encodeBytesField(machine.dataEncryptionKey),
                     active: machine.active,
-                    activeAt: machine.lastActiveAt.getTime(),  // Return as activeAt for API consistency
+                    activeAt: machine.lastActiveAt.getTime(),
                     createdAt: machine.createdAt.getTime(),
                     updatedAt: machine.updatedAt.getTime()
                 }
@@ -72,9 +73,6 @@ export function machinesRoutes(app: Fastify) {
                     `UPDATE "Machine" SET "dataEncryptionKey" = decode($1, 'base64') WHERE "id" = $2`,
                     dataEncryptionKey, id
                 );
-                // Re-fetch to get the updated machine
-                const updated = await db.machine.findUnique({ where: { id } });
-                if (updated) Object.assign(newMachine, updated);
             }
 
             // Emit both new-machine and update-machine events for backward compatibility
@@ -108,9 +106,9 @@ export function machinesRoutes(app: Fastify) {
                     metadataVersion: newMachine.metadataVersion,
                     daemonState: newMachine.daemonState,
                     daemonStateVersion: newMachine.daemonStateVersion,
-                    dataEncryptionKey: newMachine.dataEncryptionKey ? Buffer.from(newMachine.dataEncryptionKey).toString('base64') : null,
+                    dataEncryptionKey: dataEncryptionKey || null,
                     active: newMachine.active,
-                    activeAt: newMachine.lastActiveAt.getTime(),  // Return as activeAt for API consistency
+                    activeAt: newMachine.lastActiveAt.getTime(),
                     createdAt: newMachine.createdAt.getTime(),
                     updatedAt: newMachine.updatedAt.getTime()
                 }
@@ -136,7 +134,7 @@ export function machinesRoutes(app: Fastify) {
             metadataVersion: m.metadataVersion,
             daemonState: m.daemonState,
             daemonStateVersion: m.daemonStateVersion,
-            dataEncryptionKey: m.dataEncryptionKey ? Buffer.from(m.dataEncryptionKey).toString('base64') : null,
+            dataEncryptionKey: encodeBytesField(m.dataEncryptionKey),
             seq: m.seq,
             active: m.active,
             activeAt: m.lastActiveAt.getTime(),
@@ -175,7 +173,7 @@ export function machinesRoutes(app: Fastify) {
                 metadataVersion: machine.metadataVersion,
                 daemonState: machine.daemonState,
                 daemonStateVersion: machine.daemonStateVersion,
-                dataEncryptionKey: machine.dataEncryptionKey ? Buffer.from(machine.dataEncryptionKey).toString('base64') : null,
+                dataEncryptionKey: encodeBytesField(machine.dataEncryptionKey),
                 seq: machine.seq,
                 active: machine.active,
                 activeAt: machine.lastActiveAt.getTime(),

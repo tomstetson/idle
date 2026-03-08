@@ -7,6 +7,7 @@ import { log } from "@/utils/log";
 import { randomKeyNaked } from "@/utils/randomKeyNaked";
 import { allocateUserSeq } from "@/storage/seq";
 import { sessionDelete } from "@/app/session/sessionDelete";
+import { encodeBytesField } from "@/utils/encodeBytesField";
 
 export function sessionRoutes(app: Fastify) {
 
@@ -63,7 +64,7 @@ export function sessionRoutes(app: Fastify) {
                     metadataVersion: v.metadataVersion,
                     agentState: v.agentState,
                     agentStateVersion: v.agentStateVersion,
-                    dataEncryptionKey: v.dataEncryptionKey ? Buffer.from(v.dataEncryptionKey).toString('base64') : null,
+                    dataEncryptionKey: encodeBytesField(v.dataEncryptionKey),
                     lastMessage: null
                 };
             })
@@ -117,7 +118,7 @@ export function sessionRoutes(app: Fastify) {
                 metadataVersion: v.metadataVersion,
                 agentState: v.agentState,
                 agentStateVersion: v.agentStateVersion,
-                dataEncryptionKey: v.dataEncryptionKey ? Buffer.from(v.dataEncryptionKey).toString('base64') : null,
+                dataEncryptionKey: encodeBytesField(v.dataEncryptionKey),
             }))
         });
     });
@@ -208,7 +209,7 @@ export function sessionRoutes(app: Fastify) {
                 metadataVersion: v.metadataVersion,
                 agentState: v.agentState,
                 agentStateVersion: v.agentStateVersion,
-                dataEncryptionKey: v.dataEncryptionKey ? Buffer.from(v.dataEncryptionKey).toString('base64') : null,
+                dataEncryptionKey: encodeBytesField(v.dataEncryptionKey),
             })),
             nextCursor,
             hasNext
@@ -246,7 +247,7 @@ export function sessionRoutes(app: Fastify) {
                     metadataVersion: session.metadataVersion,
                     agentState: session.agentState,
                     agentStateVersion: session.agentStateVersion,
-                    dataEncryptionKey: session.dataEncryptionKey ? Buffer.from(session.dataEncryptionKey).toString('base64') : null,
+                    dataEncryptionKey: encodeBytesField(session.dataEncryptionKey),
                     active: session.active,
                     activeAt: session.lastActiveAt.getTime(),
                     createdAt: session.createdAt.getTime(),
@@ -276,8 +277,6 @@ export function sessionRoutes(app: Fastify) {
                     `UPDATE "Session" SET "dataEncryptionKey" = decode($1, 'base64') WHERE "id" = $2`,
                     dataEncryptionKey, session.id
                 );
-                const updated = await db.session.findUnique({ where: { id: session.id } });
-                if (updated) Object.assign(session, updated);
             }
             log({ module: 'session-create', sessionId: session.id, userId }, `Session created: ${session.id}`);
 
@@ -304,7 +303,7 @@ export function sessionRoutes(app: Fastify) {
                     metadataVersion: session.metadataVersion,
                     agentState: session.agentState,
                     agentStateVersion: session.agentStateVersion,
-                    dataEncryptionKey: session.dataEncryptionKey ? Buffer.from(session.dataEncryptionKey).toString('base64') : null,
+                    dataEncryptionKey: dataEncryptionKey || null,
                     active: session.active,
                     activeAt: session.lastActiveAt.getTime(),
                     createdAt: session.createdAt.getTime(),

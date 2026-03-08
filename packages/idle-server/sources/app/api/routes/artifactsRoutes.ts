@@ -6,6 +6,7 @@ import { randomKeyNaked } from "@/utils/randomKeyNaked";
 import { allocateUserSeq } from "@/storage/seq";
 import { log } from "@/utils/log";
 import * as privacyKit from "privacy-kit";
+import { encodeBytesField } from "@/utils/encodeBytesField";
 
 export function artifactsRoutes(app: Fastify) {
     // GET /v1/artifacts - List all artifacts for the account
@@ -47,9 +48,9 @@ export function artifactsRoutes(app: Fastify) {
 
             return reply.send(artifacts.map(a => ({
                 id: a.id,
-                header: privacyKit.encodeBase64(a.header),
+                header: encodeBytesField(a.header)!,
                 headerVersion: a.headerVersion,
-                dataEncryptionKey: privacyKit.encodeBase64(a.dataEncryptionKey),
+                dataEncryptionKey: encodeBytesField(a.dataEncryptionKey)!,
                 seq: a.seq,
                 createdAt: a.createdAt.getTime(),
                 updatedAt: a.updatedAt.getTime()
@@ -105,11 +106,11 @@ export function artifactsRoutes(app: Fastify) {
 
             return reply.send({
                 id: artifact.id,
-                header: privacyKit.encodeBase64(artifact.header),
+                header: encodeBytesField(artifact.header)!,
                 headerVersion: artifact.headerVersion,
-                body: privacyKit.encodeBase64(artifact.body),
+                body: encodeBytesField(artifact.body)!,
                 bodyVersion: artifact.bodyVersion,
-                dataEncryptionKey: privacyKit.encodeBase64(artifact.dataEncryptionKey),
+                dataEncryptionKey: encodeBytesField(artifact.dataEncryptionKey)!,
                 seq: artifact.seq,
                 createdAt: artifact.createdAt.getTime(),
                 updatedAt: artifact.updatedAt.getTime()
@@ -172,31 +173,28 @@ export function artifactsRoutes(app: Fastify) {
                 log({ module: 'api', artifactId: id, userId }, 'Found existing artifact');
                 return reply.send({
                     id: existingArtifact.id,
-                    header: privacyKit.encodeBase64(existingArtifact.header),
+                    header: encodeBytesField(existingArtifact.header)!,
                     headerVersion: existingArtifact.headerVersion,
-                    body: privacyKit.encodeBase64(existingArtifact.body),
+                    body: encodeBytesField(existingArtifact.body)!,
                     bodyVersion: existingArtifact.bodyVersion,
-                    dataEncryptionKey: privacyKit.encodeBase64(existingArtifact.dataEncryptionKey),
+                    dataEncryptionKey: encodeBytesField(existingArtifact.dataEncryptionKey)!,
                     seq: existingArtifact.seq,
                     createdAt: existingArtifact.createdAt.getTime(),
                     updatedAt: existingArtifact.updatedAt.getTime()
                 });
             }
 
-            // Create new artifact
+            // Create new artifact via raw SQL (PGlite + Prisma 6 bug: Bytes fields serialize as JSON objects)
             log({ module: 'api', artifactId: id, userId }, 'Creating new artifact');
-            const artifact = await db.artifact.create({
-                data: {
-                    id,
-                    accountId: userId,
-                    header: header as any,
-                    headerVersion: 1,
-                    body: body as any,
-                    bodyVersion: 1,
-                    dataEncryptionKey: dataEncryptionKey as any,
-                    seq: 0
-                }
-            });
+            const now = new Date();
+            await db.$executeRawUnsafe(
+                `INSERT INTO "Artifact" ("id", "accountId", "header", "headerVersion", "body", "bodyVersion", "dataEncryptionKey", "seq", "createdAt", "updatedAt")
+                 VALUES ($1, $2, decode($3, 'base64'), 1, decode($4, 'base64'), 1, decode($5, 'base64'), 0, $6, $6)`,
+                id, userId, header, body, dataEncryptionKey, now
+            );
+
+            // Fetch the created artifact for the event payload (non-Bytes fields only needed for event)
+            const artifact = await db.artifact.findUniqueOrThrow({ where: { id } });
 
             // Emit new-artifact event
             const updSeq = await allocateUserSeq(userId);
@@ -208,15 +206,15 @@ export function artifactsRoutes(app: Fastify) {
             });
 
             return reply.send({
-                id: artifact.id,
-                header: privacyKit.encodeBase64(artifact.header),
-                headerVersion: artifact.headerVersion,
-                body: privacyKit.encodeBase64(artifact.body),
-                bodyVersion: artifact.bodyVersion,
-                dataEncryptionKey: privacyKit.encodeBase64(artifact.dataEncryptionKey),
-                seq: artifact.seq,
-                createdAt: artifact.createdAt.getTime(),
-                updatedAt: artifact.updatedAt.getTime()
+                id,
+                header,
+                headerVersion: 1,
+                body,
+                bodyVersion: 1,
+                dataEncryptionKey,
+                seq: 0,
+                createdAt: now.getTime(),
+                updatedAt: now.getTime()
             });
         } catch (error) {
             log({ module: 'api', level: 'error' }, `Failed to create artifact: ${error}`);
@@ -291,49 +289,46 @@ export function artifactsRoutes(app: Fastify) {
                     error: 'version-mismatch',
                     ...(headerMismatch && {
                         currentHeaderVersion: currentArtifact.headerVersion,
-                        currentHeader: privacyKit.encodeBase64(currentArtifact.header)
+                        currentHeader: encodeBytesField(currentArtifact.header) ?? undefined
                     }),
                     ...(bodyMismatch && {
                         currentBodyVersion: currentArtifact.bodyVersion,
-                        currentBody: privacyKit.encodeBase64(currentArtifact.body)
+                        currentBody: encodeBytesField(currentArtifact.body) ?? undefined
                     })
                 });
             }
 
-            // Build update data
-            const updateData: any = {
-                updatedAt: new Date()
-            };
-            
             let headerUpdate: { value: string; version: number } | undefined;
             let bodyUpdate: { value: string; version: number } | undefined;
 
+            // Build raw SQL UPDATE for Bytes fields (PGlite + Prisma 6 bug)
+            const setClauses: string[] = [
+                `"seq" = ${currentArtifact.seq + 1}`,
+                `"updatedAt" = NOW()`
+            ];
+            const params: any[] = [id];
+            let paramIdx = 2;
+
             if (header !== undefined && expectedHeaderVersion !== undefined) {
-                updateData.header = header as any;
-                updateData.headerVersion = expectedHeaderVersion + 1;
-                headerUpdate = {
-                    value: header,
-                    version: expectedHeaderVersion + 1
-                };
+                setClauses.push(`"header" = decode($${paramIdx}, 'base64')`);
+                params.push(header);
+                paramIdx++;
+                setClauses.push(`"headerVersion" = ${expectedHeaderVersion + 1}`);
+                headerUpdate = { value: header, version: expectedHeaderVersion + 1 };
             }
 
             if (body !== undefined && expectedBodyVersion !== undefined) {
-                updateData.body = body as any;
-                updateData.bodyVersion = expectedBodyVersion + 1;
-                bodyUpdate = {
-                    value: body,
-                    version: expectedBodyVersion + 1
-                };
+                setClauses.push(`"body" = decode($${paramIdx}, 'base64')`);
+                params.push(body);
+                paramIdx++;
+                setClauses.push(`"bodyVersion" = ${expectedBodyVersion + 1}`);
+                bodyUpdate = { value: body, version: expectedBodyVersion + 1 };
             }
 
-            // Increment seq
-            updateData.seq = currentArtifact.seq + 1;
-
-            // Update artifact
-            await db.artifact.update({
-                where: { id },
-                data: updateData
-            });
+            await db.$executeRawUnsafe(
+                `UPDATE "Artifact" SET ${setClauses.join(', ')} WHERE "id" = $1`,
+                ...params
+            );
 
             // Emit update-artifact event
             const updSeq = await allocateUserSeq(userId);

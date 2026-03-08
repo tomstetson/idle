@@ -1,5 +1,5 @@
 import { db } from "@/storage/db";
-import * as privacyKit from "privacy-kit";
+import { encodeBytesField } from "@/utils/encodeBytesField";
 
 export type KVGetResult = {
     key: string;
@@ -31,7 +31,7 @@ export async function kvGet(
 
     return {
         key: result.key,
-        value: privacyKit.encodeBase64(result.value),
+        value: encodeBytesField(result.value)!,
         version: result.version
     };
 }

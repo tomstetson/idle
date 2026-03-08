@@ -3,7 +3,7 @@ import { inTx, afterTx } from "@/storage/inTx";
 import { allocateUserSeq } from "@/storage/seq";
 import { randomKeyNaked } from "@/utils/randomKeyNaked";
 import { eventRouter, buildKVBatchUpdateUpdate } from "@/app/events/eventRouter";
-import * as privacyKit from "privacy-kit";
+import { encodeBytesField } from "@/utils/encodeBytesField";
 
 export interface KVMutation {
     key: string;
@@ -58,7 +58,7 @@ export async function kvMutate(
                     key: mutation.key,
                     error: 'version-mismatch',
                     version: currentVersion,
-                    value: existing?.value ? privacyKit.encodeBase64(existing.value) : null
+                    value: encodeBytesField(existing?.value)
                 });
             }
         }
@@ -74,53 +74,39 @@ export async function kvMutate(
 
         for (const mutation of mutations) {
             if (mutation.version === -1) {
-                // Create new entry (must not exist)
-                const result = await tx.userKVStore.create({
-                    data: {
-                        accountId: ctx.uid,
-                        key: mutation.key,
-                        value: mutation.value ? mutation.value as any : null,
-                        version: 0
-                    }
-                });
+                // Create new entry via raw SQL (PGlite + Prisma 6 bug: Bytes fields serialize as JSON objects)
+                if (mutation.value) {
+                    await tx.$executeRawUnsafe(
+                        `INSERT INTO "UserKVStore" ("accountId", "key", "value", "version", "createdAt", "updatedAt") VALUES ($1, $2, decode($3, 'base64'), 0, NOW(), NOW())`,
+                        ctx.uid, mutation.key, mutation.value
+                    );
+                } else {
+                    await tx.$executeRawUnsafe(
+                        `INSERT INTO "UserKVStore" ("accountId", "key", "value", "version", "createdAt", "updatedAt") VALUES ($1, $2, NULL, 0, NOW(), NOW())`,
+                        ctx.uid, mutation.key
+                    );
+                }
 
-                results.push({
-                    key: mutation.key,
-                    version: result.version
-                });
-
-                changes.push({
-                    key: mutation.key,
-                    value: mutation.value,
-                    version: result.version
-                });
+                results.push({ key: mutation.key, version: 0 });
+                changes.push({ key: mutation.key, value: mutation.value, version: 0 });
             } else {
-                // Update existing entry (including "delete" which sets value to null)
+                // Update existing entry via raw SQL (including "delete" which sets value to null)
                 const newVersion = mutation.version + 1;
 
-                const result = await tx.userKVStore.update({
-                    where: {
-                        accountId_key: {
-                            accountId: ctx.uid,
-                            key: mutation.key
-                        }
-                    },
-                    data: {
-                        value: mutation.value ? mutation.value as any : null,
-                        version: newVersion
-                    }
-                });
+                if (mutation.value) {
+                    await tx.$executeRawUnsafe(
+                        `UPDATE "UserKVStore" SET "value" = decode($1, 'base64'), "version" = $2, "updatedAt" = NOW() WHERE "accountId" = $3 AND "key" = $4`,
+                        mutation.value, newVersion, ctx.uid, mutation.key
+                    );
+                } else {
+                    await tx.$executeRawUnsafe(
+                        `UPDATE "UserKVStore" SET "value" = NULL, "version" = $1, "updatedAt" = NOW() WHERE "accountId" = $2 AND "key" = $3`,
+                        newVersion, ctx.uid, mutation.key
+                    );
+                }
 
-                results.push({
-                    key: mutation.key,
-                    version: result.version
-                });
-
-                changes.push({
-                    key: mutation.key,
-                    value: mutation.value,
-                    version: result.version
-                });
+                results.push({ key: mutation.key, version: newVersion });
+                changes.push({ key: mutation.key, value: mutation.value, version: newVersion });
             }
         }
 

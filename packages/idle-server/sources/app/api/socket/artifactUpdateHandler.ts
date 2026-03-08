@@ -5,7 +5,7 @@ import { allocateUserSeq } from "@/storage/seq";
 import { log } from "@/utils/log";
 import { randomKeyNaked } from "@/utils/randomKeyNaked";
 import { Socket } from "socket.io";
-import * as privacyKit from "privacy-kit";
+import { encodeBytesField } from "@/utils/encodeBytesField";
 
 export function artifactUpdateHandler(userId: string, socket: Socket) {
     // Read artifact with full body
@@ -45,9 +45,9 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
                 result: 'success',
                 artifact: {
                     id: artifact.id,
-                    header: privacyKit.encodeBase64(artifact.header),
+                    header: encodeBytesField(artifact.header),
                     headerVersion: artifact.headerVersion,
-                    body: privacyKit.encodeBase64(artifact.body),
+                    body: encodeBytesField(artifact.body),
                     bodyVersion: artifact.bodyVersion,
                     seq: artifact.seq,
                     createdAt: artifact.createdAt.getTime(),
@@ -111,7 +111,7 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
                 return;
             }
 
-            // Get current artifact
+            // Get current artifact for version check
             const currentArtifact = await db.artifact.findFirst({
                 where: {
                     id: artifactId,
@@ -132,65 +132,64 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
 
             if (headerMismatch || bodyMismatch) {
                 const response: any = { result: 'version-mismatch' };
-                
+
                 if (headerMismatch) {
                     response.header = {
                         currentVersion: currentArtifact.headerVersion,
-                        currentData: privacyKit.encodeBase64(currentArtifact.header)
+                        currentData: encodeBytesField(currentArtifact.header)
                     };
                 }
-                
+
                 if (bodyMismatch) {
                     response.body = {
                         currentVersion: currentArtifact.bodyVersion,
-                        currentData: privacyKit.encodeBase64(currentArtifact.body)
+                        currentData: encodeBytesField(currentArtifact.body)
                     };
                 }
-                
+
                 callback(response);
                 return;
             }
 
-            // Build update data
-            const updateData: any = {
-                updatedAt: new Date(),
-                seq: currentArtifact.seq + 1
-            };
-
+            // Build raw SQL UPDATE for Bytes fields (PGlite + Prisma 6 bug)
             let headerUpdate: { value: string; version: number } | undefined;
             let bodyUpdate: { value: string; version: number } | undefined;
 
+            const setClauses: string[] = [
+                `"seq" = ${currentArtifact.seq + 1}`,
+                `"updatedAt" = NOW()`
+            ];
+            const params: any[] = [artifactId, userId];
+            let paramIdx = 3;
+
             if (header) {
-                updateData.header = header.data as any;
-                updateData.headerVersion = header.expectedVersion + 1;
-                headerUpdate = {
-                    value: header.data,
-                    version: header.expectedVersion + 1
-                };
+                setClauses.push(`"header" = decode($${paramIdx}, 'base64')`);
+                params.push(header.data);
+                paramIdx++;
+                setClauses.push(`"headerVersion" = ${header.expectedVersion + 1}`);
+                headerUpdate = { value: header.data, version: header.expectedVersion + 1 };
             }
 
             if (body) {
-                updateData.body = body.data as any;
-                updateData.bodyVersion = body.expectedVersion + 1;
-                bodyUpdate = {
-                    value: body.data,
-                    version: body.expectedVersion + 1
-                };
+                setClauses.push(`"body" = decode($${paramIdx}, 'base64')`);
+                params.push(body.data);
+                paramIdx++;
+                setClauses.push(`"bodyVersion" = ${body.expectedVersion + 1}`);
+                bodyUpdate = { value: body.data, version: body.expectedVersion + 1 };
             }
 
-            // Perform atomic update with version check
-            const { count } = await db.artifact.updateMany({
-                where: {
-                    id: artifactId,
-                    accountId: userId,
-                    ...(header && { headerVersion: header.expectedVersion }),
-                    ...(body && { bodyVersion: body.expectedVersion })
-                },
-                data: updateData
-            });
+            // Atomic update with version check in WHERE clause
+            const versionChecks: string[] = [];
+            if (header) versionChecks.push(`"headerVersion" = ${header.expectedVersion}`);
+            if (body) versionChecks.push(`"bodyVersion" = ${body.expectedVersion}`);
 
-            if (count === 0) {
-                // Re-fetch current version
+            const result = await db.$executeRawUnsafe(
+                `UPDATE "Artifact" SET ${setClauses.join(', ')} WHERE "id" = $1 AND "accountId" = $2${versionChecks.length ? ' AND ' + versionChecks.join(' AND ') : ''}`,
+                ...params
+            );
+
+            if (result === 0) {
+                // Re-fetch current version for mismatch response
                 const current = await db.artifact.findFirst({
                     where: {
                         id: artifactId,
@@ -199,21 +198,21 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
                 });
 
                 const response: any = { result: 'version-mismatch' };
-                
+
                 if (header && current) {
                     response.header = {
                         currentVersion: current.headerVersion,
-                        currentData: privacyKit.encodeBase64(current.header)
+                        currentData: encodeBytesField(current.header)
                     };
                 }
-                
+
                 if (body && current) {
                     response.body = {
                         currentVersion: current.bodyVersion,
-                        currentData: privacyKit.encodeBase64(current.body)
+                        currentData: encodeBytesField(current.body)
                     };
                 }
-                
+
                 callback(response);
                 return;
             }
@@ -229,21 +228,21 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
 
             // Send success response
             const response: any = { result: 'success' };
-            
+
             if (headerUpdate) {
                 response.header = {
                     version: headerUpdate.version,
                     data: header!.data
                 };
             }
-            
+
             if (bodyUpdate) {
                 response.body = {
                     version: bodyUpdate.version,
                     data: body!.data
                 };
             }
-            
+
             callback(response);
         } catch (error) {
             log({ module: 'websocket', level: 'error' }, `Error in artifact-update: ${error}`);
@@ -253,7 +252,7 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
         }
     });
 
-    // Create new artifact
+    // Create new artifact via raw SQL (PGlite + Prisma 6 bug: Bytes fields serialize as JSON objects)
     socket.on('artifact-create', async (data: {
         id: string;
         header: string;
@@ -292,9 +291,9 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
                     result: 'success',
                     artifact: {
                         id: existingArtifact.id,
-                        header: privacyKit.encodeBase64(existingArtifact.header),
+                        header: encodeBytesField(existingArtifact.header),
                         headerVersion: existingArtifact.headerVersion,
-                        body: privacyKit.encodeBase64(existingArtifact.body),
+                        body: encodeBytesField(existingArtifact.body),
                         bodyVersion: existingArtifact.bodyVersion,
                         seq: existingArtifact.seq,
                         createdAt: existingArtifact.createdAt.getTime(),
@@ -304,19 +303,16 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
                 return;
             }
 
-            // Create new artifact
-            const artifact = await db.artifact.create({
-                data: {
-                    id,
-                    accountId: userId,
-                    header: header as any,
-                    headerVersion: 1,
-                    body: body as any,
-                    bodyVersion: 1,
-                    dataEncryptionKey: dataEncryptionKey as any,
-                    seq: 0
-                }
-            });
+            // Create new artifact via raw SQL
+            const now = new Date();
+            await db.$executeRawUnsafe(
+                `INSERT INTO "Artifact" ("id", "accountId", "header", "headerVersion", "body", "bodyVersion", "dataEncryptionKey", "seq", "createdAt", "updatedAt")
+                 VALUES ($1, $2, decode($3, 'base64'), 1, decode($4, 'base64'), 1, decode($5, 'base64'), 0, $6, $6)`,
+                id, userId, header, body, dataEncryptionKey, now
+            );
+
+            // Fetch for event payload
+            const artifact = await db.artifact.findUniqueOrThrow({ where: { id } });
 
             // Emit new-artifact event
             const updSeq = await allocateUserSeq(userId);
@@ -327,18 +323,18 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
                 recipientFilter: { type: 'user-scoped-only' }
             });
 
-            // Return created artifact
+            // Return created artifact with known input values
             callback({
                 result: 'success',
                 artifact: {
-                    id: artifact.id,
-                    header: privacyKit.encodeBase64(artifact.header),
-                    headerVersion: artifact.headerVersion,
-                    body: privacyKit.encodeBase64(artifact.body),
-                    bodyVersion: artifact.bodyVersion,
-                    seq: artifact.seq,
-                    createdAt: artifact.createdAt.getTime(),
-                    updatedAt: artifact.updatedAt.getTime()
+                    id,
+                    header,
+                    headerVersion: 1,
+                    body,
+                    bodyVersion: 1,
+                    seq: 0,
+                    createdAt: now.getTime(),
+                    updatedAt: now.getTime()
                 }
             });
         } catch (error) {

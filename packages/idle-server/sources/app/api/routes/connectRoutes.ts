@@ -258,11 +258,22 @@ export function connectRoutes(app: Fastify) {
     }, async (request, reply) => {
         const userId = request.userId;
         const encrypted = encryptString(['user', userId, 'vendors', request.params.vendor, 'token'], request.body.token);
-        await db.serviceAccountToken.upsert({
-            where: { accountId_vendor: { accountId: userId, vendor: request.params.vendor } },
-            update: { updatedAt: new Date(), token: encrypted },
-            create: { accountId: userId, vendor: request.params.vendor, token: encrypted }
+        const encryptedBase64 = Buffer.from(encrypted).toString('base64');
+        // PGlite + Prisma 6 bug: Bytes fields serialize as JSON objects. Use raw SQL.
+        const existing = await db.serviceAccountToken.findUnique({
+            where: { accountId_vendor: { accountId: userId, vendor: request.params.vendor } }
         });
+        if (existing) {
+            await db.$executeRawUnsafe(
+                `UPDATE "ServiceAccountToken" SET "token" = decode($1, 'base64'), "updatedAt" = NOW() WHERE "accountId" = $2 AND "vendor" = $3`,
+                encryptedBase64, userId, request.params.vendor
+            );
+        } else {
+            await db.$executeRawUnsafe(
+                `INSERT INTO "ServiceAccountToken" ("accountId", "vendor", "token", "createdAt", "updatedAt") VALUES ($1, $2, decode($3, 'base64'), NOW(), NOW())`,
+                userId, request.params.vendor, encryptedBase64
+            );
+        }
         reply.send({ success: true });
     });
 
@@ -280,14 +291,18 @@ export function connectRoutes(app: Fastify) {
         }
     }, async (request, reply) => {
         const userId = request.userId;
-        const token = await db.serviceAccountToken.findUnique({
+        const tokenRecord = await db.serviceAccountToken.findUnique({
             where: { accountId_vendor: { accountId: userId, vendor: request.params.vendor } },
             select: { token: true }
         });
-        if (!token) {
+        if (!tokenRecord) {
             return reply.send({ token: null });
         } else {
-            return reply.send({ token: decryptString(['user', userId, 'vendors', request.params.vendor, 'token'], token.token) });
+            // Ensure token is Uint8Array for decryption (PGlite may return various types)
+            const tokenBytes = tokenRecord.token instanceof Uint8Array
+                ? tokenRecord.token as Uint8Array<ArrayBuffer>
+                : new Uint8Array(Buffer.isBuffer(tokenRecord.token) ? tokenRecord.token : Object.values(tokenRecord.token as any)) as Uint8Array<ArrayBuffer>;
+            return reply.send({ token: decryptString(['user', userId, 'vendors', request.params.vendor, 'token'], tokenBytes) });
         }
     });
 
@@ -326,7 +341,11 @@ export function connectRoutes(app: Fastify) {
         const tokens = await db.serviceAccountToken.findMany({ where: { accountId: userId } });
         let decrypted = [];
         for (const token of tokens) {
-            decrypted.push({ vendor: token.vendor, token: decryptString(['user', userId, 'vendors', token.vendor, 'token'], token.token) });
+            // Ensure token is Uint8Array for decryption (PGlite may return various types)
+            const tokenBytes = token.token instanceof Uint8Array
+                ? token.token as Uint8Array<ArrayBuffer>
+                : new Uint8Array(Buffer.isBuffer(token.token) ? token.token : Object.values(token.token as any)) as Uint8Array<ArrayBuffer>;
+            decrypted.push({ vendor: token.vendor, token: decryptString(['user', userId, 'vendors', token.vendor, 'token'], tokenBytes) });
         }
         return reply.send({ tokens: decrypted });
     });

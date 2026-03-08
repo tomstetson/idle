@@ -63,19 +63,26 @@ export async function githubConnect(
     // Step 4: Start transaction for atomic database operations
     await db.$transaction(async (tx) => {
 
-        // Upsert GitHub user record with encrypted token
-        await tx.githubUser.upsert({
-            where: { id: githubUserId },
-            update: {
-                profile: githubProfile,
-                token: encryptString(['user', userId, 'github', 'token'], accessToken)
-            },
-            create: {
-                id: githubUserId,
-                profile: githubProfile,
-                token: encryptString(['user', userId, 'github', 'token'], accessToken)
-            }
-        });
+        // Upsert GitHub user record with encrypted token via raw SQL (PGlite + Prisma 6 Bytes bug)
+        const encrypted = encryptString(['user', userId, 'github', 'token'], accessToken);
+        const encryptedBase64 = Buffer.from(encrypted).toString('base64');
+
+        const existingGithub = await tx.githubUser.findUnique({ where: { id: githubUserId } });
+        if (existingGithub) {
+            await tx.githubUser.update({
+                where: { id: githubUserId },
+                data: { profile: githubProfile }
+            });
+            await tx.$executeRawUnsafe(
+                `UPDATE "GithubUser" SET "token" = decode($1, 'base64') WHERE "id" = $2`,
+                encryptedBase64, githubUserId
+            );
+        } else {
+            await tx.$executeRawUnsafe(
+                `INSERT INTO "GithubUser" ("id", "profile", "token", "createdAt", "updatedAt") VALUES ($1, $2::jsonb, decode($3, 'base64'), NOW(), NOW())`,
+                githubUserId, JSON.stringify(githubProfile), encryptedBase64
+            );
+        }
 
         // Link GitHub account to user
         await tx.account.update({
