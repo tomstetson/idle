@@ -124,6 +124,8 @@ describe('settings', () => {
                 favoriteDirectories: [],
                 favoriteMachines: [],
                 dismissedCLIWarnings: { perMachine: {}, global: {} },
+                includeCoAuthoredBy: true,
+                attributionPromptAnswered: false,
             };
             const delta: Partial<Settings> = {
                 viewInline: true
@@ -159,6 +161,8 @@ describe('settings', () => {
                 favoriteDirectories: [],
                 favoriteMachines: [],
                 dismissedCLIWarnings: { perMachine: {}, global: {} },
+                includeCoAuthoredBy: true,
+                attributionPromptAnswered: false,
             });
         });
 
@@ -194,6 +198,8 @@ describe('settings', () => {
                 favoriteDirectories: [],
                 favoriteMachines: [],
                 dismissedCLIWarnings: { perMachine: {}, global: {} },
+                includeCoAuthoredBy: true,
+                attributionPromptAnswered: false,
             };
             const delta: Partial<Settings> = {};
             expect(applySettings(currentSettings, delta)).toEqual(currentSettings);
@@ -231,6 +237,8 @@ describe('settings', () => {
                 favoriteDirectories: [],
                 favoriteMachines: [],
                 dismissedCLIWarnings: { perMachine: {}, global: {} },
+                includeCoAuthoredBy: true,
+                attributionPromptAnswered: false,
             };
             const delta: Partial<Settings> = {
                 viewInline: false
@@ -273,6 +281,8 @@ describe('settings', () => {
                 favoriteDirectories: [],
                 favoriteMachines: [],
                 dismissedCLIWarnings: { perMachine: {}, global: {} },
+                includeCoAuthoredBy: true,
+                attributionPromptAnswered: false,
             };
             expect(applySettings(currentSettings, {})).toEqual(currentSettings);
         });
@@ -324,6 +334,8 @@ describe('settings', () => {
                 favoriteDirectories: [],
                 favoriteMachines: [],
                 dismissedCLIWarnings: { perMachine: {}, global: {} },
+                includeCoAuthoredBy: true,
+                attributionPromptAnswered: false,
             };
             const delta: any = {
                 viewInline: false,
@@ -385,6 +397,8 @@ describe('settings', () => {
                 favoriteDirectories: ['~/src', '~/Desktop', '~/Documents'],
                 favoriteMachines: [],
                 dismissedCLIWarnings: { perMachine: {}, global: {} },
+                includeCoAuthoredBy: true,
+                attributionPromptAnswered: false,
                 useEnhancedSessionWizard: false,
                 showThinking: false,
             });

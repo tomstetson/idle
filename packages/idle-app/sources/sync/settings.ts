@@ -302,6 +302,9 @@ export const SettingsSchema = z.object({
             gemini: z.boolean().optional(),
         }).default({}),
     }).default({ perMachine: {}, global: {} }).describe('Tracks which CLI installation warnings user has dismissed (per-machine or globally)'),
+    // Attribution control
+    includeCoAuthoredBy: z.boolean().describe('Include Idle attribution (Co-Authored-By) in commit messages'),
+    attributionPromptAnswered: z.boolean().describe('Whether the attribution prompt has been shown and answered'),
 });
 
 //
@@ -358,6 +361,9 @@ export const settingsDefaults: Settings = {
     favoriteMachines: [],
     // Dismissed CLI warnings (empty by default)
     dismissedCLIWarnings: { perMachine: {}, global: {} },
+    // Attribution defaults
+    includeCoAuthoredBy: true,
+    attributionPromptAnswered: false,
 };
 Object.freeze(settingsDefaults);
 
