@@ -302,6 +302,10 @@ export const es: TranslationStructure = {
     session: {
         inputPlaceholder: 'Escriba un mensaje ...',
         newSession: 'Nueva sesión',
+        resume: 'Reanudar sesión',
+        resumeConfirm: '¿Reanudar esta sesión en el terminal conectado?',
+        resuming: 'Reanudando sesión...',
+        resumeFailed: 'No se pudo reanudar la sesión',
     },
 
     commandPalette: {

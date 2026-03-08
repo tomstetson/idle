@@ -313,6 +313,10 @@ export const pl: TranslationStructure = {
     session: {
         inputPlaceholder: 'Wpisz wiadomość...',
         newSession: 'Nowa sesja',
+        resume: 'Wznów sesję',
+        resumeConfirm: 'Wznowić tę sesję na podłączonym terminalu?',
+        resuming: 'Wznawianie sesji...',
+        resumeFailed: 'Nie udało się wznowić sesji',
     },
 
     commandPalette: {

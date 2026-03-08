@@ -304,6 +304,10 @@ export const zhHans: TranslationStructure = {
     session: {
         inputPlaceholder: '输入消息...',
         newSession: '新会话',
+        resume: '恢复会话',
+        resumeConfirm: '在已连接的终端上恢复此会话？',
+        resuming: '正在恢复会话...',
+        resumeFailed: '恢复会话失败',
     },
 
     commandPalette: {

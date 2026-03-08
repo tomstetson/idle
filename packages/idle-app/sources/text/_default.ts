@@ -301,6 +301,10 @@ export const en = {
     session: {
         inputPlaceholder: 'Type a message ...',
         newSession: 'New session',
+        resume: 'Resume Session',
+        resumeConfirm: 'Resume this session on the connected terminal?',
+        resuming: 'Resuming session...',
+        resumeFailed: 'Failed to resume session',
     },
 
     commandPalette: {

@@ -303,6 +303,10 @@ export const zhHant: TranslationStructure = {
     session: {
         inputPlaceholder: '輸入訊息...',
         newSession: '新對話',
+        resume: '恢復工作階段',
+        resumeConfirm: '在已連線的終端上恢復此工作階段？',
+        resuming: '正在恢復工作階段...',
+        resumeFailed: '恢復工作階段失敗',
     },
 
     commandPalette: {

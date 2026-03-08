@@ -331,6 +331,10 @@ export const it: TranslationStructure = {
     session: {
         inputPlaceholder: 'Scrivi un messaggio ...',
         newSession: 'Nuova sessione',
+        resume: 'Riprendi sessione',
+        resumeConfirm: 'Riprendere questa sessione sul terminale connesso?',
+        resuming: 'Ripresa sessione...',
+        resumeFailed: 'Impossibile riprendere la sessione',
     },
 
     commandPalette: {

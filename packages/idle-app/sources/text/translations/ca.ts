@@ -302,6 +302,10 @@ export const ca: TranslationStructure = {
     session: {
         inputPlaceholder: 'Escriu un missatge...',
         newSession: 'Nova sessió',
+        resume: 'Reprendre sessió',
+        resumeConfirm: 'Reprendre aquesta sessió al terminal connectat?',
+        resuming: 'Reprenent sessió...',
+        resumeFailed: 'No s\'ha pogut reprendre la sessió',
     },
 
     commandPalette: {

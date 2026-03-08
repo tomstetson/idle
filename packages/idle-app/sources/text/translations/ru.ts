@@ -394,6 +394,10 @@ export const ru: TranslationStructure = {
     session: {
         inputPlaceholder: 'Введите сообщение...',
         newSession: 'Новая сессия',
+        resume: 'Возобновить сессию',
+        resumeConfirm: 'Возобновить эту сессию на подключённом терминале?',
+        resuming: 'Возобновление сессии...',
+        resumeFailed: 'Не удалось возобновить сессию',
     },
 
     commandPalette: {

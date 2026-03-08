@@ -334,6 +334,10 @@ export const ja: TranslationStructure = {
     session: {
         inputPlaceholder: 'メッセージを入力...',
         newSession: '新しいセッション',
+        resume: 'セッションを再開',
+        resumeConfirm: '接続されたターミナルでこのセッションを再開しますか？',
+        resuming: 'セッションを再開中...',
+        resumeFailed: 'セッションの再開に失敗しました',
     },
 
     commandPalette: {

@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, FlatList } from 'react-native';
+import { View, FlatList, Pressable } from 'react-native';
 import { Text } from '@/components/StyledText';
 import { useAllSessions } from '@/sync/storage';
 import { Session } from '@/sync/storageTypes';
@@ -10,7 +10,10 @@ import { StyleSheet } from 'react-native-unistyles';
 import { Typography } from '@/constants/Typography';
 import { layout } from '@/components/layout';
 import { useNavigateToSession } from '@/hooks/useNavigateToSession';
-import { Pressable } from 'react-native';
+import { useIdleAction } from '@/hooks/useIdleAction';
+import { Modal } from '@/modal';
+import { machineResumeSession } from '@/sync/ops';
+import { IdleError } from '@/utils/errors';
 import { t } from '@/text';
 
 interface SessionHistoryItem {
@@ -160,15 +163,42 @@ function groupSessionsByDate(sessions: Session[]): SessionHistoryItem[] {
     return items;
 }
 
-export default function SessionHistory() {
+export default React.memo(function SessionHistory() {
     const safeArea = useSafeAreaInsets();
     const allSessions = useAllSessions();
     const navigateToSession = useNavigateToSession();
-    
+
+    // Resume action: called when user confirms long-press resume
+    const resumeSessionRef = React.useRef<{ machineId: string; sessionId: string } | null>(null);
+    const [_resumeLoading, doResume] = useIdleAction(React.useCallback(async () => {
+        const target = resumeSessionRef.current;
+        if (!target) return;
+        const result = await machineResumeSession(target.machineId, target.sessionId);
+        if (result.type === 'error') {
+            throw new IdleError(result.errorMessage, true);
+        }
+    }, []));
+
+    const handleLongPress = React.useCallback(async (session: Session) => {
+        // Resume requires a machineId from session metadata
+        const machineId = session.metadata?.machineId;
+        if (!machineId) return;
+
+        const confirmed = await Modal.confirm(
+            t('session.resume'),
+            t('session.resumeConfirm'),
+            { confirmText: t('session.resume') }
+        );
+        if (!confirmed) return;
+
+        resumeSessionRef.current = { machineId, sessionId: session.id };
+        doResume();
+    }, [doResume]);
+
     const groupedItems = React.useMemo(() => {
         return groupSessionsByDate(allSessions);
     }, [allSessions]);
-    
+
     const renderItem = React.useCallback(({ item, index }: { item: SessionHistoryItem, index: number }) => {
         if (item.type === 'date-header') {
             return (
@@ -179,30 +209,31 @@ export default function SessionHistory() {
                 </View>
             );
         }
-        
+
         if (item.type === 'session' && item.session) {
             const session = item.session;
             const sessionName = getSessionName(session);
             const sessionSubtitle = getSessionSubtitle(session);
             const avatarId = getSessionAvatarId(session);
-            
+
             // Determine card styling based on position within date group
             const prevItem = index > 0 ? groupedItems[index - 1] : null;
             const nextItem = index < groupedItems.length - 1 ? groupedItems[index + 1] : null;
-            
+
             const isFirst = prevItem?.type === 'date-header';
             const isLast = nextItem?.type === 'date-header' || nextItem == null;
             const isSingle = isFirst && isLast;
-            
+
             return (
                 <Pressable
                     style={[
                         styles.sessionCard,
-                        isSingle ? styles.sessionCardSingle : 
+                        isSingle ? styles.sessionCardSingle :
                         isFirst ? styles.sessionCardFirst :
                         isLast ? styles.sessionCardLast : {}
                     ]}
                     onPress={() => navigateToSession(session.id)}
+                    onLongPress={() => handleLongPress(session)}
                 >
                     <Avatar id={avatarId} size={48} />
                     <View style={styles.sessionContent}>
@@ -216,10 +247,10 @@ export default function SessionHistory() {
                 </Pressable>
             );
         }
-        
+
         return null;
-    }, [groupedItems, navigateToSession]);
-    
+    }, [groupedItems, navigateToSession, handleLongPress]);
+
     const keyExtractor = React.useCallback((item: SessionHistoryItem, index: number) => {
         if (item.type === 'date-header') {
             return `date-${item.date}-${index}`;
@@ -229,7 +260,7 @@ export default function SessionHistory() {
         }
         return `item-${index}`;
     }, []);
-    
+
     if (!allSessions) {
         return (
             <View style={styles.container}>
@@ -237,7 +268,7 @@ export default function SessionHistory() {
             </View>
         );
     }
-    
+
     if (groupedItems.length === 0) {
         return (
             <View style={styles.container}>
@@ -251,7 +282,7 @@ export default function SessionHistory() {
             </View>
         );
     }
-    
+
     return (
         <View style={styles.container}>
             <View style={styles.contentContainer}>
@@ -259,7 +290,7 @@ export default function SessionHistory() {
                     data={groupedItems}
                     renderItem={renderItem}
                     keyExtractor={keyExtractor}
-                    contentContainerStyle={{ 
+                    contentContainerStyle={{
                         paddingBottom: safeArea.bottom + 16,
                         paddingTop: 8,
                     }}
@@ -267,4 +298,4 @@ export default function SessionHistory() {
             </View>
         </View>
     );
-}
+});

@@ -185,6 +185,55 @@ export async function machineSpawnNewSession(options: SpawnSessionOptions): Prom
 }
 
 /**
+ * Resume an existing session on a specific machine
+ * Uses the 'resume-session' RPC to reattach to a previously spawned Claude session
+ */
+export async function machineResumeSession(machineId: string, sessionId: string): Promise<SpawnSessionResult> {
+    try {
+        const result = await apiSocket.machineRPC<SpawnSessionResult, {
+            sessionId: string;
+        }>(
+            machineId,
+            'resume-session',
+            { sessionId }
+        );
+        return result;
+    } catch (error) {
+        return {
+            type: 'error',
+            errorMessage: error instanceof Error ? error.message : 'Failed to resume session'
+        };
+    }
+}
+
+/**
+ * List all known sessions on a specific machine
+ * Returns sessions tracked by the daemon, including their working directories and start times
+ */
+export async function machineListSessions(machineId: string): Promise<Array<{
+    idleSessionId: string;
+    claudeSessionId?: string;
+    workingDirectory?: string;
+    startedAt: string;
+}>> {
+    try {
+        const result = await apiSocket.machineRPC<Array<{
+            idleSessionId: string;
+            claudeSessionId?: string;
+            workingDirectory?: string;
+            startedAt: string;
+        }>, {}>(
+            machineId,
+            'list-sessions',
+            {}
+        );
+        return result;
+    } catch (error) {
+        return [];
+    }
+}
+
+/**
  * Stop the daemon on a specific machine
  */
 export async function machineStopDaemon(machineId: string): Promise<{ message: string }> {
