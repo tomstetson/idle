@@ -1,134 +1,150 @@
-# Idle Brand Package
+# Idle Brand Guide
 
-Idle is a **remote coding agent platform** for the terminal: a more secure, focused fork of Happy Engineering. You control Claude Code and Codex from your phone, tablet, or browser while agents run on your machines—with end-to-end encryption and a calm, developer-first experience.
-
-This document defines the Idle brand: positioning, voice, color palette, typography, and logo/icon usage for use across the app, web, and marketing.
+Idle is a Northglass Labs project. A remote client for Claude Code with end-to-end encryption and push notifications. This document defines the visual identity, aligned with the Northglass Labs parent brand.
 
 ---
 
-## 1. Product positioning
+## 1. Relationship to Northglass
 
-| | Happy Engineering | Idle |
-|---|-------------------|-----|
-| **What** | Mobile/client for Claude Code & Codex | Same, with stronger security and control |
-| **Feel** | Friendly, approachable | Calm, focused, trustworthy, developer-first |
-| **Security** | E2E encryption | E2E encryption + hardened auth, token expiry, rate limiting, documented security model |
-| **Audience** | Broad | Developers and teams who care about security and stability |
-
-**Tagline options:** *Remote coding, fully yours.* | *Code from anywhere. Encrypted.* | *Your terminal, in your pocket.*
+Idle is the flagship product of Northglass Labs. It shares the Northglass color palette, typography, and design language, but has its own logo mark. Think of it as a product within a studio, not a sub-brand.
 
 ---
 
 ## 2. Brand voice
 
-- **Clear, not cute** — We explain features and states plainly. No unnecessary playfulness.
-- **Confident, not loud** — Security and reliability are stated, not shouted.
-- **Minimal, not cold** — UI copy is short and helpful. Empty states and errors are human.
+Inherited from Northglass:
+
+- **Clear, not cute.** Features and states are explained plainly.
+- **Confident, not loud.** Security and reliability are stated, not shouted.
+- **Minimal, not cold.** UI copy is short and helpful. Empty states and errors are human.
+- **Register:** Casual but competent. Sounds like a developer's README, not a marketing page.
 
 ---
 
-## 3. Color palette
+## 3. Logo mark: The Bridge
 
-Idle uses a **teal–slate** base with an **accent** for focus and action. This is distinct from Happy’s iOS-style blue/black/white and supports light and dark themes.
+Two vertical bars connected by a curved arc. Represents the core product: bridging your terminal to your phone through an encrypted connection.
 
-### Brand colors (design / marketing)
+- **Left bar:** your terminal (where the agent runs)
+- **Right bar:** your phone (where you monitor)
+- **Arc:** the encrypted connection Idle provides
 
-| Name | Hex | Use |
-|------|-----|-----|
-| **Idle Teal** | `#0D3B47` | Dark primary, headers, strong emphasis (dark mode) |
-| **Idle Cyan** | `#00C9B1` | Accent: links, active states, “on”/ready, success |
-| **Idle Amber** | `#E8B84C` | Optional: highlights, warnings, secondary CTAs |
-| **Slate 900** | `#0F172A` | Dark surfaces (alternative to pure black) |
-| **Slate 600** | `#475569` | Secondary text, borders |
-| **Slate 400** | `#94A3B8` | Tertiary text, placeholders |
-| **Paper** | `#F8FAFC` | Light background tint |
-| **White** | `#FFFFFF` | Light surfaces, primary text on dark |
+### In-app (monochrome, currentColor)
 
-### App semantic colors (theme)
+Uses `currentColor` for theme tinting via react-native-svg. Renders in the header tint color.
 
-These map into the app theme; see `sources/theme.ts` and `docs/brand/color-palette.ts`.
+```svg
+<svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <line x1="7" y1="10" x2="7" y2="20"/>
+  <line x1="17" y1="10" x2="17" y2="20"/>
+  <path d="M7 10 Q12 3 17 10" fill="none"/>
+</svg>
+```
 
-- **Primary / accent:** Idle Cyan for interactive emphasis (links, active tab, primary button in accent variant).
-- **Success:** Green remains for “connected” and positive actions; can be aligned with Idle Cyan in accent contexts.
-- **Destructive:** Red unchanged for errors and destructive actions.
-- **Neutrals:** Slate scale for text, borders, and backgrounds so the UI feels consistent with the teal brand.
+### Static assets (two-color)
 
----
+For app icons, favicons, and OG images:
 
-## 4. Typography
-
-- **Headings / UI:** Existing stack (e.g. Bricolage Grotesque, IBM Plex Sans) is retained. Prefer **semiBold** for section titles and **regular** for body.
-- **Code / terminal:** Monospace (e.g. IBM Plex Mono, Space Mono) for code blocks and terminal content.
-- **Logo wordmark:** Uppercase “IDLE” or title-case “Idle” in a clean sans; no script or decorative fonts.
-
----
-
-## 5. Logo and mark
-
-### Logo mark (symbol only)
-
-- A **vertical “cursor” bar** with a **dot** above it: the “i” in Idle, read as both letterform and terminal cursor / idle indicator.
-- Used: app icon, favicon, header, small contexts.
-- Clear at 16×16px and up. Prefer the mark alone when space is tight; pair with wordmark when space allows.
+- **Container:** ink (#0A0F1A) rounded rect
+- **Bars:** glass (#E8EDF2)
+- **Arc:** amber (#C9A84C)
 
 ### Wordmark
 
-- **Idle** in title case (or **IDLE** in caps for lockups).
-- Use the same font as app headings for consistency.
+"Idle" in Space Grotesk Bold (700), letter-spacing -0.5px. No "Labs" suffix.
 
-### Lockup
+### Rules
 
-- Mark left of wordmark, with fixed spacing. Minimum size so the mark is at least 20px height.
+- Do not stretch, rotate, or change proportions.
+- Do not add effects (drop shadow, gradient) unless specified.
+- Mark alone in tight spaces. With wordmark when space allows.
+- Clear at 16x16px and up.
 
-### Don’t
+---
 
-- Stretch or rotate the mark.
-- Change the mark’s proportions.
-- Add effects (drop shadow, gradient) unless specified in a variant.
-- Use the wordmark in competing colors (e.g. red on red).
+## 4. Color palette
+
+Northglass Labs palette, shared across all Northglass products.
+
+| Token | Hex | Role |
+|-------|-----|------|
+| ink | `#0A0F1A` | Backgrounds, dark surfaces |
+| steel | `#1E2D3D` | Card backgrounds, containers |
+| iron | `#2A3A4A` | Borders, dividers |
+| silver | `#8B949E` | Secondary text, metadata |
+| frost | `#C8D1DB` | Body text |
+| glass | `#E8EDF2` | Headings, emphasis |
+| white | `#FFFFFF` | High-emphasis, hover states |
+| amber | `#C9A84C` | Primary accent: links, active states, status |
+| amber-dim | `#A07D35` | Muted amber: hover states, subtle accents |
+
+### Usage in app themes
+
+- **Accent:** amber replaces the previous cyan for links, active tabs, and interactive elements.
+- **Dark theme surfaces:** ink (base), steel (elevated), iron (borders).
+- **Dark theme text:** frost (body), glass (headings), silver (secondary).
+- **Light theme:** glass/white backgrounds, ink text, amber accent.
+- **Semantic colors** (green for success, red for error) are unchanged.
+
+Source: `packages/idle-app/sources/brand/colors.ts`
+
+---
+
+## 5. Typography
+
+| Role | Font | Weight |
+|------|------|--------|
+| Headings | Space Grotesk | 700 (Bold) |
+| Body / UI | Inter | 400 (Regular), 500 (Medium) |
+| Code / mono | JetBrains Mono | 400 (Regular), 500 (Medium) |
+
+Source: `packages/idle-app/sources/constants/Typography.ts`
+
+Font files: `packages/idle-app/sources/assets/fonts/`
 
 ---
 
 ## 6. Icons (in-app)
 
-- **Tab bar:** Inbox (tray/mail), Sessions (list or bubbles), Settings (gear). Same stroke weight and size; use theme `text` / `textSecondary` for fill so they respect light/dark and active state.
-- **Favicon / PWA:** Logo mark only, on transparent or theme background.
-- **App icon:** Logo mark on a solid background (e.g. Idle Teal or Slate 900); avoid tiny detail.
+Tab bar icons (inbox, sessions, settings) use stroke-based SVGs with `currentColor`. They inherit theme colors automatically and need no brand-specific updates.
+
+Source: `packages/idle-app/sources/brand/svgAssets.ts`
 
 ---
 
-## 7. Asset checklist
+## 7. Asset inventory
 
-| Asset | Format | Sizes / notes |
-|-------|--------|----------------|
-| Logo mark (light) | SVG | 24×24 default; scales |
-| Logo mark (dark) | SVG | Same, invert or use for dark header |
-| Wordmark | SVG | For settings / marketing |
-| Tab: Inbox | SVG | 24×24, single color for tint |
-| Tab: Sessions | SVG | 24×24, single color for tint |
-| Tab: Settings | SVG | 24×24, single color for tint |
-| App icon | PNG | 1024×1024; export 192, 512 for PWA |
-| Favicon | ICO/PNG | 32×32, 16×16 |
-| Adaptive (Android) | PNG | Foreground + monochrome from mark |
+| Asset | Format | Sizes | Path |
+|-------|--------|-------|------|
+| Bridge mark (mono) | SVG | 24x24 | `assets/images/idle/logo-mark.svg` |
+| Wordmark | SVG | 80x24 | `assets/images/idle/logo-wordmark.svg` |
+| App icon | PNG | 1024x1024 | `assets/images/icon.png` |
+| Favicon | PNG | 48x48 | `assets/images/favicon.png` |
+| Android adaptive | PNG | 1024x1024 | `assets/images/icon-adaptive.png` |
+| Android monochrome | PNG | 1024x1024 | `assets/images/icon-monochrome.png` |
+| Logotype (dark) | PNG | 1x, 2x, 3x | `assets/images/logotype-dark*.png` |
+| Logotype (light) | PNG | 1x, 2x, 3x | `assets/images/logotype-light*.png` |
+| GitHub logotype | PNG | 600x186 | `.github/logotype-dark.png` |
+| GitHub header | PNG | 1280x640 | `.github/header.png` |
 
-SVGs use `currentColor` or a single fill so the app can tint them via theme (e.g. `theme.colors.header.tint`).
+All paths relative to `packages/idle-app/sources/` unless noted otherwise.
 
-### Generating app icon and favicon from logo mark
+### Regenerating assets
 
-The logo mark SVG is at `packages/idle-app/sources/assets/images/idle/logo-mark.svg`. To produce PNGs for Expo and PWA:
-
-1. **App icon (1024×1024):** Export the logo mark centered on Idle Teal (`#0D3B47`) or Slate 900 (`#0F172A`) at 1024×1024. Use this for `icon.png`, then let Expo generate iOS/Android sizes.
-2. **Favicon:** Export at 32×32 and 16×16 (and optionally 192, 512 for PWA manifest). Transparent or brand background.
-3. **Android adaptive:** Use the same mark for foreground; a white-on-transparent version for monochrome.
-
-You can use Figma, Inkscape, or a Node script (e.g. `sharp` + `resvg-js` or similar) to render the SVG to PNG at these sizes.
+```bash
+./scripts/generate-brand-assets.sh
+```
 
 ---
 
-## 8. Comparison to Happy
+## 8. Domains and identifiers
 
-- **Colors:** Idle uses teal/slate/cyan instead of iOS blue and pure black/white.
-- **Logo:** Idle uses the “i” cursor mark and Idle wordmark; no reuse of Happy’s mark or wordmark.
-- **Tone:** Idle is calmer and more minimal; security and control are first-class.
-
-Use this doc and the linked theme/palette files as the single source of truth for Idle’s visual identity across the app (idle.northglass.io), CLI, and any future marketing or iOS app.
+| Property | Value |
+|----------|-------|
+| Web app | idle.northglass.io |
+| API server | idle-api.northglass.io |
+| iOS bundle | com.northglass.idle |
+| npm package | idle-coder |
+| npm scope | @northglass |
+| CLI command | idle |
