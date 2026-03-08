@@ -22,10 +22,20 @@ export function authRoutes(app: Fastify) {
         }
     }, async (request, reply) => {
         const tweetnacl = (await import("tweetnacl")).default;
-        const publicKey = privacyKit.decodeBase64(request.body.publicKey);
-        const challenge = privacyKit.decodeBase64(request.body.challenge);
-        const signature = privacyKit.decodeBase64(request.body.signature);
-        const isValid = tweetnacl.sign.detached.verify(challenge, signature, publicKey);
+        let publicKey: Uint8Array<ArrayBuffer>, challenge: Uint8Array<ArrayBuffer>, signature: Uint8Array<ArrayBuffer>;
+        try {
+            publicKey = privacyKit.decodeBase64(request.body.publicKey);
+            challenge = privacyKit.decodeBase64(request.body.challenge);
+            signature = privacyKit.decodeBase64(request.body.signature);
+        } catch {
+            return reply.code(401).send({ error: 'Invalid signature' });
+        }
+        let isValid: boolean;
+        try {
+            isValid = tweetnacl.sign.detached.verify(challenge, signature, publicKey);
+        } catch {
+            return reply.code(401).send({ error: 'Invalid signature' });
+        }
         if (!isValid) {
             return reply.code(401).send({ error: 'Invalid signature' });
         }
@@ -74,7 +84,12 @@ export function authRoutes(app: Fastify) {
         }
     }, async (request, reply) => {
         const tweetnacl = (await import("tweetnacl")).default;
-        const publicKey = privacyKit.decodeBase64(request.body.publicKey);
+        let publicKey: Uint8Array<ArrayBuffer>;
+        try {
+            publicKey = privacyKit.decodeBase64(request.body.publicKey);
+        } catch {
+            return reply.code(401).send({ error: 'Invalid public key' });
+        }
         const isValid = tweetnacl.box.publicKeyLength === publicKey.length;
         if (!isValid) {
             return reply.code(401).send({ error: 'Invalid public key' });
@@ -126,7 +141,12 @@ export function authRoutes(app: Fastify) {
         }
     }, async (request, reply) => {
         const tweetnacl = (await import("tweetnacl")).default;
-        const publicKey = privacyKit.decodeBase64(request.query.publicKey);
+        let publicKey: Uint8Array<ArrayBuffer>;
+        try {
+            publicKey = privacyKit.decodeBase64(request.query.publicKey);
+        } catch {
+            return reply.send({ status: 'not_found', supportsV2: false });
+        }
         const isValid = tweetnacl.box.publicKeyLength === publicKey.length;
         if (!isValid) {
             return reply.send({ status: 'not_found', supportsV2: false });
@@ -160,7 +180,13 @@ export function authRoutes(app: Fastify) {
     }, async (request, reply) => {
         log({ module: 'auth-response' }, `Auth response endpoint hit - user: ${request.userId}, publicKey: ${request.body.publicKey.substring(0, 8)}...`);
         const tweetnacl = (await import("tweetnacl")).default;
-        const publicKey = privacyKit.decodeBase64(request.body.publicKey);
+        let publicKey: Uint8Array<ArrayBuffer>;
+        try {
+            publicKey = privacyKit.decodeBase64(request.body.publicKey);
+        } catch {
+            log({ module: 'auth-response' }, `Invalid public key encoding`);
+            return reply.code(401).send({ error: 'Invalid public key' });
+        }
         const isValid = tweetnacl.box.publicKeyLength === publicKey.length;
         if (!isValid) {
             log({ module: 'auth-response' }, `Invalid public key length: ${publicKey.length}`);
@@ -217,7 +243,12 @@ export function authRoutes(app: Fastify) {
         }
     }, async (request, reply) => {
         const tweetnacl = (await import("tweetnacl")).default;
-        const publicKey = privacyKit.decodeBase64(request.body.publicKey);
+        let publicKey: Uint8Array<ArrayBuffer>;
+        try {
+            publicKey = privacyKit.decodeBase64(request.body.publicKey);
+        } catch {
+            return reply.code(401).send({ error: 'Invalid public key' });
+        }
         const isValid = tweetnacl.box.publicKeyLength === publicKey.length;
         if (!isValid) {
             return reply.code(401).send({ error: 'Invalid public key' });
@@ -252,7 +283,12 @@ export function authRoutes(app: Fastify) {
         }
     }, async (request, reply) => {
         const tweetnacl = (await import("tweetnacl")).default;
-        const publicKey = privacyKit.decodeBase64(request.body.publicKey);
+        let publicKey: Uint8Array<ArrayBuffer>;
+        try {
+            publicKey = privacyKit.decodeBase64(request.body.publicKey);
+        } catch {
+            return reply.code(401).send({ error: 'Invalid public key' });
+        }
         const isValid = tweetnacl.box.publicKeyLength === publicKey.length;
         if (!isValid) {
             return reply.code(401).send({ error: 'Invalid public key' });

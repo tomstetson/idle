@@ -44,7 +44,7 @@ export async function startApi() {
     app.register(import('@fastify/cors'), {
         origin: allowedOrigins,
         allowedHeaders: ['Content-Type', 'Authorization'],
-        methods: ['GET', 'POST', 'DELETE']
+        methods: ['GET', 'POST', 'PUT', 'DELETE']
     });
 
     // Rate limiting — stricter on auth endpoints, relaxed elsewhere
