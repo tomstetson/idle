@@ -1,6 +1,7 @@
 import * as React from 'react';
 import { Text, View } from 'react-native';
 import { useUnistyles } from 'react-native-unistyles';
+import { FontFamilies } from '@/constants/Typography';
 
 interface IdleWordmarkProps {
   color?: string;
@@ -18,9 +19,10 @@ export const IdleWordmark = React.memo(({ color, fontSize = 28 }: IdleWordmarkPr
       <Text
         style={{
           fontSize,
-          fontWeight: '600',
+          fontFamily: FontFamilies.heading.bold,
+          fontWeight: '700',
           color: textColor,
-          letterSpacing: 0.5,
+          letterSpacing: -0.5,
         }}
       >
         Idle
