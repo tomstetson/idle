@@ -240,6 +240,20 @@ export const it: TranslationStructure = {
         showThinking: 'Mostra pensiero AI',
         showThinkingEnabled: 'Blocchi di ragionamento AI visibili nei messaggi',
         showThinkingDisabled: 'Blocchi di ragionamento AI nascosti',
+
+        // Attribution
+        attribution: 'Attribuzione',
+        idleAttribution: 'Attribuzione Idle',
+        attributionEnabled: 'I commit includono Co-Authored-By: Idle',
+        attributionDisabled: 'Attribuzione disattivata',
+        attributionFooter: 'Aiuta gli altri a scoprire Idle. Puoi disattivarla in qualsiasi momento.',
+    },
+
+    attribution: {
+        promptTitle: 'Aiuta gli altri a trovare Idle',
+        promptBody: 'Idle è gratuito, ma mantenerlo ha un costo. Quando l\'attribuzione è attiva, i tuoi commit includono un tag Co-Authored-By: Idle — aiutando altri sviluppatori a scoprire lo strumento. Puoi cambiarlo nelle Impostazioni.',
+        keepOn: 'Mantieni attribuzione',
+        turnOff: 'Disattiva',
     },
 
     errors: {

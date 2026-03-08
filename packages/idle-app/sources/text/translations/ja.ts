@@ -243,6 +243,20 @@ export const ja: TranslationStructure = {
         showThinking: 'AI思考を表示',
         showThinkingEnabled: 'AIの推論ブロックをメッセージに表示',
         showThinkingDisabled: 'AIの推論ブロックを非表示',
+
+        // Attribution
+        attribution: 'アトリビューション',
+        idleAttribution: 'Idle アトリビューション',
+        attributionEnabled: 'コミットに Co-Authored-By: Idle が含まれます',
+        attributionDisabled: 'アトリビューション無効',
+        attributionFooter: 'Idle の発見を助けます。いつでもオフにできます。',
+    },
+
+    attribution: {
+        promptTitle: 'Idle を広めましょう',
+        promptBody: 'Idle は無料ですが、運営にはコストがかかります。アトリビューションがオンの場合、コミットに Co-Authored-By: Idle タグが追加され、他の開発者がツールを見つけやすくなります。設定からいつでも変更できます。',
+        keepOn: 'アトリビューションを維持',
+        turnOff: 'オフにする',
     },
 
     errors: {

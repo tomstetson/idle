@@ -193,6 +193,20 @@ export const ru: TranslationStructure = {
         showThinking: 'Показать мышление AI',
         showThinkingEnabled: 'Блоки рассуждений AI видны в сообщениях',
         showThinkingDisabled: 'Блоки рассуждений AI скрыты',
+
+        // Attribution
+        attribution: 'Атрибуция',
+        idleAttribution: 'Атрибуция Idle',
+        attributionEnabled: 'Коммиты содержат Co-Authored-By: Idle',
+        attributionDisabled: 'Атрибуция отключена',
+        attributionFooter: 'Помогает другим найти Idle. Можно отключить в любое время.',
+    },
+
+    attribution: {
+        promptTitle: 'Помогите другим найти Idle',
+        promptBody: 'Idle бесплатен, но его содержание стоит нам денег. Когда атрибуция включена, ваши коммиты содержат тег Co-Authored-By: Idle — помогая другим разработчикам найти инструмент. Вы можете изменить это в Настройках.',
+        keepOn: 'Оставить атрибуцию',
+        turnOff: 'Отключить',
     },
 
     errors: {

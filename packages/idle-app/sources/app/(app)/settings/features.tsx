@@ -90,12 +90,12 @@ export default function FeaturesSettingsScreen() {
 
             {/* Attribution */}
             <ItemGroup
-                title="Attribution"
-                footer="Helps others discover Idle. Free to turn off anytime."
+                title={t('settingsFeatures.attribution')}
+                footer={t('settingsFeatures.attributionFooter')}
             >
                 <Item
-                    title="Idle Attribution"
-                    subtitle={includeCoAuthoredBy ? 'Commits include Co-Authored-By: Idle' : 'Attribution disabled'}
+                    title={t('settingsFeatures.idleAttribution')}
+                    subtitle={includeCoAuthoredBy ? t('settingsFeatures.attributionEnabled') : t('settingsFeatures.attributionDisabled')}
                     icon={<Ionicons name="heart-outline" size={29} color="#FF2D55" />}
                     rightElement={
                         <Switch

@@ -211,6 +211,20 @@ export const ca: TranslationStructure = {
         showThinking: 'Mostrar pensament de la IA',
         showThinkingEnabled: 'Blocs de raonament de la IA visibles als missatges',
         showThinkingDisabled: 'Blocs de raonament de la IA ocults',
+
+        // Attribution
+        attribution: 'Atribució',
+        idleAttribution: 'Atribució d\'Idle',
+        attributionEnabled: 'Els commits inclouen Co-Authored-By: Idle',
+        attributionDisabled: 'Atribució desactivada',
+        attributionFooter: 'Ajuda a altres a descobrir Idle. Pots desactivar-ho en qualsevol moment.',
+    },
+
+    attribution: {
+        promptTitle: 'Ajuda a altres a trobar Idle',
+        promptBody: 'Idle és gratuït, però mantenir-lo té un cost. Quan l\'atribució està activada, els teus commits inclouen una etiqueta Co-Authored-By: Idle — ajudant a altres desenvolupadors a descobrir l\'eina. Pots canviar-ho a Configuració.',
+        keepOn: 'Mantenir atribució',
+        turnOff: 'Desactivar',
     },
 
     errors: {

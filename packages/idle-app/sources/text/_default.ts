@@ -210,6 +210,20 @@ export const en = {
         showThinking: 'Show AI Thinking',
         showThinkingEnabled: 'AI reasoning blocks visible in messages',
         showThinkingDisabled: 'AI reasoning blocks hidden',
+
+        // Attribution
+        attribution: 'Attribution',
+        idleAttribution: 'Idle Attribution',
+        attributionEnabled: 'Commits include Co-Authored-By: Idle',
+        attributionDisabled: 'Attribution disabled',
+        attributionFooter: 'Helps others discover Idle. Free to turn off anytime.',
+    },
+
+    attribution: {
+        promptTitle: 'Help Others Find Idle',
+        promptBody: 'Idle is free to use, but costs us to run. When attribution is on, your commits include a small Co-Authored-By: Idle tag — helping other developers discover the tool. You can change this anytime in Settings.',
+        keepOn: 'Keep Attribution On',
+        turnOff: 'Turn Off',
     },
 
     errors: {

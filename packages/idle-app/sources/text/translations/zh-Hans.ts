@@ -213,6 +213,20 @@ export const zhHans: TranslationStructure = {
         showThinking: '显示AI思考',
         showThinkingEnabled: 'AI推理块在消息中可见',
         showThinkingDisabled: 'AI推理块已隐藏',
+
+        // Attribution
+        attribution: '署名',
+        idleAttribution: 'Idle 署名',
+        attributionEnabled: '提交包含 Co-Authored-By: Idle',
+        attributionDisabled: '署名已关闭',
+        attributionFooter: '帮助更多人发现 Idle。随时可以关闭。',
+    },
+
+    attribution: {
+        promptTitle: '帮助更多人发现 Idle',
+        promptBody: 'Idle 免费使用，但运营需要成本。开启署名后，您的提交将包含 Co-Authored-By: Idle 标签，帮助其他开发者发现这个工具。您可以随时在设置中更改。',
+        keepOn: '保留署名',
+        turnOff: '关闭',
     },
 
     errors: {

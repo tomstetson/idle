@@ -222,6 +222,20 @@ export const pl: TranslationStructure = {
         showThinking: 'Pokaż myślenie AI',
         showThinkingEnabled: 'Bloki rozumowania AI widoczne w wiadomościach',
         showThinkingDisabled: 'Bloki rozumowania AI ukryte',
+
+        // Attribution
+        attribution: 'Atrybucja',
+        idleAttribution: 'Atrybucja Idle',
+        attributionEnabled: 'Commity zawierają Co-Authored-By: Idle',
+        attributionDisabled: 'Atrybucja wyłączona',
+        attributionFooter: 'Pomaga innym odkryć Idle. Możesz wyłączyć w każdej chwili.',
+    },
+
+    attribution: {
+        promptTitle: 'Pomóż innym znaleźć Idle',
+        promptBody: 'Idle jest darmowy, ale utrzymanie go kosztuje. Gdy atrybucja jest włączona, Twoje commity zawierają tag Co-Authored-By: Idle — pomagając innym programistom odkryć narzędzie. Możesz to zmienić w Ustawieniach.',
+        keepOn: 'Zostaw atrybucję',
+        turnOff: 'Wyłącz',
     },
 
     errors: {

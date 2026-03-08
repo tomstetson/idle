@@ -104,11 +104,11 @@ const getRecentPathForMachine = (machineId: string | null, recentPaths: Array<{ 
 function showAttributionPrompt(): Promise<void> {
     return new Promise((resolve) => {
         Modal.alert(
-            'Help Others Find Idle',
-            'Idle is free to use, but costs us to run. When attribution is on, your commits include a small Co-Authored-By: Idle tag — helping other developers discover the tool. You can change this anytime in Settings.',
+            t('attribution.promptTitle'),
+            t('attribution.promptBody'),
             [
                 {
-                    text: 'Turn Off',
+                    text: t('attribution.turnOff'),
                     style: 'cancel',
                     onPress: () => {
                         sync.applySettings({
@@ -119,7 +119,7 @@ function showAttributionPrompt(): Promise<void> {
                     },
                 },
                 {
-                    text: 'Keep Attribution On',
+                    text: t('attribution.keepOn'),
                     onPress: () => {
                         sync.applySettings({
                             includeCoAuthoredBy: true,
