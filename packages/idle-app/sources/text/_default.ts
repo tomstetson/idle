@@ -384,7 +384,11 @@ export const en = {
         deleteSessionWarning: 'This action cannot be undone. All messages and data associated with this session will be permanently deleted.',
         failedToDeleteSession: 'Failed to delete session',
         sessionDeleted: 'Session deleted successfully',
-        
+        renameSession: 'Rename Session',
+        renameSessionSubtitle: 'Change the session title',
+        renameSessionPrompt: 'Enter new session name',
+        failedToRenameSession: 'Failed to rename session',
+
     },
 
     components: {

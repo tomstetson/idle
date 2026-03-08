@@ -569,6 +569,78 @@ export async function sessionDelete(sessionId: string): Promise<{ success: boole
     }
 }
 
+/**
+ * Rename a session by updating its metadata summary
+ * Uses encrypted metadata update with optimistic concurrency control,
+ * matching the same protocol the CLI uses via 'update-metadata' socket event.
+ */
+export async function sessionRename(sessionId: string, newTitle: string): Promise<{ success: boolean; message?: string }> {
+    try {
+        const sessionEncryption = sync.encryption.getSessionEncryption(sessionId);
+        if (!sessionEncryption) {
+            return { success: false, message: 'Session encryption not available' };
+        }
+
+        // Get current session to read existing metadata and version
+        const { storage } = await import('./storage');
+        const session = storage.getState().sessions[sessionId];
+        if (!session || !session.metadata) {
+            return { success: false, message: 'Session not found or has no metadata' };
+        }
+
+        // Update summary in metadata (same field the CLI's change_title MCP tool writes to)
+        const updatedMetadata = {
+            ...session.metadata,
+            summary: {
+                text: newTitle,
+                updatedAt: Date.now()
+            }
+        };
+
+        const encryptedMetadata = await sessionEncryption.encryptMetadata(updatedMetadata);
+
+        const result = await apiSocket.emitWithAck<{
+            result: 'success' | 'version-mismatch' | 'error';
+            version?: number;
+            metadata?: string;
+            message?: string;
+        }>('update-metadata', {
+            sid: sessionId,
+            expectedVersion: session.metadataVersion,
+            metadata: encryptedMetadata
+        });
+
+        if (result.result === 'success') {
+            return { success: true };
+        } else if (result.result === 'version-mismatch') {
+            // Retry once with the latest version
+            const retryEncrypted = await sessionEncryption.encryptMetadata(updatedMetadata);
+            const retryResult = await apiSocket.emitWithAck<{
+                result: 'success' | 'version-mismatch' | 'error';
+                version?: number;
+                metadata?: string;
+                message?: string;
+            }>('update-metadata', {
+                sid: sessionId,
+                expectedVersion: result.version,
+                metadata: retryEncrypted
+            });
+
+            if (retryResult.result === 'success') {
+                return { success: true };
+            }
+            return { success: false, message: 'Version conflict - please try again' };
+        } else {
+            return { success: false, message: result.message || 'Failed to rename session' };
+        }
+    } catch (error) {
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : 'Unknown error'
+        };
+    }
+}
+
 // Export types for external use
 export type {
     SessionBashRequest,

@@ -11,7 +11,7 @@ import { useSession, useIsDataReady } from '@/sync/storage';
 import { getSessionName, useSessionStatus, formatOSPlatform, formatPathRelativeToHome, getSessionAvatarId } from '@/utils/sessionUtils';
 import * as Clipboard from 'expo-clipboard';
 import { Modal } from '@/modal';
-import { sessionKill, sessionDelete } from '@/sync/ops';
+import { sessionKill, sessionDelete, sessionRename } from '@/sync/ops';
 import { useUnistyles } from 'react-native-unistyles';
 import { layout } from '@/components/layout';
 import { t } from '@/text';
@@ -200,6 +200,28 @@ function SessionInfoContent({ session }: { session: Session }) {
         );
     }, [performDelete]);
 
+    // Use IdleAction for renaming - it handles errors automatically
+    const [renamingSession, performRename] = useIdleAction(async () => {
+        const newTitle = await Modal.prompt(
+            t('sessionInfo.renameSession'),
+            t('sessionInfo.renameSessionPrompt'),
+            {
+                defaultValue: sessionName,
+                confirmText: t('common.ok'),
+                cancelText: t('common.cancel'),
+            }
+        );
+        if (newTitle === null || newTitle.trim() === '') return;
+        const result = await sessionRename(session.id, newTitle.trim());
+        if (!result.success) {
+            throw new IdleError(result.message || t('sessionInfo.failedToRenameSession'), false);
+        }
+    });
+
+    const handleRenameSession = useCallback(() => {
+        performRename();
+    }, [performRename]);
+
     const formatDate = useCallback((timestamp: number) => {
         return new Date(timestamp).toLocaleString();
     }, []);
@@ -309,6 +331,14 @@ function SessionInfoContent({ session }: { session: Session }) {
 
                 {/* Quick Actions */}
                 <ItemGroup title={t('sessionInfo.quickActions')}>
+                    {session.metadata && (
+                        <Item
+                            title={t('sessionInfo.renameSession')}
+                            subtitle={t('sessionInfo.renameSessionSubtitle')}
+                            icon={<Ionicons name="pencil-outline" size={29} color="#007AFF" />}
+                            onPress={handleRenameSession}
+                        />
+                    )}
                     {session.metadata?.machineId && (
                         <Item
                             title={t('sessionInfo.viewMachine')}

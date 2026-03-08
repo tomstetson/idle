@@ -352,6 +352,10 @@ export const ru: TranslationStructure = {
         deleteSessionWarning: 'Это действие нельзя отменить. Все сообщения и данные, связанные с этой сессией, будут удалены навсегда.',
         failedToDeleteSession: 'Не удалось удалить сессию',
         sessionDeleted: 'Сессия успешно удалена',
+        renameSession: 'Переименовать сессию',
+        renameSessionSubtitle: 'Изменить название сессии',
+        renameSessionPrompt: 'Введите новое название сессии',
+        failedToRenameSession: 'Не удалось переименовать сессию',
     },
 
     components: {
