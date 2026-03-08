@@ -1,8 +1,8 @@
 {
-  "primary": "#5e52a7",
-  "onPrimary": "#ffffff",
-  "primaryContainer": "#e5deff",
-  "onPrimaryContainer": "#190261",
+  "primary": "#C9A84C",
+  "onPrimary": "#FFFFFF",
+  "primaryContainer": "#F5EDD6",
+  "onPrimaryContainer": "#3D2E00",
   "secondary": "#5f5c71",
   "onSecondary": "#ffffff",
   "secondaryContainer": "#e5dff9",
