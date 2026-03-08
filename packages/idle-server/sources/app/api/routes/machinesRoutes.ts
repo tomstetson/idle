@@ -6,7 +6,22 @@ import { log } from "@/utils/log";
 import { randomKeyNaked } from "@/utils/randomKeyNaked";
 import { allocateUserSeq } from "@/storage/seq";
 import { buildNewMachineUpdate, buildUpdateMachineUpdate } from "@/app/events/eventRouter";
-import { encodeBytesField } from "@/utils/encodeBytesField";
+import { fetchBytesField, fetchBytesFieldMap } from "@/utils/encodeBytesField";
+
+// Prisma select that excludes Bytes fields (PGlite + Prisma 6 bug: Bytes reads crash with P2023)
+const machineSelectNoDek = {
+    id: true,
+    accountId: true,
+    metadata: true,
+    metadataVersion: true,
+    daemonState: true,
+    daemonStateVersion: true,
+    seq: true,
+    active: true,
+    lastActiveAt: true,
+    createdAt: true,
+    updatedAt: true,
+} as const;
 
 export function machinesRoutes(app: Fastify) {
     app.post('/v1/machines', {
@@ -25,15 +40,14 @@ export function machinesRoutes(app: Fastify) {
 
         // Check if machine exists (like sessions do)
         const machine = await db.machine.findFirst({
-            where: {
-                accountId: userId,
-                id: id
-            }
+            where: { accountId: userId, id },
+            select: machineSelectNoDek
         });
 
         if (machine) {
-            // Machine exists - just return it
+            // Machine exists - fetch DEK via raw SQL and return
             log({ module: 'machines', machineId: id, userId }, 'Found existing machine');
+            const dek = await fetchBytesField('Machine', 'id', id, 'dataEncryptionKey');
             return reply.send({
                 machine: {
                     id: machine.id,
@@ -41,7 +55,7 @@ export function machinesRoutes(app: Fastify) {
                     metadataVersion: machine.metadataVersion,
                     daemonState: machine.daemonState,
                     daemonStateVersion: machine.daemonStateVersion,
-                    dataEncryptionKey: encodeBytesField(machine.dataEncryptionKey),
+                    dataEncryptionKey: dek,
                     active: machine.active,
                     activeAt: machine.lastActiveAt.getTime(),
                     createdAt: machine.createdAt.getTime(),
@@ -78,7 +92,7 @@ export function machinesRoutes(app: Fastify) {
             // Emit both new-machine and update-machine events for backward compatibility
             const updSeq1 = await allocateUserSeq(userId);
             const updSeq2 = await allocateUserSeq(userId);
-            
+
             // Emit new-machine event with all data including dataEncryptionKey
             const newMachinePayload = buildNewMachineUpdate(newMachine, updSeq1, randomKeyNaked(12));
             eventRouter.emitUpdate({
@@ -125,8 +139,12 @@ export function machinesRoutes(app: Fastify) {
 
         const machines = await db.machine.findMany({
             where: { accountId: userId },
-            orderBy: { lastActiveAt: 'desc' }
+            orderBy: { lastActiveAt: 'desc' },
+            select: machineSelectNoDek
         });
+
+        // Fetch DEKs via raw SQL (Prisma can't read Bytes from PGlite)
+        const dekMap = await fetchBytesFieldMap('Machine', userId, 'dataEncryptionKey');
 
         return machines.map(m => ({
             id: m.id,
@@ -134,7 +152,7 @@ export function machinesRoutes(app: Fastify) {
             metadataVersion: m.metadataVersion,
             daemonState: m.daemonState,
             daemonStateVersion: m.daemonStateVersion,
-            dataEncryptionKey: encodeBytesField(m.dataEncryptionKey),
+            dataEncryptionKey: dekMap.get(m.id) || null,
             seq: m.seq,
             active: m.active,
             activeAt: m.lastActiveAt.getTime(),
@@ -156,15 +174,15 @@ export function machinesRoutes(app: Fastify) {
         const { id } = request.params;
 
         const machine = await db.machine.findFirst({
-            where: {
-                accountId: userId,
-                id: id
-            }
+            where: { accountId: userId, id },
+            select: machineSelectNoDek
         });
 
         if (!machine) {
             return reply.code(404).send({ error: 'Machine not found' });
         }
+
+        const dek = await fetchBytesField('Machine', 'id', id, 'dataEncryptionKey');
 
         return {
             machine: {
@@ -173,7 +191,7 @@ export function machinesRoutes(app: Fastify) {
                 metadataVersion: machine.metadataVersion,
                 daemonState: machine.daemonState,
                 daemonStateVersion: machine.daemonStateVersion,
-                dataEncryptionKey: encodeBytesField(machine.dataEncryptionKey),
+                dataEncryptionKey: dek,
                 seq: machine.seq,
                 active: machine.active,
                 activeAt: machine.lastActiveAt.getTime(),

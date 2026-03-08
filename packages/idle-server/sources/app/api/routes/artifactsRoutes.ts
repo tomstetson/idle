@@ -5,8 +5,18 @@ import { z } from "zod";
 import { randomKeyNaked } from "@/utils/randomKeyNaked";
 import { allocateUserSeq } from "@/storage/seq";
 import { log } from "@/utils/log";
-import * as privacyKit from "privacy-kit";
-import { encodeBytesField } from "@/utils/encodeBytesField";
+import { fetchMultipleBytesFields } from "@/utils/encodeBytesField";
+
+// Prisma select that excludes Bytes fields (PGlite + Prisma 6 bug: Bytes reads crash with P2023)
+const artifactSelectNoBytes = {
+    id: true,
+    accountId: true,
+    headerVersion: true,
+    bodyVersion: true,
+    seq: true,
+    createdAt: true,
+    updatedAt: true,
+} as const;
 
 export function artifactsRoutes(app: Fastify) {
     // GET /v1/artifacts - List all artifacts for the account
@@ -35,26 +45,29 @@ export function artifactsRoutes(app: Fastify) {
             const artifacts = await db.artifact.findMany({
                 where: { accountId: userId },
                 orderBy: { updatedAt: 'desc' },
-                select: {
-                    id: true,
-                    header: true,
-                    headerVersion: true,
-                    dataEncryptionKey: true,
-                    seq: true,
-                    createdAt: true,
-                    updatedAt: true
-                }
+                select: artifactSelectNoBytes
             });
 
-            return reply.send(artifacts.map(a => ({
-                id: a.id,
-                header: encodeBytesField(a.header)!,
-                headerVersion: a.headerVersion,
-                dataEncryptionKey: encodeBytesField(a.dataEncryptionKey)!,
-                seq: a.seq,
-                createdAt: a.createdAt.getTime(),
-                updatedAt: a.updatedAt.getTime()
-            })));
+            // Fetch Bytes fields via raw SQL (PGlite + Prisma 6 bug: Bytes reads crash with P2023)
+            const bytesData = await db.$queryRawUnsafe<Array<{ id: string; header: string | null; dek: string | null }>>(
+                `SELECT "id", encode("header", 'base64') as "header", encode("dataEncryptionKey", 'base64') as "dek" FROM "Artifact" WHERE "accountId" = $1`,
+                userId
+            );
+            const bytesMap = new Map<string, { header: string | null; dek: string | null }>();
+            for (const r of bytesData) bytesMap.set(r.id, { header: r.header, dek: r.dek });
+
+            return reply.send(artifacts.map(a => {
+                const bytes = bytesMap.get(a.id);
+                return {
+                    id: a.id,
+                    header: bytes?.header ?? '',
+                    headerVersion: a.headerVersion,
+                    dataEncryptionKey: bytes?.dek ?? '',
+                    seq: a.seq,
+                    createdAt: a.createdAt.getTime(),
+                    updatedAt: a.updatedAt.getTime()
+                };
+            }));
         } catch (error) {
             log({ module: 'api', level: 'error' }, `Failed to get artifacts: ${error}`);
             return reply.code(500).send({ error: 'Failed to get artifacts' });
@@ -94,23 +107,24 @@ export function artifactsRoutes(app: Fastify) {
 
         try {
             const artifact = await db.artifact.findFirst({
-                where: {
-                    id,
-                    accountId: userId
-                }
+                where: { id, accountId: userId },
+                select: artifactSelectNoBytes
             });
 
             if (!artifact) {
                 return reply.code(404).send({ error: 'Artifact not found' });
             }
 
+            // Fetch Bytes fields via raw SQL
+            const bytes = await fetchMultipleBytesFields('Artifact', 'id', id, ['header', 'body', 'dataEncryptionKey']);
+
             return reply.send({
                 id: artifact.id,
-                header: encodeBytesField(artifact.header)!,
+                header: bytes.header ?? '',
                 headerVersion: artifact.headerVersion,
-                body: encodeBytesField(artifact.body)!,
+                body: bytes.body ?? '',
                 bodyVersion: artifact.bodyVersion,
-                dataEncryptionKey: encodeBytesField(artifact.dataEncryptionKey)!,
+                dataEncryptionKey: bytes.dataEncryptionKey ?? '',
                 seq: artifact.seq,
                 createdAt: artifact.createdAt.getTime(),
                 updatedAt: artifact.updatedAt.getTime()
@@ -156,28 +170,30 @@ export function artifactsRoutes(app: Fastify) {
         const { id, header, body, dataEncryptionKey } = request.body;
 
         try {
-            // Check if artifact exists
+            // Check if artifact exists (exclude Bytes — PGlite + Prisma 6 bug)
             const existingArtifact = await db.artifact.findUnique({
-                where: { id }
+                where: { id },
+                select: artifactSelectNoBytes
             });
 
             if (existingArtifact) {
                 // If exists for another account, return conflict
                 if (existingArtifact.accountId !== userId) {
-                    return reply.code(409).send({ 
-                        error: 'Artifact with this ID already exists for another account' 
+                    return reply.code(409).send({
+                        error: 'Artifact with this ID already exists for another account'
                     });
                 }
-                
+
                 // If exists for same account, return existing (idempotent)
                 log({ module: 'api', artifactId: id, userId }, 'Found existing artifact');
+                const bytes = await fetchMultipleBytesFields('Artifact', 'id', id, ['header', 'body', 'dataEncryptionKey']);
                 return reply.send({
                     id: existingArtifact.id,
-                    header: encodeBytesField(existingArtifact.header)!,
+                    header: bytes.header ?? '',
                     headerVersion: existingArtifact.headerVersion,
-                    body: encodeBytesField(existingArtifact.body)!,
+                    body: bytes.body ?? '',
                     bodyVersion: existingArtifact.bodyVersion,
-                    dataEncryptionKey: encodeBytesField(existingArtifact.dataEncryptionKey)!,
+                    dataEncryptionKey: bytes.dataEncryptionKey ?? '',
                     seq: existingArtifact.seq,
                     createdAt: existingArtifact.createdAt.getTime(),
                     updatedAt: existingArtifact.updatedAt.getTime()
@@ -193,12 +209,19 @@ export function artifactsRoutes(app: Fastify) {
                 id, userId, header, body, dataEncryptionKey, now
             );
 
-            // Fetch the created artifact for the event payload (non-Bytes fields only needed for event)
-            const artifact = await db.artifact.findUniqueOrThrow({ where: { id } });
-
-            // Emit new-artifact event
+            // Emit new-artifact event (pass input base64 strings — no DB re-read needed)
             const updSeq = await allocateUserSeq(userId);
-            const newArtifactPayload = buildNewArtifactUpdate(artifact, updSeq, randomKeyNaked(12));
+            const newArtifactPayload = buildNewArtifactUpdate({
+                id,
+                seq: 0,
+                header,
+                headerVersion: 1,
+                body,
+                bodyVersion: 1,
+                dataEncryptionKey,
+                createdAt: now,
+                updatedAt: now
+            }, updSeq, randomKeyNaked(12));
             eventRouter.emitUpdate({
                 userId,
                 payload: newArtifactPayload,
@@ -265,12 +288,10 @@ export function artifactsRoutes(app: Fastify) {
         const { header, expectedHeaderVersion, body, expectedBodyVersion } = request.body;
 
         try {
-            // Get current artifact for version check
+            // Get current artifact for version check (exclude Bytes — PGlite + Prisma 6 bug)
             const currentArtifact = await db.artifact.findFirst({
-                where: {
-                    id,
-                    accountId: userId
-                }
+                where: { id, accountId: userId },
+                select: artifactSelectNoBytes
             });
 
             if (!currentArtifact) {
@@ -278,22 +299,28 @@ export function artifactsRoutes(app: Fastify) {
             }
 
             // Check version mismatches
-            const headerMismatch = header !== undefined && expectedHeaderVersion !== undefined && 
+            const headerMismatch = header !== undefined && expectedHeaderVersion !== undefined &&
                                    currentArtifact.headerVersion !== expectedHeaderVersion;
-            const bodyMismatch = body !== undefined && expectedBodyVersion !== undefined && 
+            const bodyMismatch = body !== undefined && expectedBodyVersion !== undefined &&
                                  currentArtifact.bodyVersion !== expectedBodyVersion;
 
             if (headerMismatch || bodyMismatch) {
+                // Fetch current Bytes data for mismatch response via raw SQL
+                const mismatchCols: string[] = [];
+                if (headerMismatch) mismatchCols.push('header');
+                if (bodyMismatch) mismatchCols.push('body');
+                const currentBytes = await fetchMultipleBytesFields('Artifact', 'id', id, mismatchCols);
+
                 return reply.send({
                     success: false,
                     error: 'version-mismatch',
                     ...(headerMismatch && {
                         currentHeaderVersion: currentArtifact.headerVersion,
-                        currentHeader: encodeBytesField(currentArtifact.header) ?? undefined
+                        currentHeader: currentBytes.header ?? undefined
                     }),
                     ...(bodyMismatch && {
                         currentBodyVersion: currentArtifact.bodyVersion,
-                        currentBody: encodeBytesField(currentArtifact.body) ?? undefined
+                        currentBody: currentBytes.body ?? undefined
                     })
                 });
             }
@@ -374,12 +401,10 @@ export function artifactsRoutes(app: Fastify) {
         const { id } = request.params;
 
         try {
-            // Check if artifact exists and belongs to user
+            // Check if artifact exists and belongs to user (exclude Bytes)
             const artifact = await db.artifact.findFirst({
-                where: {
-                    id,
-                    accountId: userId
-                }
+                where: { id, accountId: userId },
+                select: { id: true }
             });
 
             if (!artifact) {

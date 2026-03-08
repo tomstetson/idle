@@ -1,5 +1,4 @@
 import { db } from "@/storage/db";
-import { encodeBytesField } from "@/utils/encodeBytesField";
 
 export type KVGetResult = {
     key: string;
@@ -10,28 +9,27 @@ export type KVGetResult = {
 /**
  * Get a single key-value pair for the authenticated user.
  * Returns null if the key doesn't exist or if the value is null (deleted).
+ * Uses raw SQL to read Bytes value as base64 (PGlite + Prisma 6 bug: Bytes reads crash with P2023).
  */
 export async function kvGet(
     ctx: { uid: string },
     key: string
 ): Promise<KVGetResult> {
-    const result = await db.userKVStore.findUnique({
-        where: {
-            accountId_key: {
-                accountId: ctx.uid,
-                key
-            }
-        }
-    });
+    const results = await db.$queryRawUnsafe<Array<{ key: string; val: string | null; version: number }>>(
+        `SELECT "key", encode("value", 'base64') as "val", "version" FROM "UserKVStore" WHERE "accountId" = $1 AND "key" = $2`,
+        ctx.uid, key
+    );
+
+    const result = results[0];
 
     // Treat missing records and null values as "not found"
-    if (!result || result.value === null) {
+    if (!result || result.val === null) {
         return null;
     }
 
     return {
         key: result.key,
-        value: encodeBytesField(result.value)!,
+        value: result.val,
         version: result.version
     };
 }

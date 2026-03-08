@@ -7,7 +7,21 @@ import { log } from "@/utils/log";
 import { randomKeyNaked } from "@/utils/randomKeyNaked";
 import { allocateUserSeq } from "@/storage/seq";
 import { sessionDelete } from "@/app/session/sessionDelete";
-import { encodeBytesField } from "@/utils/encodeBytesField";
+import { fetchBytesField, fetchBytesFieldMap } from "@/utils/encodeBytesField";
+
+// Prisma select that excludes Bytes fields (PGlite + Prisma 6 bug: Bytes reads crash with P2023)
+const sessionSelectNoDek = {
+    id: true,
+    seq: true,
+    createdAt: true,
+    updatedAt: true,
+    metadata: true,
+    metadataVersion: true,
+    agentState: true,
+    agentStateVersion: true,
+    active: true,
+    lastActiveAt: true,
+} as const;
 
 export function sessionRoutes(app: Fastify) {
 
@@ -21,38 +35,15 @@ export function sessionRoutes(app: Fastify) {
             where: { accountId: userId },
             orderBy: { updatedAt: 'desc' },
             take: 150,
-            select: {
-                id: true,
-                seq: true,
-                createdAt: true,
-                updatedAt: true,
-                metadata: true,
-                metadataVersion: true,
-                agentState: true,
-                agentStateVersion: true,
-                dataEncryptionKey: true,
-                active: true,
-                lastActiveAt: true,
-                // messages: {
-                //     orderBy: { seq: 'desc' },
-                //     take: 1,
-                //     select: {
-                //         id: true,
-                //         seq: true,
-                //         content: true,
-                //         localId: true,
-                //         createdAt: true
-                //     }
-                // }
-            }
+            select: sessionSelectNoDek
         });
+
+        // Fetch DEKs via raw SQL (Prisma can't read Bytes from PGlite)
+        const dekMap = await fetchBytesFieldMap('Session', userId, 'dataEncryptionKey');
 
         return reply.send({
             sessions: sessions.map((v) => {
-                // const lastMessage = v.messages[0];
                 const sessionUpdatedAt = v.updatedAt.getTime();
-                // const lastMessageCreatedAt = lastMessage ? lastMessage.createdAt.getTime() : 0;
-
                 return {
                     id: v.id,
                     seq: v.seq,
@@ -64,7 +55,7 @@ export function sessionRoutes(app: Fastify) {
                     metadataVersion: v.metadataVersion,
                     agentState: v.agentState,
                     agentStateVersion: v.agentStateVersion,
-                    dataEncryptionKey: encodeBytesField(v.dataEncryptionKey),
+                    dataEncryptionKey: dekMap.get(v.id) || null,
                     lastMessage: null
                 };
             })
@@ -91,20 +82,10 @@ export function sessionRoutes(app: Fastify) {
             },
             orderBy: { lastActiveAt: 'desc' },
             take: limit,
-            select: {
-                id: true,
-                seq: true,
-                createdAt: true,
-                updatedAt: true,
-                metadata: true,
-                metadataVersion: true,
-                agentState: true,
-                agentStateVersion: true,
-                dataEncryptionKey: true,
-                active: true,
-                lastActiveAt: true,
-            }
+            select: sessionSelectNoDek
         });
+
+        const dekMap = await fetchBytesFieldMap('Session', userId, 'dataEncryptionKey');
 
         return reply.send({
             sessions: sessions.map((v) => ({
@@ -118,7 +99,7 @@ export function sessionRoutes(app: Fastify) {
                 metadataVersion: v.metadataVersion,
                 agentState: v.agentState,
                 agentStateVersion: v.agentStateVersion,
-                dataEncryptionKey: encodeBytesField(v.dataEncryptionKey),
+                dataEncryptionKey: dekMap.get(v.id) || null,
             }))
         });
     });
@@ -171,19 +152,7 @@ export function sessionRoutes(app: Fastify) {
             where,
             orderBy,
             take: limit + 1, // Fetch one extra to determine if there are more
-            select: {
-                id: true,
-                seq: true,
-                createdAt: true,
-                updatedAt: true,
-                metadata: true,
-                metadataVersion: true,
-                agentState: true,
-                agentStateVersion: true,
-                dataEncryptionKey: true,
-                active: true,
-                lastActiveAt: true,
-            }
+            select: sessionSelectNoDek
         });
 
         // Check if there are more results
@@ -197,6 +166,8 @@ export function sessionRoutes(app: Fastify) {
             nextCursor = `cursor_v1_${lastSession.id}`;
         }
 
+        const dekMap = await fetchBytesFieldMap('Session', userId, 'dataEncryptionKey');
+
         return reply.send({
             sessions: resultSessions.map((v) => ({
                 id: v.id,
@@ -209,7 +180,7 @@ export function sessionRoutes(app: Fastify) {
                 metadataVersion: v.metadataVersion,
                 agentState: v.agentState,
                 agentStateVersion: v.agentStateVersion,
-                dataEncryptionKey: encodeBytesField(v.dataEncryptionKey),
+                dataEncryptionKey: dekMap.get(v.id) || null,
             })),
             nextCursor,
             hasNext
@@ -232,13 +203,12 @@ export function sessionRoutes(app: Fastify) {
         const { tag, metadata, dataEncryptionKey } = request.body;
 
         const session = await db.session.findFirst({
-            where: {
-                accountId: userId,
-                tag: tag
-            }
+            where: { accountId: userId, tag },
+            select: sessionSelectNoDek
         });
         if (session) {
             log({ module: 'session-create', sessionId: session.id, userId, tag }, `Found existing session: ${session.id} for tag ${tag}`);
+            const dek = await fetchBytesField('Session', 'id', session.id, 'dataEncryptionKey');
             return reply.send({
                 session: {
                     id: session.id,
@@ -247,7 +217,7 @@ export function sessionRoutes(app: Fastify) {
                     metadataVersion: session.metadataVersion,
                     agentState: session.agentState,
                     agentStateVersion: session.agentStateVersion,
-                    dataEncryptionKey: encodeBytesField(session.dataEncryptionKey),
+                    dataEncryptionKey: dek,
                     active: session.active,
                     activeAt: session.lastActiveAt.getTime(),
                     createdAt: session.createdAt.getTime(),
@@ -325,12 +295,10 @@ export function sessionRoutes(app: Fastify) {
         const userId = request.userId;
         const { sessionId } = request.params;
 
-        // Verify session belongs to user
+        // Verify session belongs to user (no Bytes needed for ownership check)
         const session = await db.session.findFirst({
-            where: {
-                id: sessionId,
-                accountId: userId
-            }
+            where: { id: sessionId, accountId: userId },
+            select: { id: true }
         });
 
         if (!session) {

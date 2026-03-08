@@ -524,11 +524,11 @@ export function buildMachineStatusEphemeral(machineId: string, online: boolean):
 export function buildNewArtifactUpdate(artifact: {
     id: string;
     seq: number;
-    header: Uint8Array;
+    header: string;       // base64 string (PGlite can't read Bytes through Prisma)
     headerVersion: number;
-    body: Uint8Array;
+    body: string;          // base64 string
     bodyVersion: number;
-    dataEncryptionKey: Uint8Array;
+    dataEncryptionKey: string; // base64 string
     createdAt: Date;
     updatedAt: Date;
 }, updateSeq: number, updateId: string): UpdatePayload {
@@ -539,11 +539,11 @@ export function buildNewArtifactUpdate(artifact: {
             t: 'new-artifact',
             artifactId: artifact.id,
             seq: artifact.seq,
-            header: Buffer.from(artifact.header).toString('base64'),
+            header: artifact.header,
             headerVersion: artifact.headerVersion,
-            body: Buffer.from(artifact.body).toString('base64'),
+            body: artifact.body,
             bodyVersion: artifact.bodyVersion,
-            dataEncryptionKey: Buffer.from(artifact.dataEncryptionKey).toString('base64'),
+            dataEncryptionKey: artifact.dataEncryptionKey,
             createdAt: artifact.createdAt.getTime(),
             updatedAt: artifact.updatedAt.getTime()
         },

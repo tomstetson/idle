@@ -8,6 +8,7 @@ import { githubConnect } from "@/app/github/githubConnect";
 import { githubDisconnect } from "@/app/github/githubDisconnect";
 import { Context } from "@/context";
 import { db } from "@/storage/db";
+import * as privacyKit from "privacy-kit";
 
 export function connectRoutes(app: Fastify) {
 
@@ -261,7 +262,8 @@ export function connectRoutes(app: Fastify) {
         const encryptedBase64 = Buffer.from(encrypted).toString('base64');
         // PGlite + Prisma 6 bug: Bytes fields serialize as JSON objects. Use raw SQL.
         const existing = await db.serviceAccountToken.findUnique({
-            where: { accountId_vendor: { accountId: userId, vendor: request.params.vendor } }
+            where: { accountId_vendor: { accountId: userId, vendor: request.params.vendor } },
+            select: { id: true }
         });
         if (existing) {
             await db.$executeRawUnsafe(
@@ -291,17 +293,15 @@ export function connectRoutes(app: Fastify) {
         }
     }, async (request, reply) => {
         const userId = request.userId;
-        const tokenRecord = await db.serviceAccountToken.findUnique({
-            where: { accountId_vendor: { accountId: userId, vendor: request.params.vendor } },
-            select: { token: true }
-        });
-        if (!tokenRecord) {
+        // Read token via raw SQL as base64 (PGlite + Prisma 6 bug: Bytes reads crash with P2023)
+        const tokenResults = await db.$queryRawUnsafe<Array<{ val: string | null }>>(
+            `SELECT encode("token", 'base64') as "val" FROM "ServiceAccountToken" WHERE "accountId" = $1 AND "vendor" = $2`,
+            userId, request.params.vendor
+        );
+        if (!tokenResults[0]?.val) {
             return reply.send({ token: null });
         } else {
-            // Ensure token is Uint8Array for decryption (PGlite may return various types)
-            const tokenBytes = tokenRecord.token instanceof Uint8Array
-                ? tokenRecord.token as Uint8Array<ArrayBuffer>
-                : new Uint8Array(Buffer.isBuffer(tokenRecord.token) ? tokenRecord.token : Object.values(tokenRecord.token as any)) as Uint8Array<ArrayBuffer>;
+            const tokenBytes = privacyKit.decodeBase64(tokenResults[0].val);
             return reply.send({ token: decryptString(['user', userId, 'vendors', request.params.vendor, 'token'], tokenBytes) });
         }
     });
@@ -338,15 +338,15 @@ export function connectRoutes(app: Fastify) {
         }
     }, async (request, reply) => {
         const userId = request.userId;
-        const tokens = await db.serviceAccountToken.findMany({ where: { accountId: userId } });
-        let decrypted = [];
-        for (const token of tokens) {
-            // Ensure token is Uint8Array for decryption (PGlite may return various types)
-            const tokenBytes = token.token instanceof Uint8Array
-                ? token.token as Uint8Array<ArrayBuffer>
-                : new Uint8Array(Buffer.isBuffer(token.token) ? token.token : Object.values(token.token as any)) as Uint8Array<ArrayBuffer>;
-            decrypted.push({ vendor: token.vendor, token: decryptString(['user', userId, 'vendors', token.vendor, 'token'], tokenBytes) });
-        }
+        // Read tokens via raw SQL as base64 (PGlite + Prisma 6 bug: Bytes reads crash with P2023)
+        const tokens = await db.$queryRawUnsafe<Array<{ vendor: string; val: string }>>(
+            `SELECT "vendor", encode("token", 'base64') as "val" FROM "ServiceAccountToken" WHERE "accountId" = $1`,
+            userId
+        );
+        const decrypted = tokens.map(t => ({
+            vendor: t.vendor,
+            token: decryptString(['user', userId, 'vendors', t.vendor, 'token'], privacyKit.decodeBase64(t.val))
+        }));
         return reply.send({ tokens: decrypted });
     });
 

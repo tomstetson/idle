@@ -5,7 +5,18 @@ import { allocateUserSeq } from "@/storage/seq";
 import { log } from "@/utils/log";
 import { randomKeyNaked } from "@/utils/randomKeyNaked";
 import { Socket } from "socket.io";
-import { encodeBytesField } from "@/utils/encodeBytesField";
+import { fetchMultipleBytesFields } from "@/utils/encodeBytesField";
+
+// Prisma select that excludes Bytes fields (PGlite + Prisma 6 bug: Bytes reads crash with P2023)
+const artifactSelectNoBytes = {
+    id: true,
+    accountId: true,
+    headerVersion: true,
+    bodyVersion: true,
+    seq: true,
+    createdAt: true,
+    updatedAt: true,
+} as const;
 
 export function artifactUpdateHandler(userId: string, socket: Socket) {
     // Read artifact with full body
@@ -25,12 +36,10 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
                 return;
             }
 
-            // Fetch artifact
+            // Fetch artifact (exclude Bytes — PGlite + Prisma 6 bug)
             const artifact = await db.artifact.findFirst({
-                where: {
-                    id: artifactId,
-                    accountId: userId
-                }
+                where: { id: artifactId, accountId: userId },
+                select: artifactSelectNoBytes
             });
 
             if (!artifact) {
@@ -40,14 +49,17 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
                 return;
             }
 
+            // Fetch Bytes fields via raw SQL
+            const bytes = await fetchMultipleBytesFields('Artifact', 'id', artifactId, ['header', 'body']);
+
             // Return artifact data
             callback({
                 result: 'success',
                 artifact: {
                     id: artifact.id,
-                    header: encodeBytesField(artifact.header),
+                    header: bytes.header,
                     headerVersion: artifact.headerVersion,
-                    body: encodeBytesField(artifact.body),
+                    body: bytes.body,
                     bodyVersion: artifact.bodyVersion,
                     seq: artifact.seq,
                     createdAt: artifact.createdAt.getTime(),
@@ -111,12 +123,10 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
                 return;
             }
 
-            // Get current artifact for version check
+            // Get current artifact for version check (exclude Bytes — PGlite + Prisma 6 bug)
             const currentArtifact = await db.artifact.findFirst({
-                where: {
-                    id: artifactId,
-                    accountId: userId
-                }
+                where: { id: artifactId, accountId: userId },
+                select: artifactSelectNoBytes
             });
 
             if (!currentArtifact) {
@@ -131,19 +141,25 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
             const bodyMismatch = body && currentArtifact.bodyVersion !== body.expectedVersion;
 
             if (headerMismatch || bodyMismatch) {
+                // Fetch current Bytes data for mismatch response via raw SQL
+                const mismatchCols: string[] = [];
+                if (headerMismatch) mismatchCols.push('header');
+                if (bodyMismatch) mismatchCols.push('body');
+                const currentBytes = await fetchMultipleBytesFields('Artifact', 'id', artifactId, mismatchCols);
+
                 const response: any = { result: 'version-mismatch' };
 
                 if (headerMismatch) {
                     response.header = {
                         currentVersion: currentArtifact.headerVersion,
-                        currentData: encodeBytesField(currentArtifact.header)
+                        currentData: currentBytes.header
                     };
                 }
 
                 if (bodyMismatch) {
                     response.body = {
                         currentVersion: currentArtifact.bodyVersion,
-                        currentData: encodeBytesField(currentArtifact.body)
+                        currentData: currentBytes.body
                     };
                 }
 
@@ -189,27 +205,33 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
             );
 
             if (result === 0) {
-                // Re-fetch current version for mismatch response
+                // Re-fetch current version for mismatch response (exclude Bytes)
                 const current = await db.artifact.findFirst({
-                    where: {
-                        id: artifactId,
-                        accountId: userId
-                    }
+                    where: { id: artifactId, accountId: userId },
+                    select: artifactSelectNoBytes
                 });
+
+                // Fetch current Bytes data via raw SQL
+                const mismatchCols: string[] = [];
+                if (header) mismatchCols.push('header');
+                if (body) mismatchCols.push('body');
+                const currentBytes = mismatchCols.length > 0
+                    ? await fetchMultipleBytesFields('Artifact', 'id', artifactId, mismatchCols)
+                    : {};
 
                 const response: any = { result: 'version-mismatch' };
 
                 if (header && current) {
                     response.header = {
                         currentVersion: current.headerVersion,
-                        currentData: encodeBytesField(current.header)
+                        currentData: (currentBytes as any).header ?? null
                     };
                 }
 
                 if (body && current) {
                     response.body = {
                         currentVersion: current.bodyVersion,
-                        currentData: encodeBytesField(current.body)
+                        currentData: (currentBytes as any).body ?? null
                     };
                 }
 
@@ -272,9 +294,10 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
                 return;
             }
 
-            // Check if artifact already exists
+            // Check if artifact already exists (exclude Bytes — PGlite + Prisma 6 bug)
             const existingArtifact = await db.artifact.findUnique({
-                where: { id }
+                where: { id },
+                select: artifactSelectNoBytes
             });
 
             if (existingArtifact) {
@@ -287,13 +310,14 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
                 }
 
                 // If exists for same account, return existing (idempotent)
+                const bytes = await fetchMultipleBytesFields('Artifact', 'id', id, ['header', 'body']);
                 callback({
                     result: 'success',
                     artifact: {
                         id: existingArtifact.id,
-                        header: encodeBytesField(existingArtifact.header),
+                        header: bytes.header,
                         headerVersion: existingArtifact.headerVersion,
-                        body: encodeBytesField(existingArtifact.body),
+                        body: bytes.body,
                         bodyVersion: existingArtifact.bodyVersion,
                         seq: existingArtifact.seq,
                         createdAt: existingArtifact.createdAt.getTime(),
@@ -311,12 +335,19 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
                 id, userId, header, body, dataEncryptionKey, now
             );
 
-            // Fetch for event payload
-            const artifact = await db.artifact.findUniqueOrThrow({ where: { id } });
-
-            // Emit new-artifact event
+            // Emit new-artifact event (pass input base64 strings — no DB re-read needed)
             const updSeq = await allocateUserSeq(userId);
-            const newArtifactPayload = buildNewArtifactUpdate(artifact, updSeq, randomKeyNaked(12));
+            const newArtifactPayload = buildNewArtifactUpdate({
+                id,
+                seq: 0,
+                header,
+                headerVersion: 1,
+                body,
+                bodyVersion: 1,
+                dataEncryptionKey,
+                createdAt: now,
+                updatedAt: now
+            }, updSeq, randomKeyNaked(12));
             eventRouter.emitUpdate({
                 userId,
                 payload: newArtifactPayload,
@@ -362,12 +393,10 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
                 return;
             }
 
-            // Check if artifact exists and belongs to user
+            // Check if artifact exists and belongs to user (exclude Bytes)
             const artifact = await db.artifact.findFirst({
-                where: {
-                    id: artifactId,
-                    accountId: userId
-                }
+                where: { id: artifactId, accountId: userId },
+                select: { id: true }
             });
 
             if (!artifact) {

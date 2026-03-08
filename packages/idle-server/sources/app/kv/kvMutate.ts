@@ -3,7 +3,6 @@ import { inTx, afterTx } from "@/storage/inTx";
 import { allocateUserSeq } from "@/storage/seq";
 import { randomKeyNaked } from "@/utils/randomKeyNaked";
 import { eventRouter, buildKVBatchUpdateUpdate } from "@/app/events/eventRouter";
-import { encodeBytesField } from "@/utils/encodeBytesField";
 
 export interface KVMutation {
     key: string;
@@ -41,24 +40,31 @@ export async function kvMutate(
 
         // Pre-validate all mutations
         for (const mutation of mutations) {
+            // Only need version for validation (exclude Bytes — PGlite + Prisma 6 bug)
             const existing = await tx.userKVStore.findUnique({
                 where: {
                     accountId_key: {
                         accountId: ctx.uid,
                         key: mutation.key
                     }
-                }
+                },
+                select: { version: true }
             });
 
             const currentVersion = existing?.version ?? -1;
 
             // Version check is always required
             if (currentVersion !== mutation.version) {
+                // Fetch current value via raw SQL for mismatch response
+                const valResult = await tx.$queryRawUnsafe<Array<{ val: string | null }>>(
+                    `SELECT encode("value", 'base64') as "val" FROM "UserKVStore" WHERE "accountId" = $1 AND "key" = $2`,
+                    ctx.uid, mutation.key
+                );
                 errors.push({
                     key: mutation.key,
                     error: 'version-mismatch',
                     version: currentVersion,
-                    value: encodeBytesField(existing?.value)
+                    value: valResult[0]?.val ?? null
                 });
             }
         }
