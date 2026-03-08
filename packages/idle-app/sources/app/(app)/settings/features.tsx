@@ -15,6 +15,7 @@ export default function FeaturesSettingsScreen() {
     const [markdownCopyV2, setMarkdownCopyV2] = useLocalSettingMutable('markdownCopyV2');
     const [hideInactiveSessions, setHideInactiveSessions] = useSettingMutable('hideInactiveSessions');
     const [useEnhancedSessionWizard, setUseEnhancedSessionWizard] = useSettingMutable('useEnhancedSessionWizard');
+    const [includeCoAuthoredBy, setIncludeCoAuthoredBy] = useSettingMutable('includeCoAuthoredBy');
 
     return (
         <ItemList style={{ paddingTop: 0 }}>
@@ -81,6 +82,25 @@ export default function FeaturesSettingsScreen() {
                         <Switch
                             value={useEnhancedSessionWizard}
                             onValueChange={setUseEnhancedSessionWizard}
+                        />
+                    }
+                    showChevron={false}
+                />
+            </ItemGroup>
+
+            {/* Attribution */}
+            <ItemGroup
+                title="Attribution"
+                footer="Helps others discover Idle. Free to turn off anytime."
+            >
+                <Item
+                    title="Idle Attribution"
+                    subtitle={includeCoAuthoredBy ? 'Commits include Co-Authored-By: Idle' : 'Attribution disabled'}
+                    icon={<Ionicons name="heart-outline" size={29} color="#FF2D55" />}
+                    rightElement={
+                        <Switch
+                            value={includeCoAuthoredBy}
+                            onValueChange={setIncludeCoAuthoredBy}
                         />
                     }
                     showChevron={false}
