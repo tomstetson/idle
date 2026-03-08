@@ -41,7 +41,7 @@ export const lightTheme = {
         text: '#000000',
         textDestructive: Platform.select({ ios: '#FF3B30', web: '#FF3B30', default: '#F44336' }),
         textSecondary: Platform.select({ ios: '#8E8E93', web: '#8E8E93', default: '#49454F' }),
-        textLink: '#00C9B1', // Idle Cyan (brand accent)
+        textLink: '#C9A84C', // Northglass amber (brand accent)
         deleteAction: '#FF6B6B', // Delete/remove button color
         warningCritical: '#FF3B30',
         warning: '#8E8E93',
@@ -70,7 +70,7 @@ export const lightTheme = {
         },
         header: {
             background: '#ffffff',
-            tint: '#0D3B47', // Idle Teal (brand)
+            tint: '#0A0F1A', // Northglass ink (brand)
         },
         switch: {
             track: {
@@ -247,23 +247,23 @@ export const darkTheme = {
         // Main colors
         //
 
-        text: '#ffffff',
+        text: '#C8D1DB', // Northglass frost (primary text)
         textDestructive: Platform.select({ ios: '#FF453A', web: '#FF453A', default: '#F48FB1' }),
-        textSecondary: Platform.select({ ios: '#8E8E93', web: '#8E8E93', default: '#CAC4D0' }),
-        textLink: '#00C9B1', // Idle Cyan (brand accent)
+        textSecondary: Platform.select({ ios: '#8B949E', web: '#8B949E', default: '#CAC4D0' }),
+        textLink: '#C9A84C', // Northglass amber (brand accent)
         deleteAction: '#FF6B6B', // Delete/remove button color (same in both themes)
         warningCritical: '#FF453A',
         warning: '#8E8E93',
         success: '#32D74B',
-        surface: Platform.select({ ios: '#18171C', web: '#18171C', default: '#212121' }),
+        surface: Platform.select({ ios: '#0A0F1A', web: '#0A0F1A', default: '#0A0F1A' }),
         surfaceRipple: 'rgba(255, 255, 255, 0.08)',
-        surfacePressed: '#2C2C2E',
-        surfaceSelected: '#2C2C2E',
-        surfacePressedOverlay: Platform.select({ ios: '#2C2C2E', web: '#2C2C2E', default: 'transparent' }),
-        // iOS dark theme is #1c1c1e for items, and #000 for the background
-        surfaceHigh: Platform.select({ ios: '#2C2C2E', web: '#2C2C2E', default: '#171717' }),
-        surfaceHighest: Platform.select({ ios: '#38383A', web: '#38383A', default: '#292929' }),
-        divider: Platform.select({ ios: '#38383A', web: '#38383A', default: '#292929' }),
+        surfacePressed: '#1E2D3D',
+        surfaceSelected: '#1E2D3D',
+        surfacePressedOverlay: Platform.select({ ios: '#1E2D3D', web: '#1E2D3D', default: 'transparent' }),
+        // Northglass steel for elevated surfaces
+        surfaceHigh: Platform.select({ ios: '#1E2D3D', web: '#1E2D3D', default: '#1E2D3D' }),
+        surfaceHighest: Platform.select({ ios: '#2A3A4A', web: '#2A3A4A', default: '#2A3A4A' }),
+        divider: Platform.select({ ios: '#2A3A4A', web: '#2A3A4A', default: '#2A3A4A' }),
         shadow: {
             color: Platform.select({ default: '#000000', web: 'rgba(0, 0, 0, 0.1)' }),
             opacity: 0.1,
@@ -274,7 +274,7 @@ export const darkTheme = {
         //
 
         header: {
-            background: Platform.select({ ios: '#18171C', web: '#18171C', default: '#212121' }),
+            background: Platform.select({ ios: '#0A0F1A', web: '#0A0F1A', default: '#0A0F1A' }),
             tint: '#FFFFFF',
         },
         switch: {
@@ -288,7 +288,7 @@ export const darkTheme = {
             },
         },
         groupped: {
-            background: Platform.select({ ios: '#1C1C1E', web: '#1C1C1E', default: '#1e1e1e' }),
+            background: Platform.select({ ios: '#0A0F1A', web: '#0A0F1A', default: '#0A0F1A' }),
             chevron: Platform.select({ ios: '#48484A', web: '#48484A', default: '#CAC4D0' }),
             sectionTitle: Platform.select({ ios: '#8E8E93', web: '#8E8E93', default: '#CAC4D0' }),
         },
@@ -316,7 +316,7 @@ export const darkTheme = {
             }
         },
         input: {
-            background: Platform.select({ ios: '#1C1C1E', web: '#1C1C1E', default: '#303030' }),
+            background: Platform.select({ ios: '#1E2D3D', web: '#1E2D3D', default: '#1E2D3D' }),
             text: '#FFFFFF',
             placeholder: '#8E8E93',
         },
@@ -371,13 +371,13 @@ export const darkTheme = {
                 text: '#FFFFFF',
             },
             inactive: {
-                background: '#2C2C2E',
-                border: '#38383A',
+                background: '#1E2D3D',
+                border: '#2A3A4A',
                 text: '#8E8E93',
             },
             selected: {
-                background: '#1C1C1E',
-                border: '#38383A',
+                background: '#0A0F1A',
+                border: '#2A3A4A',
                 text: '#FFFFFF',
             },
         },
@@ -385,7 +385,7 @@ export const darkTheme = {
 
         // Diff view
         diff: {
-            outline: '#30363D',
+            outline: '#2A3A4A',
             success: '#3FB950',
             error: '#F85149',
             // Traditional diff colors for dark mode
@@ -395,11 +395,11 @@ export const darkTheme = {
             removedBg: '#3F1B23',
             removedBorder: '#F85149',
             removedText: '#C9D1D9',
-            contextBg: '#161B22',
+            contextBg: '#0A0F1A',
             contextText: '#8B949E',
-            lineNumberBg: '#161B22',
+            lineNumberBg: '#0A0F1A',
             lineNumberText: '#6E7681',
-            hunkHeaderBg: '#161B22',
+            hunkHeaderBg: '#0A0F1A',
             hunkHeaderText: '#58A6FF',
             leadingSpaceDot: '#2A2A2A',
             inlineAddedBg: '#2A5A2A',
@@ -409,10 +409,10 @@ export const darkTheme = {
         },
 
         // Message View colors
-        userMessageBackground: '#2C2C2E',
+        userMessageBackground: '#1E2D3D',
         userMessageText: '#FFFFFF',
         agentMessageText: '#FFFFFF',
-        agentEventText: '#8E8E93',
+        agentEventText: '#8B949E',
 
         // Code/Syntax colors (brighter for dark mode)
         syntaxKeyword: '#569CD6',
@@ -435,7 +435,7 @@ export const darkTheme = {
 
         // Terminal/Command colors
         terminal: {
-            background: '#1E1E1E',
+            background: '#0A0F1A',
             prompt: '#32D74B',
             command: '#E0E0E0',
             stdout: '#E0E0E0',
