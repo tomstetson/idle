@@ -1,106 +1,86 @@
-<div align="center"><img src="/.github/logotype-dark.png" width="400" title="Idle Coder" alt="Idle Coder"/></div>
-
-<h1 align="center">
-  Mobile and Web Client for Claude Code & Codex
-</h1>
-
-<h4 align="center">
-Use Claude Code or Codex from anywhere with end-to-end encryption.
-</h4>
-
 <div align="center">
-  
-[📱 **iOS App**](https://apps.apple.com/us/app/Idle-claude-code-client/id6748571505) • [🤖 **Android App**](https://play.google.com/store/apps/details?id=com.northglass.idle) • [🌐 **Web App**](https://idle.northglass.io) • [🎥 **See a Demo**](https://youtu.be/GCS0OG9QMSE) • [📚 **Documentation**](https://northglass.io/docs/) • [💬 **Discord**](https://discord.gg/fX9WBAhyfD)
-
+  <img src="/.github/logotype-dark.png" width="200" alt="Idle"/>
 </div>
 
-<img width="5178" height="2364" alt="github" src="/.github/header.png" />
+<br/>
 
+<p align="center">
+Remote client for Claude Code. End-to-end encrypted. Open source.
+</p>
 
-<h3 align="center">
-Step 1: Download App
-</h3>
+<p align="center">
+  <a href="https://apps.apple.com/us/app/Idle-claude-code-client/id6748571505">iOS App</a> ·
+  <a href="https://idle.northglass.io">Web App</a> ·
+  <a href="https://northglass.io">Northglass Labs</a>
+</p>
 
-<div align="center">
-<a href="https://apps.apple.com/us/app/Idle-claude-code-client/id6748571505"><img width="135" height="39" alt="appstore" src="https://github.com/user-attachments/assets/45e31a11-cf6b-40a2-a083-6dc8d1f01291" /></a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a href="https://play.google.com/store/apps/details?id=com.northglass.idle"><img width="135" height="39" alt="googleplay" src="https://github.com/user-attachments/assets/acbba639-858f-4c74-85c7-92a4096efbf5" /></a>
-</div>
+<img width="1280" alt="Idle — terminal to phone" src="/.github/header.png" />
 
-<h3 align="center">
-Step 2: Install CLI on your computer
-</h3>
+## What it does
+
+Idle lets you monitor and control Claude Code sessions from your phone. Run `idle` instead of `claude` on your machine, then pick up the session from the iOS app whenever you step away. Press any key on your keyboard to take it back. All traffic between your devices is end-to-end encrypted. The relay server never sees your code.
+
+## Install
+
+**1. Download the app**
+
+[App Store](https://apps.apple.com/us/app/Idle-claude-code-client/id6748571505) · [Web App](https://idle.northglass.io)
+
+**2. Install the CLI**
 
 ```bash
 npm install -g idle-coder
 ```
 
-<h3 align="center">
-Run From Source (Repo Checkout)
-</h3>
+**3. Run it**
 
 ```bash
-# from repository root
-yarn cli --help
-yarn cli codex
-```
-
-<h3 align="center">
-Release (Maintainers)
-</h3>
-
-```bash
-# from repository root
-yarn release
-```
-
-<h3 align="center">
-Step 3: Start using `Idle` instead of `claude` or `codex`
-</h3>
-
-```bash
-
 # Instead of: claude
-# Use: Idle
-
-Idle
+idle
 
 # Instead of: codex
-# Use: Idle codex
-
-Idle codex
-
+idle codex
 ```
 
-<div align="center"><img src="/.github/mascot.png" width="200" title="Idle Coder" alt="Idle Coder"/></div>
+## Features
 
-## How does it work?
+- Mobile access to Claude Code sessions from iOS
+- Push notifications when your agent needs input or hits an error
+- Seamless device handoff, phone to terminal with one keypress
+- End-to-end encrypted with AES-256-GCM and zero-knowledge relay
+- Voice input for responding to agent prompts on the go
+- Open source, no telemetry, no tracking
 
-On your computer, run `Idle` instead of `claude` or `Idle codex` instead of `codex` to start your AI through our wrapper. When you want to control your coding agent from your phone, it restarts the session in remote mode. To switch back to your computer, just press any key on your keyboard.
+## How it works
 
-## 🔥 Why Idle Coder?
+Run `idle` instead of `claude` to start your coding agent through our CLI wrapper. The CLI connects to a relay server over WebSocket. When you open the Idle app on your phone, you see the live session and can send messages, approve permissions, or just watch. Press any key on your keyboard to take the session back to your terminal. The relay server routes encrypted payloads between devices but cannot decrypt them.
 
-- 📱 **Mobile access to Claude Code and Codex** - Check what your AI is building while away from your desk
-- 🔔 **Push notifications** - Get alerted when Claude Code and Codex needs permission or encounters errors  
-- ⚡ **Switch devices instantly** - Take control from phone or desktop with one keypress
-- 🔐 **End-to-end encrypted** - Your code never leaves your devices unencrypted
-- 🛠️ **Open source** - Audit the code yourself. No telemetry, no tracking
+## Architecture
 
-## 📦 Project Components
+| Package | Description |
+|---------|-------------|
+| [idle-app](packages/idle-app) | React Native mobile and web client (Expo) |
+| [idle-cli](packages/idle-cli) | CLI wrapper for Claude Code and Codex |
+| [idle-agent](packages/idle-agent) | Programmatic agent control CLI |
+| [idle-server](packages/idle-server) | WebSocket relay server for encrypted sync |
+| [idle-wire](packages/idle-wire) | Shared message types and Zod schemas |
 
-- **[Idle App](https://github.com/tomstetson/idle/tree/main/packages/idle-app)** - Web UI + mobile client (Expo)
-- **[Idle CLI](https://github.com/tomstetson/idle/tree/main/packages/idle-cli)** - Command-line interface for Claude Code and Codex
-- **[Idle Agent](https://github.com/tomstetson/idle/tree/main/packages/idle-agent)** - Remote agent control CLI (create, send, monitor sessions)
-- **[Idle Server](https://github.com/tomstetson/idle/tree/main/packages/idle-server)** - Backend server for encrypted sync
+## Security
 
-## 🏠 Who We Are
+Security is not an afterthought. Session data is encrypted client-side before it leaves your device. The relay server handles routing, not content. It cannot read your messages, your code, or your prompts. Keys are derived per-session and never transmitted. The code is open source and auditable.
 
-We're engineers scattered across Bay Area coffee shops and hacker houses, constantly checking how our AI coding agents are progressing on our pet projects during lunch breaks. Idle Coder was born from the frustration of not being able to peek at our AI coding tools building our side hustles while we're away from our keyboards. We believe the best tools come from scratching your own itch and sharing with the community.
+## About
 
-## 📚 Documentation & Contributing
+Idle is built by [Northglass Labs](https://northglass.io), a one-person open-source studio in Eastern Pennsylvania. We build small, focused tools for developers and security teams. Idle is free, will stay free, and ships under the MIT license. If you find it useful, that's the whole point.
 
-- **[Documentation Website](https://northglass.io/docs/)** - Learn how to use Idle Coder effectively
-- **[CONTRIBUTING.md](CONTRIBUTING.md)** - Development setup including iOS, Android, and macOS desktop variant builds
-- **[Edit docs on GitHub](https://github.com/tomstetson/idle)** - Help improve our documentation and guides
+## Credits
+
+Idle is forked from [Happy Engineering](https://github.com/slopus/happy) by Slopus. Their work on the core architecture, the CLI wrapper, encrypted relay protocol, and real-time sync, made this project possible. We've since diverged to harden security, improve scalability, and build features the upstream project hasn't prioritized, but the foundation is theirs.
+
+## Contributing
+
+See [CONTRIBUTING.md](CONTRIBUTING.md) for development setup.
 
 ## License
 
-MIT License - see [LICENSE](LICENSE) for details.
+MIT License. See [LICENSE](LICENSE) for details.
