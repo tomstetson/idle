@@ -565,6 +565,42 @@ describe('settings', () => {
         });
     });
 
+    describe('attribution defaults', () => {
+        it('includes includeCoAuthoredBy defaulting to true', () => {
+            expect(settingsDefaults.includeCoAuthoredBy).toBe(true);
+        });
+
+        it('includes attributionPromptAnswered defaulting to false', () => {
+            expect(settingsDefaults.attributionPromptAnswered).toBe(false);
+        });
+
+        it('returns default attribution fields when given null input', () => {
+            const result = settingsParse(null);
+            expect(result.includeCoAuthoredBy).toBe(true);
+            expect(result.attributionPromptAnswered).toBe(false);
+        });
+
+        it('preserves attribution fields through parse round-trip', () => {
+            const input = {
+                ...settingsDefaults,
+                includeCoAuthoredBy: false,
+                attributionPromptAnswered: true,
+            };
+            const result = settingsParse(input);
+            expect(result.includeCoAuthoredBy).toBe(false);
+            expect(result.attributionPromptAnswered).toBe(true);
+        });
+
+        it('preserves default attribution when other fields are set', () => {
+            const input = { viewInline: true, expandTodos: false };
+            const result = settingsParse(input);
+            expect(result.includeCoAuthoredBy).toBe(true);
+            expect(result.attributionPromptAnswered).toBe(false);
+            expect(result.viewInline).toBe(true);
+            expect(result.expandTodos).toBe(false);
+        });
+    });
+
     describe('version-mismatch scenario (bug fix)', () => {
         it('should preserve pending changes when merging server settings', () => {
             // Simulates the bug scenario:
