@@ -26,7 +26,8 @@ echo "[4/4] Deploying to VPS..."
 # Read VPS config from environment or use defaults
 VPS_HOST="${VPS_HOST:-releasingphish-root}"
 
-ssh "$VPS_HOST" 'cd /var/www/idle-server && git pull origin main && yarn install --frozen-lockfile && sudo systemctl restart idle-server'
+# Run git/yarn as deployer (same as CI) to avoid ownership conflicts with root
+ssh "$VPS_HOST" 'cd /var/www/idle-server && sudo -u deployer git pull origin main && sudo -u deployer yarn install --frozen-lockfile && sudo systemctl restart idle-server'
 
 # Wait for startup
 echo "Waiting for server startup..."
