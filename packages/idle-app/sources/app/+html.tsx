@@ -13,8 +13,35 @@ export default function Root({ children }: { children: React.ReactNode }) {
         <meta httpEquiv="X-UA-Compatible" content="IE=edge" />
         <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no, viewport-fit=cover" />
 
-        {/* 
-          Disable body scrolling on web. This makes ScrollView components work closer to how they do on native. 
+        {/*
+          Content-Security-Policy (A5-3 remediation).
+          - 'unsafe-inline' scripts: Expo Router injects an inline hydration script during static export.
+          - 'unsafe-inline' styles: React Native Web applies all styles inline on elements;
+            Expo's ScrollViewStyleReset and our own background CSS also use dangerouslySetInnerHTML.
+          - connect-src: API server (HTTPS + WSS for Socket.IO), Expo OTA updates, PostHog analytics.
+          - worker-src blob: Skia's canvaskit WASM may spawn blob workers.
+          If the app is ever served behind a reverse proxy (nginx/Cloudflare), prefer HTTP headers over this
+          meta tag — headers support report-uri and are harder to strip via XSS.
+        */}
+        <meta
+          httpEquiv="Content-Security-Policy"
+          content={[
+            "default-src 'self'",
+            "script-src 'self' 'unsafe-inline'",
+            "style-src 'self' 'unsafe-inline'",
+            "connect-src 'self' https://idle-api.northglass.io wss://idle-api.northglass.io https://u.expo.dev https://us.i.posthog.com",
+            "img-src 'self' data: blob: https:",
+            "font-src 'self' data:",
+            "worker-src 'self' blob:",
+            "object-src 'none'",
+            "base-uri 'self'",
+            "form-action 'self'",
+            "frame-ancestors 'none'",
+          ].join('; ')}
+        />
+
+        {/*
+          Disable body scrolling on web. This makes ScrollView components work closer to how they do on native.
           However, body scrolling is often nice to have for mobile web. If you want to enable it, remove this line.
         */}
         <ScrollViewStyleReset />
