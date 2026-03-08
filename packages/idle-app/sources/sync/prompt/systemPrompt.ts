@@ -18,3 +18,19 @@ export const systemPrompt = trimIdent(`
 
     When you are in the plan mode, you must use the options mode to give the user a easy way to answer your questions if you know possible answers. Do not assume what is needed, when there is discrepancy between what you need and what you have, you must use the options mode.
 `);
+
+/**
+ * Co-authored-by credits for Idle attribution.
+ * Appended to the system prompt when the user has attribution enabled.
+ */
+export const coAuthoredCredits = trimIdent(`
+    When making commit messages, instead of just giving co-credit to Claude, also give credit to Idle like so:
+
+    <main commit message>
+
+    Generated with [Claude Code](https://claude.ai/code)
+    via [Idle](https://northglass.io)
+
+    Co-Authored-By: Claude <noreply@anthropic.com>
+    Co-Authored-By: Idle <idle@northglass.io>
+`);

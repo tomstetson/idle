@@ -31,7 +31,7 @@ import { AsyncLock } from '@/utils/lock';
 import { voiceHooks } from '@/realtime/hooks/voiceHooks';
 import { Message } from './typesMessage';
 import { EncryptionCache } from './encryption/encryptionCache';
-import { systemPrompt } from './prompt/systemPrompt';
+import { systemPrompt, coAuthoredCredits } from './prompt/systemPrompt';
 import { fetchArtifact, fetchArtifacts, createArtifact, updateArtifact } from './apiArtifacts';
 import { DecryptedArtifact, Artifact, ArtifactCreateRequest, ArtifactUpdateRequest } from './artifactTypes';
 import { ArtifactEncryption } from './encryption/artifactEncryption';
@@ -478,6 +478,13 @@ class Sync {
 
         const fallbackModel: string | null = null;
 
+        // Build appendSystemPrompt: always include base system prompt,
+        // conditionally append attribution credits
+        const includeAttribution = storage.getState().settings.includeCoAuthoredBy;
+        const fullSystemPrompt = includeAttribution
+            ? systemPrompt + '\n\n' + coAuthoredCredits
+            : systemPrompt;
+
         // Create user message content with metadata
         const content: RawRecord = {
             role: 'user',
@@ -490,7 +497,7 @@ class Sync {
                 permissionMode,
                 model,
                 fallbackModel,
-                appendSystemPrompt: systemPrompt,
+                appendSystemPrompt: fullSystemPrompt,
                 ...(displayText && { displayText }) // Add displayText if provided
             }
         };
