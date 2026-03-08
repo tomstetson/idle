@@ -1,6 +1,23 @@
 {
   "entries": [
     {
+      "version": 6,
+      "date": "2026-03-07",
+      "summary": "This release brings a suite of quality-of-life improvements focused on better session management, richer message display, and smarter push notifications — making your Claude Code sessions feel more polished and responsive.",
+      "changes": [
+        "Added collapsible thinking block display with a dedicated settings toggle, so you can see Claude's reasoning process when enabled",
+        "Added message timestamps showing when each message was sent, visible on both user and agent messages",
+        "Improved slash command autocomplete with dynamic descriptions pulled from the connected CLI and expanded static fallback descriptions",
+        "Added session grouping by machine — inactive sessions now collapse under their machine name with OS icons and session counts",
+        "Added push notifications for new messages when the app is in the background, with automatic stale token cleanup",
+        "Sessions now automatically get a title even when Claude doesn't set one, using a smart fallback based on your project and first message",
+        "Fixed inverted scroll on web — chat messages now scroll correctly in web browsers",
+        "Added session rename from the session info screen with encrypted metadata updates",
+        "Removed dead code and cleaned up unused autocomplete hooks"
+      ],
+      "rawMarkdown": "## Version 6 - 2026-03-07\n\n\nThis release brings a suite of quality-of-life improvements focused on better session management, richer message display, and smarter push notifications — making your Claude Code sessions feel more polished and responsive.\n\n- Added collapsible thinking block display with a dedicated settings toggle, so you can see Claude's reasoning process when enabled\n- Added message timestamps showing when each message was sent, visible on both user and agent messages\n- Improved slash command autocomplete with dynamic descriptions pulled from the connected CLI and expanded static fallback descriptions\n- Added session grouping by machine — inactive sessions now collapse under their machine name with OS icons and session counts\n- Added push notifications for new messages when the app is in the background, with automatic stale token cleanup\n- Sessions now automatically get a title even when Claude doesn't set one, using a smart fallback based on your project and first message\n- Fixed inverted scroll on web — chat messages now scroll correctly in web browsers\n- Added session rename from the session info screen with encrypted metadata updates\n- Removed dead code and cleaned up unused autocomplete hooks"
+    },
+    {
       "version": 5,
       "date": "2025-12-22",
       "summary": "This release expands AI agent support and refines the voice experience, while improving markdown rendering for a better chat experience.",
@@ -65,5 +82,5 @@
       "rawMarkdown": "## Version 1 - 2025-05-12\n\n\nWelcome to Idle - your secure, encrypted mobile companion for Claude Code. This inaugural release establishes the foundation for private, powerful AI interactions on the go.\n\n- Implemented end-to-end encrypted session management ensuring complete privacy\n- Integrated intelligent voice assistant with natural conversation capabilities\n- Added experimental file manager with syntax highlighting and tree navigation\n- Built seamless real-time synchronization across all your devices\n- Established native support for iOS, Android, and responsive web interfaces"
     }
   ],
-  "latestVersion": 5
+  "latestVersion": 6
 }

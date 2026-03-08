@@ -1,5 +1,19 @@
 # Changelog
 
+## Version 6 - 2026-03-07
+
+This release brings a suite of quality-of-life improvements focused on better session management, richer message display, and smarter push notifications — making your Claude Code sessions feel more polished and responsive.
+
+- Added collapsible thinking block display with a dedicated settings toggle, so you can see Claude's reasoning process when enabled
+- Added message timestamps showing when each message was sent, visible on both user and agent messages
+- Improved slash command autocomplete with dynamic descriptions pulled from the connected CLI and expanded static fallback descriptions
+- Added session grouping by machine — inactive sessions now collapse under their machine name with OS icons and session counts
+- Added push notifications for new messages when the app is in the background, with automatic stale token cleanup
+- Sessions now automatically get a title even when Claude doesn't set one, using a smart fallback based on your project and first message
+- Fixed inverted scroll on web — chat messages now scroll correctly in web browsers
+- Added session rename from the session info screen with encrypted metadata updates
+- Removed dead code and cleaned up unused autocomplete hooks
+
 ## Version 5 - 2025-12-22
 
 This release expands AI agent support and refines the voice experience, while improving markdown rendering for a better chat experience.

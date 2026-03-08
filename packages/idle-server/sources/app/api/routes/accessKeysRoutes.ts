@@ -173,6 +173,99 @@ export function accessKeysRoutes(app: Fastify) {
         }
     });
 
+    // Handoff Access Key — copy encrypted session key from one machine to another.
+    // The encrypted data blob is user-key-encrypted (not machine-specific),
+    // so any device with the same account masterSecret can decrypt it.
+    app.post('/v1/access-keys/:sessionId/handoff', {
+        preHandler: app.authenticate,
+        schema: {
+            params: z.object({
+                sessionId: z.string()
+            }),
+            body: z.object({
+                targetMachineId: z.string()
+            }),
+            response: {
+                200: z.object({
+                    success: z.literal(true),
+                    accessKey: z.object({
+                        data: z.string(),
+                        dataVersion: z.number()
+                    })
+                }),
+                404: z.object({
+                    error: z.literal('Session or access key not found')
+                }),
+                409: z.object({
+                    error: z.literal('Access key already exists for target machine')
+                }),
+                500: z.object({
+                    error: z.literal('Failed to handoff access key')
+                })
+            }
+        }
+    }, async (request, reply) => {
+        const userId = request.userId;
+        const { sessionId } = request.params;
+        const { targetMachineId } = request.body;
+
+        try {
+            // Verify target machine belongs to user
+            const targetMachine = await db.machine.findFirst({
+                where: { id: targetMachineId, accountId: userId }
+            });
+
+            if (!targetMachine) {
+                return reply.code(404).send({ error: 'Session or access key not found' });
+            }
+
+            // Find any existing access key for this session (source machine doesn't matter)
+            const sourceAccessKey = await db.accessKey.findFirst({
+                where: { sessionId, accountId: userId }
+            });
+
+            if (!sourceAccessKey) {
+                return reply.code(404).send({ error: 'Session or access key not found' });
+            }
+
+            // Idempotent: if target already has one, return 409
+            const existing = await db.accessKey.findUnique({
+                where: {
+                    accountId_machineId_sessionId: {
+                        accountId: userId,
+                        machineId: targetMachineId,
+                        sessionId
+                    }
+                }
+            });
+
+            if (existing) {
+                return reply.code(409).send({ error: 'Access key already exists for target machine' });
+            }
+
+            const accessKey = await db.accessKey.create({
+                data: {
+                    accountId: userId,
+                    machineId: targetMachineId,
+                    sessionId,
+                    data: sourceAccessKey.data,
+                    dataVersion: 1
+                }
+            });
+
+            return reply.send({
+                success: true,
+                accessKey: {
+                    data: accessKey.data,
+                    dataVersion: accessKey.dataVersion
+                }
+            });
+        } catch (error) {
+            log({ module: 'api', level: 'error' }, `Failed to handoff access key: ${error}`);
+            return reply.code(500).send({ error: 'Failed to handoff access key' });
+        }
+    });
+
     // Update Access Key API
     app.put('/v1/access-keys/:sessionId/:machineId', {
         preHandler: app.authenticate,
