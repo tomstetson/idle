@@ -23,12 +23,10 @@ const stylesheet = StyleSheet.create((theme, runtime) => ({
         color: theme.colors.header.tint,
     },
     logoContainer: {
-        // marginHorizontal: 4,
-        width: 32,
-        height: 32,
+        width: 44,
+        height: 44,
         alignItems: 'center',
         justifyContent: 'center',
-        tintColor: theme.colors.header.tint,
     },
     titleContainer: {
         flex: 1,

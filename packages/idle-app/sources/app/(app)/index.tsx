@@ -1,6 +1,6 @@
 import { RoundButton } from "@/components/RoundButton";
 import { useAuth } from "@/auth/AuthContext";
-import { Text, View, Image, Platform } from "react-native";
+import { Text, View, Image, Platform, Animated } from "react-native";
 import { useSafeAreaInsets } from "react-native-safe-area-context";
 import * as React from 'react';
 import { encodeBase64 } from "@/encryption/base64";
@@ -14,6 +14,24 @@ import { trackAccountCreated, trackAccountRestored } from '@/track';
 import { HomeHeaderNotAuth } from "@/components/HomeHeader";
 import { MainView } from "@/components/MainView";
 import { t } from '@/text';
+
+/** Blinking green terminal cursor dot — placed next to the logotype on the login screen. */
+function TerminalDot() {
+    const opacity = React.useRef(new Animated.Value(1)).current;
+    React.useEffect(() => {
+        const pulse = Animated.loop(
+            Animated.sequence([
+                Animated.timing(opacity, { toValue: 0.15, duration: 900, useNativeDriver: true }),
+                Animated.timing(opacity, { toValue: 1, duration: 900, useNativeDriver: true }),
+            ])
+        );
+        pulse.start();
+        return () => pulse.stop();
+    }, [opacity]);
+    return (
+        <Animated.View style={{ width: 8, height: 8, borderRadius: 4, backgroundColor: '#34C759', opacity, marginLeft: 8, alignSelf: 'center' }} />
+    );
+}
 
 export default function Home() {
     const auth = useAuth();
@@ -51,11 +69,14 @@ function NotAuthenticated() {
 
     const portraitLayout = (
         <View style={styles.portraitContainer}>
-            <Image
-                source={theme.dark ? require('@/assets/images/logotype-dark.png') : require('@/assets/images/logotype-light.png')}
-                resizeMode="contain"
-                style={styles.logo}
-            />
+            <View style={styles.logoWithDot}>
+                <Image
+                    source={theme.dark ? require('@/assets/images/logotype-dark.png') : require('@/assets/images/logotype-light.png')}
+                    resizeMode="contain"
+                    style={styles.logo}
+                />
+                <TerminalDot />
+            </View>
             <Text style={styles.title}>
                 {t('welcome.title')}
             </Text>
@@ -113,11 +134,14 @@ function NotAuthenticated() {
         <View style={[styles.landscapeContainer, { paddingBottom: insets.bottom + 24 }]}>
             <View style={styles.landscapeInner}>
                 <View style={styles.landscapeLogoSection}>
-                    <Image
-                        source={theme.dark ? require('@/assets/images/logotype-dark.png') : require('@/assets/images/logotype-light.png')}
-                        resizeMode="contain"
-                        style={styles.logo}
-                    />
+                    <View style={styles.logoWithDot}>
+                        <Image
+                            source={theme.dark ? require('@/assets/images/logotype-dark.png') : require('@/assets/images/logotype-light.png')}
+                            resizeMode="contain"
+                            style={styles.logo}
+                        />
+                        <TerminalDot />
+                    </View>
                 </View>
                 <View style={styles.landscapeContentSection}>
                     <Text style={styles.landscapeTitle}>
@@ -188,6 +212,10 @@ const styles = StyleSheet.create((theme) => ({
         flex: 1,
         alignItems: 'center',
         justifyContent: 'center',
+    },
+    logoWithDot: {
+        flexDirection: 'row' as const,
+        alignItems: 'center',
     },
     logo: {
         width: 300,

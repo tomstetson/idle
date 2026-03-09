@@ -156,8 +156,8 @@ export default function Restore() {
                         backgroundColor={'white'}
                     />
                 )}
-                <View style={{ flexGrow: 4, paddingTop: 30 }}>
-                    <RoundButton title="Restore with Secret Key Instead" display='inverted' onPress={() => {
+                <View style={{ paddingTop: 30, paddingBottom: 24 }}>
+                    <RoundButton title={t('navigation.restoreWithSecretKey')} onPress={() => {
                         router.push('/restore/manual');
                     }} />
                 </View>
