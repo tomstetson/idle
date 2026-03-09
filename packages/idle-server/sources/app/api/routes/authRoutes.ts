@@ -284,6 +284,21 @@ export function authRoutes(app: Fastify) {
         return reply.send({ state: 'requested' });
     });
 
+    // Revoke current auth token (logout)
+    app.post('/v1/auth/logout', {
+        preHandler: app.authenticate,
+        schema: {
+            response: {
+                200: z.object({ success: z.literal(true) })
+            }
+        }
+    }, async (request, reply) => {
+        const token = request.headers.authorization!.substring(7);
+        auth.revokeToken(token);
+        log({ module: 'auth-logout' }, `Token revoked for user: ${request.userId}`);
+        return reply.send({ success: true });
+    });
+
     // Approve account auth request
     app.post('/v1/auth/account/response', {
         preHandler: app.authenticate,

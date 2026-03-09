@@ -43,9 +43,9 @@ export function enableErrorHandlers(app: Fastify) {
         }
     });
 
-    // Catch-all route for debugging 404s
+    // Catch-all route for 404s — never log auth headers
     app.setNotFoundHandler((request, reply) => {
-        log({ module: '404-handler' }, `404 - Method: ${request.method}, Path: ${request.url}, Headers: ${JSON.stringify(request.headers)}`);
+        log({ module: '404-handler' }, `404 - Method: ${request.method}, Path: ${request.url}, UA: ${request.headers['user-agent'] || 'unknown'}`);
         reply.code(404).send({ error: 'Not found', path: request.url, method: request.method });
     });
 

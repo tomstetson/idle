@@ -111,8 +111,12 @@
 - [x] Set up monitoring dashboard — documented health endpoints + Prometheus (D4)
 - [x] Replace logo/icon assets — Northglass brand v2 monochrome arc mark
 - [x] Merge upstream changes — cherry-picked ToolSearch hiding (d343330c)
-- [ ] Encrypt session tags (server currently sees session names)
-- [ ] Token revocation endpoint (POST /v1/auth/logout)
+- [x] Encrypt session tags — N/A, tags are random UUIDs; session names in encrypted metadata
+- [x] Token revocation endpoint (POST /v1/auth/logout) — in-memory revoked set
+- [x] Fix DEK mismatch on session resume — local session key cache
+- [x] Fix 404 handler auth header logging (NEW-3) — log only UA, not full headers
+- [x] Pin Mermaid CDN version (NEW-4) — pinned to 11.12.1
+- [x] App Store Connect API script — scripts/check-testflight.sh
 
 ## Phase 4: Future
 - [ ] UI redesign pass — modernize layout, typography, interaction patterns
@@ -124,5 +128,3 @@
 - [ ] Evaluate managed DB if VPS gets constrained
 - [ ] Publish full package suite to npm
 - [ ] PostHog activation with privacy policy
-- [ ] Fix 404 handler auth header logging (NEW-3)
-- [ ] Pin Mermaid CDN version (NEW-4)

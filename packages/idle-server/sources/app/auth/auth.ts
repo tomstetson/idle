@@ -33,6 +33,7 @@ interface AuthTokens {
 class AuthModule {
     private tokenCache = new Map<string, TokenCacheEntry>();
     private accountCache = new Map<string, AccountCacheEntry>();
+    private revokedTokens = new Set<string>(); // Survives cache eviction; cleared on restart
     private tokens: AuthTokens | null = null;
     
     async init(): Promise<void> {
@@ -100,6 +101,11 @@ class AuthModule {
     }
     
     async verifyToken(token: string): Promise<{ userId: string; extras?: any } | null> {
+        // Reject revoked tokens before anything else
+        if (this.revokedTokens.has(token)) {
+            return null;
+        }
+
         // Check cache first (with TTL)
         const cached = this.tokenCache.get(token);
         if (cached) {
@@ -168,6 +174,13 @@ class AuthModule {
     
     invalidateToken(token: string): void {
         this.tokenCache.delete(token);
+    }
+
+    /** Permanently revoke a token (survives cache eviction until server restart). */
+    revokeToken(token: string): void {
+        this.tokenCache.delete(token);
+        this.revokedTokens.add(token);
+        log({ module: 'auth' }, `Token revoked`);
     }
 
     /**

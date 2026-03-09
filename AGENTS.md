@@ -21,6 +21,7 @@ Mobile and web client for Claude Code, forked from Happy Engineering. Monorepo w
 | `docs/security/alpha-security-audit.md` | Full alpha security audit (27 findings) | Security review, remediation tracking |
 | `docs/monitoring.md` | Health endpoints, metrics, server logs, troubleshooting | Operations, debugging |
 | `docs/plans/2026-03-08-alpha-v1.0-implementation.md` | Alpha v1.0 release plan (Phases A-G) | Understanding alpha release scope |
+| `scripts/check-testflight.sh` | App Store Connect API script to check TestFlight build status | Checking build/review status |
 | `docs/` | Protocol specs, plans, runbooks | Deep dives on wire protocol or encryption format |
 
 ## Packages
@@ -51,6 +52,7 @@ Mobile and web client for Claude Code, forked from Happy Engineering. Monorepo w
 |------|---------|
 | `src/api/` | Server communication, encryption, WebSocket session client |
 | `src/claude/` | Claude Code SDK integration, MCP tools, system prompt |
+| `src/claude/utils/sessionKeyCache.ts` | Caches plaintext session DEKs locally keyed by tag, for session resume |
 | `src/daemon/` | Background daemon (start/stop/status, doctor) |
 | `src/commands/` | CLI command handlers (auth, connect, config) |
 | `src/persistence.ts` | Local storage for keys and settings |

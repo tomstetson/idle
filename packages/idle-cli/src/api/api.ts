@@ -9,6 +9,7 @@ import { configuration } from '@/configuration';
 import chalk from 'chalk';
 import { Credentials } from '@/persistence';
 import { connectionState, isNetworkError } from '@/utils/serverConnectionErrors';
+import { lookupKeyByTag, cacheKeyForTag } from '@/claude/utils/sessionKeyCache';
 
 export class ApiClient {
 
@@ -38,14 +39,17 @@ export class ApiClient {
     let encryptionKey: Uint8Array;
     let encryptionVariant: 'legacy' | 'dataKey';
     if (this.credential.encryption.type === 'dataKey') {
-
-      // Generate new encryption key
-      encryptionKey = getRandomBytes(32);
       encryptionVariant = 'dataKey';
 
-      // Derive and encrypt data encryption key
-      // const contentDataKey = await deriveKey(this.secret, 'Idle EnCoder', ['content']);
-      // const publicKey = libsodiumPublicKeyFromSecretKey(contentDataKey);
+      // Reuse cached key on resume, generate fresh key for new sessions
+      const cachedKey = lookupKeyByTag(opts.tag);
+      if (cachedKey) {
+        encryptionKey = cachedKey;
+      } else {
+        encryptionKey = getRandomBytes(32);
+      }
+
+      // Encrypt key for server storage (server ignores this on existing sessions)
       let encryptedDataKey = libsodiumEncryptForPublicKey(encryptionKey, this.credential.encryption.publicKey);
       dataEncryptionKey = new Uint8Array(encryptedDataKey.length + 1);
       dataEncryptionKey.set([0], 0); // Version byte
@@ -76,6 +80,12 @@ export class ApiClient {
 
       logger.debug(`Session created/loaded: ${response.data.session.id} (tag: ${opts.tag})`)
       let raw = response.data.session;
+
+      // Cache the DEK so resumed sessions reuse the same key
+      if (this.credential.encryption.type === 'dataKey') {
+        cacheKeyForTag(opts.tag, encryptionKey);
+      }
+
       let session: Session = {
         id: raw.id,
         seq: raw.seq,
