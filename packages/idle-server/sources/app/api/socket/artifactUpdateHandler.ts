@@ -108,7 +108,8 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
             }
 
             // Validate header structure if provided
-            if (header && (typeof header.data !== 'string' || typeof header.expectedVersion !== 'number')) {
+            // Number.isInteger rejects NaN, Infinity, and floats that typeof 'number' would allow into raw SQL
+            if (header && (typeof header.data !== 'string' || !Number.isInteger(header.expectedVersion))) {
                 if (callback) {
                     callback({ result: 'error', message: 'Invalid header parameters' });
                 }
@@ -116,7 +117,7 @@ export function artifactUpdateHandler(userId: string, socket: Socket) {
             }
 
             // Validate body structure if provided
-            if (body && (typeof body.data !== 'string' || typeof body.expectedVersion !== 'number')) {
+            if (body && (typeof body.data !== 'string' || !Number.isInteger(body.expectedVersion))) {
                 if (callback) {
                     callback({ result: 'error', message: 'Invalid body parameters' });
                 }

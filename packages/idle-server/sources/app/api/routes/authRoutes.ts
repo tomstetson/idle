@@ -232,6 +232,9 @@ export function authRoutes(app: Fastify) {
                 })]),
                 401: z.object({
                     error: z.literal('Invalid public key')
+                }),
+                410: z.object({
+                    error: z.literal('Auth request expired')
                 })
             }
         },
@@ -259,6 +262,15 @@ export function authRoutes(app: Fastify) {
             update: {},
             create: { publicKey: privacyKit.encodeHex(publicKey) }
         });
+
+        // Reject expired account auth requests (24-hour TTL, matches terminalAuthRequest)
+        const AUTH_REQUEST_TTL_MS = 24 * 60 * 60 * 1000;
+        const isExpired = Date.now() - answer.createdAt.getTime() > AUTH_REQUEST_TTL_MS;
+        if (isExpired) {
+            await db.accountAuthRequest.delete({ where: { id: answer.id } });
+            log({ module: 'auth-request' }, `Account auth request expired (created ${answer.createdAt.toISOString()}), deleted`);
+            return reply.code(410).send({ error: 'Auth request expired' });
+        }
 
         if (answer.response && answer.responseAccountId) {
             const token = await auth.createToken(answer.responseAccountId!);
