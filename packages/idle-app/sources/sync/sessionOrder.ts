@@ -70,3 +70,127 @@ export function pruneSessionOrder(
 ): string[] {
     return currentOrder.filter(id => validSessionIds.has(id));
 }
+
+// === V2: Session Groups ===
+
+export interface SessionGroup {
+    id: string;
+    name: string;
+    sessionIds: string[];
+}
+
+export interface SessionOrderV2 {
+    version: 2;
+    groups: SessionGroup[];
+    ungrouped: string[];
+}
+
+export type SessionOrderData = string[] | SessionOrderV2;
+
+/** Detect and normalize stored data to V2 format */
+export function normalizeSessionOrder(data: unknown): SessionOrderV2 {
+    if (Array.isArray(data)) {
+        return migrateV1toV2(data);
+    }
+    if (data && typeof data === 'object' && 'version' in data && (data as any).version === 2) {
+        return data as SessionOrderV2;
+    }
+    return { version: 2, groups: [], ungrouped: [] };
+}
+
+export function migrateV1toV2(v1: string[]): SessionOrderV2 {
+    return { version: 2, groups: [], ungrouped: [...v1] };
+}
+
+export function createGroup(order: SessionOrderV2, id: string, name: string): SessionOrderV2 {
+    return {
+        ...order,
+        groups: [...order.groups, { id, name, sessionIds: [] }]
+    };
+}
+
+export function deleteGroup(order: SessionOrderV2, groupId: string): SessionOrderV2 {
+    const group = order.groups.find(g => g.id === groupId);
+    if (!group) return order;
+    return {
+        ...order,
+        groups: order.groups.filter(g => g.id !== groupId),
+        ungrouped: [...group.sessionIds, ...order.ungrouped]
+    };
+}
+
+export function renameGroup(order: SessionOrderV2, groupId: string, name: string): SessionOrderV2 {
+    return {
+        ...order,
+        groups: order.groups.map(g => g.id === groupId ? { ...g, name } : g)
+    };
+}
+
+export function moveSessionToGroup(
+    order: SessionOrderV2,
+    sessionId: string,
+    groupId: string | null
+): SessionOrderV2 {
+    // Remove session from everywhere first
+    const newGroups = order.groups.map(g => ({
+        ...g,
+        sessionIds: g.sessionIds.filter(id => id !== sessionId)
+    }));
+    let newUngrouped = order.ungrouped.filter(id => id !== sessionId);
+
+    if (groupId === null) {
+        newUngrouped = [sessionId, ...newUngrouped];
+    } else {
+        const targetIdx = newGroups.findIndex(g => g.id === groupId);
+        if (targetIdx >= 0) {
+            newGroups[targetIdx] = {
+                ...newGroups[targetIdx],
+                sessionIds: [sessionId, ...newGroups[targetIdx].sessionIds]
+            };
+        }
+    }
+
+    return { ...order, groups: newGroups, ungrouped: newUngrouped };
+}
+
+export interface GroupedResult<T extends { id: string }> {
+    grouped: Array<{ group: SessionGroup; sessions: T[] }>;
+    ungrouped: T[];
+}
+
+export function applySessionOrderV2<T extends { id: string }>(
+    sessions: T[],
+    order: SessionOrderV2
+): GroupedResult<T> {
+    const sessionMap = new Map(sessions.map(s => [s.id, s]));
+    const consumed = new Set<string>();
+
+    const grouped = order.groups.map(group => {
+        const groupSessions: T[] = [];
+        for (const id of group.sessionIds) {
+            const session = sessionMap.get(id);
+            if (session && !consumed.has(id)) {
+                groupSessions.push(session);
+                consumed.add(id);
+            }
+        }
+        return { group, sessions: groupSessions };
+    });
+
+    const ungrouped: T[] = [];
+    for (const id of order.ungrouped) {
+        const session = sessionMap.get(id);
+        if (session && !consumed.has(id)) {
+            ungrouped.push(session);
+            consumed.add(id);
+        }
+    }
+    // Append any sessions not referenced in the order at all
+    for (const session of sessions) {
+        if (!consumed.has(session.id)) {
+            ungrouped.push(session);
+        }
+    }
+
+    return { grouped, ungrouped };
+}

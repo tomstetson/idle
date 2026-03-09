@@ -12,6 +12,7 @@ import { kvGet, kvSet } from './apiKv';
 import { Encryption } from './encryption/encryption';
 import { AuthCredentials } from '@/auth/tokenStorage';
 import { log } from '@/log';
+import { normalizeSessionOrder, SessionOrderV2 } from './sessionOrder';
 
 const SESSION_ORDER_KEY = 'session-order';
 
@@ -96,5 +97,73 @@ export function getCachedSessionOrder(): string[] {
  */
 export function resetSessionOrderCache(): void {
     cachedOrder = [];
+    cachedOrderV2 = { version: 2, groups: [], ungrouped: [] };
     cachedVersion = -1;
+}
+
+// === V2: Session Groups Persistence ===
+
+let cachedOrderV2: SessionOrderV2 = { version: 2, groups: [], ungrouped: [] };
+
+/**
+ * Load the session order from the encrypted KV store, normalizing to V2 format.
+ * Automatically migrates V1 arrays to V2 structure.
+ */
+export async function loadSessionOrderV2(
+    credentials: AuthCredentials,
+    encryption: Encryption
+): Promise<SessionOrderV2> {
+    try {
+        const item = await kvGet(credentials, SESSION_ORDER_KEY);
+        if (!item) {
+            cachedOrderV2 = { version: 2, groups: [], ungrouped: [] };
+            cachedVersion = -1;
+            return cachedOrderV2;
+        }
+        const decrypted = await encryption.decryptRaw(item.value);
+        cachedOrderV2 = normalizeSessionOrder(decrypted);
+        cachedVersion = item.version;
+        return cachedOrderV2;
+    } catch (error) {
+        log.log('sessionOrder: Failed to load v2 session order');
+        return cachedOrderV2;
+    }
+}
+
+/**
+ * Save the V2 session order to the encrypted KV store.
+ * Encrypts client-side before sending to server.
+ */
+export async function saveSessionOrderV2(
+    credentials: AuthCredentials,
+    encryption: Encryption,
+    order: SessionOrderV2
+): Promise<void> {
+    try {
+        const encrypted = await encryption.encryptRaw(order);
+        const newVersion = await kvSet(credentials, SESSION_ORDER_KEY, encrypted, cachedVersion);
+        cachedOrderV2 = order;
+        cachedVersion = newVersion;
+    } catch (error) {
+        log.log('sessionOrder: Failed to save v2 session order');
+        if (error instanceof Error && error.message.includes('version-mismatch')) {
+            try {
+                await loadSessionOrderV2(credentials, encryption);
+                const encrypted = await encryption.encryptRaw(order);
+                const newVersion = await kvSet(credentials, SESSION_ORDER_KEY, encrypted, cachedVersion);
+                cachedOrderV2 = order;
+                cachedVersion = newVersion;
+            } catch (retryError) {
+                log.log('sessionOrder: Retry v2 save failed');
+            }
+        }
+    }
+}
+
+/**
+ * Get the cached V2 session order without a network call.
+ * Returns empty V2 structure if order hasn't been loaded yet.
+ */
+export function getCachedSessionOrderV2(): SessionOrderV2 {
+    return cachedOrderV2;
 }
