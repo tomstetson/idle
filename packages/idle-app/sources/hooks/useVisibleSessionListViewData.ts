@@ -28,6 +28,11 @@ export function useVisibleSessionListViewData(): SessionListViewItem[] | null {
                 continue;
             }
 
+            // Session groups only contain inactive sessions — skip when hiding inactive
+            if (item.type === 'session-group') {
+                continue;
+            }
+
             if (item.type === 'session') {
                 if (item.session.active) {
                     if (pendingMachineGroup) {

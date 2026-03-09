@@ -363,6 +363,11 @@ export const ja: TranslationStructure = {
         moveToGroup: 'グループに移動...',
         selectGroup: 'グループを選択',
         removeFromGroup: 'グループから削除',
+        renameGroup: 'グループ名を変更',
+        renameGroupTitle: 'グループ名を変更',
+        deleteGroup: 'グループを削除',
+        deleteGroupTitle: 'グループを削除しますか？',
+        deleteGroupMessage: 'このグループのセッションはメインリストに戻されます。',
     },
 
     commandPalette: {

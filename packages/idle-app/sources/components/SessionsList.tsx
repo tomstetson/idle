@@ -9,6 +9,7 @@ import { getSessionName, useSessionStatus, getSessionSubtitle, getSessionAvatarI
 import { Avatar } from './Avatar';
 import { ActiveSessionsGroup } from './ActiveSessionsGroup';
 import { ActiveSessionsGroupCompact } from './ActiveSessionsGroupCompact';
+import { SessionGroupHeader } from './SessionGroupHeader';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { useSetting } from '@/sync/storage';
 import { useVisibleSessionListViewData } from '@/hooks/useVisibleSessionListViewData';
@@ -258,19 +259,54 @@ export function SessionsList() {
         });
     }, []);
 
-    // Filter out items belonging to collapsed machine groups
+    // Track which session groups are collapsed (by groupId).
+    // Groups are expanded by default — collapsed IDs are tracked.
+    const [collapsedGroups, setCollapsedGroups] = React.useState<Set<string>>(new Set());
+    const toggleGroupCollapsed = React.useCallback((groupId: string) => {
+        setCollapsedGroups(prev => {
+            const next = new Set(prev);
+            if (next.has(groupId)) {
+                next.delete(groupId);
+            } else {
+                next.add(groupId);
+            }
+            return next;
+        });
+    }, []);
+
+    // Filter out items belonging to collapsed machine/session groups
     const visibleData = React.useMemo(() => {
-        if (!data || collapsedMachines.size === 0) return data;
+        if (!data || (collapsedMachines.size === 0 && collapsedGroups.size === 0)) return data;
 
         const result: SessionListViewItem[] = [];
         let currentCollapsedMachine: string | null = null;
+        let inCollapsedSessionGroup = false;
 
         for (const item of data) {
+            if (item.type === 'session-group') {
+                // Always show session group headers
+                result.push(item);
+                inCollapsedSessionGroup = collapsedGroups.has(item.group.id);
+                currentCollapsedMachine = null;
+                continue;
+            }
+
             if (item.type === 'machine-group') {
-                // Always show machine group headers
+                // Machine group headers end any session group scope
+                inCollapsedSessionGroup = false;
                 result.push(item);
                 currentCollapsedMachine = collapsedMachines.has(item.machineId) ? item.machineId : null;
                 continue;
+            }
+
+            // Skip items inside collapsed session groups (only sessions follow a session-group)
+            if (inCollapsedSessionGroup && item.type === 'session') {
+                continue;
+            }
+
+            // Non-session items after a session-group end the group scope
+            if (inCollapsedSessionGroup && item.type !== 'session') {
+                inCollapsedSessionGroup = false;
             }
 
             // If we're inside a collapsed machine group, skip non-machine-group items
@@ -282,7 +318,7 @@ export function SessionsList() {
         }
 
         return result;
-    }, [data, collapsedMachines]);
+    }, [data, collapsedMachines, collapsedGroups]);
 
     const dataWithSelected = selectable ? React.useMemo(() => {
         return visibleData?.map(item => ({
@@ -311,6 +347,7 @@ export function SessionsList() {
             case 'active-sessions': return 'active-sessions';
             case 'project-group': return `project-group-${item.machine.id}-${item.displayPath}-${index}`;
             case 'machine-group': return `machine-group-${item.machineId}`;
+            case 'session-group': return `session-group-${item.group.id}`;
             case 'session': return `session-${item.session.id}`;
         }
     }, []);
@@ -382,13 +419,26 @@ export function SessionsList() {
                 );
             }
 
+            case 'session-group': {
+                const isGroupExpanded = !collapsedGroups.has(item.group.id);
+                return (
+                    <SessionGroupHeader
+                        groupId={item.group.id}
+                        name={item.group.name}
+                        sessionCount={item.sessionCount}
+                        isExpanded={isGroupExpanded}
+                        onToggle={() => toggleGroupCollapsed(item.group.id)}
+                    />
+                );
+            }
+
             case 'session':
                 // Determine card styling based on position within date group
                 const prevItem = index > 0 && dataWithSelected ? dataWithSelected[index - 1] : null;
                 const nextItem = index < (dataWithSelected?.length || 0) - 1 && dataWithSelected ? dataWithSelected[index + 1] : null;
 
-                const isFirst = prevItem?.type === 'header';
-                const isLast = nextItem?.type === 'header' || nextItem == null || nextItem?.type === 'active-sessions' || nextItem?.type === 'machine-group';
+                const isFirst = prevItem?.type === 'header' || prevItem?.type === 'session-group';
+                const isLast = nextItem?.type === 'header' || nextItem == null || nextItem?.type === 'active-sessions' || nextItem?.type === 'machine-group' || nextItem?.type === 'session-group';
                 const isSingle = isFirst && isLast;
 
                 return (
@@ -401,7 +451,7 @@ export function SessionsList() {
                     />
                 );
         }
-    }, [pathname, dataWithSelected, compactSessionView, collapsedMachines, toggleMachineCollapsed]);
+    }, [pathname, dataWithSelected, compactSessionView, collapsedMachines, toggleMachineCollapsed, collapsedGroups, toggleGroupCollapsed]);
 
 
     // Remove this section as we'll use FlatList for all items now

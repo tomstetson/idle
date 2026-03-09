@@ -332,6 +332,11 @@ export const zhHant: TranslationStructure = {
         moveToGroup: '移動到群組...',
         selectGroup: '選擇群組',
         removeFromGroup: '從群組中移除',
+        renameGroup: '重新命名群組',
+        renameGroupTitle: '重新命名群組',
+        deleteGroup: '刪除群組',
+        deleteGroupTitle: '刪除群組？',
+        deleteGroupMessage: '此群組中的工作階段將被移回主列表。',
     },
 
     commandPalette: {

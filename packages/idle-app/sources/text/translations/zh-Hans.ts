@@ -333,6 +333,11 @@ export const zhHans: TranslationStructure = {
         moveToGroup: '移动到分组...',
         selectGroup: '选择分组',
         removeFromGroup: '从分组中移除',
+        renameGroup: '重命名分组',
+        renameGroupTitle: '重命名分组',
+        deleteGroup: '删除分组',
+        deleteGroupTitle: '删除分组？',
+        deleteGroupMessage: '此分组中的会话将被移回主列表。',
     },
 
     commandPalette: {

@@ -41,7 +41,7 @@ import { FeedItem } from './feedTypes';
 import { UserProfile } from './friendTypes';
 import { resolveMessageModeMeta } from './messageMeta';
 import { loadSessionOrder, saveSessionOrder, getCachedSessionOrder, getCachedSessionOrderV2, saveSessionOrderV2 } from './sessionOrderPersistence';
-import { moveSessionToTop as moveSessionToTopPure, createGroup, moveSessionToGroup as moveSessionToGroupPure } from './sessionOrder';
+import { moveSessionToTop as moveSessionToTopPure, createGroup, moveSessionToGroup as moveSessionToGroupPure, renameGroup, deleteGroup } from './sessionOrder';
 
 type V3GetSessionMessagesResponse = {
     messages: ApiMessage[];
@@ -843,6 +843,35 @@ class Sync {
     public moveSessionToGroup = async (sessionId: string, groupId: string | null): Promise<void> => {
         const order = getCachedSessionOrderV2();
         const updated = moveSessionToGroupPure(order, sessionId, groupId);
+        if (this.credentials) {
+            await saveSessionOrderV2(this.credentials, this.encryption, updated);
+        }
+        // Re-apply sessions so the list rebuilds
+        const state = storage.getState();
+        state.applySessions(Object.values(state.sessions));
+    }
+
+    /**
+     * Rename a session group and persist it to the encrypted KV store.
+     */
+    public renameSessionGroup = async (groupId: string, name: string): Promise<void> => {
+        const order = getCachedSessionOrderV2();
+        const updated = renameGroup(order, groupId, name);
+        if (this.credentials) {
+            await saveSessionOrderV2(this.credentials, this.encryption, updated);
+        }
+        // Re-apply sessions so the list rebuilds
+        const state = storage.getState();
+        state.applySessions(Object.values(state.sessions));
+    }
+
+    /**
+     * Delete a session group. Sessions in the group are moved back to ungrouped.
+     * Persists the updated order to the encrypted KV store.
+     */
+    public deleteSessionGroup = async (groupId: string): Promise<void> => {
+        const order = getCachedSessionOrderV2();
+        const updated = deleteGroup(order, groupId);
         if (this.credentials) {
             await saveSessionOrderV2(this.credentials, this.encryption, updated);
         }

@@ -331,6 +331,11 @@ export const ca: TranslationStructure = {
         moveToGroup: 'Moure a grup...',
         selectGroup: 'Selecciona grup',
         removeFromGroup: 'Treure del grup',
+        renameGroup: 'Canviar nom del grup',
+        renameGroupTitle: 'Canviar nom del grup',
+        deleteGroup: 'Eliminar grup',
+        deleteGroupTitle: 'Eliminar grup?',
+        deleteGroupMessage: 'Les sessions d\'aquest grup es mouran a la llista principal.',
     },
 
     commandPalette: {

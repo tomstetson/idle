@@ -331,6 +331,11 @@ export const pt: TranslationStructure = {
         moveToGroup: 'Mover para grupo...',
         selectGroup: 'Selecionar grupo',
         removeFromGroup: 'Remover do grupo',
+        renameGroup: 'Renomear grupo',
+        renameGroupTitle: 'Renomear grupo',
+        deleteGroup: 'Excluir grupo',
+        deleteGroupTitle: 'Excluir grupo?',
+        deleteGroupMessage: 'As sessões deste grupo serão movidas de volta para a lista principal.',
     },
 
     commandPalette: {

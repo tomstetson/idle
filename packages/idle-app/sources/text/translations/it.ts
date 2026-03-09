@@ -360,6 +360,11 @@ export const it: TranslationStructure = {
         moveToGroup: 'Sposta nel gruppo...',
         selectGroup: 'Seleziona gruppo',
         removeFromGroup: 'Rimuovi dal gruppo',
+        renameGroup: 'Rinomina gruppo',
+        renameGroupTitle: 'Rinomina gruppo',
+        deleteGroup: 'Elimina gruppo',
+        deleteGroupTitle: 'Eliminare il gruppo?',
+        deleteGroupMessage: 'Le sessioni di questo gruppo verranno spostate nella lista principale.',
     },
 
     commandPalette: {

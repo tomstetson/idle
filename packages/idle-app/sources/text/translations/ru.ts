@@ -428,6 +428,11 @@ export const ru: TranslationStructure = {
         moveToGroup: 'Переместить в группу...',
         selectGroup: 'Выберите группу',
         removeFromGroup: 'Убрать из группы',
+        renameGroup: 'Переименовать группу',
+        renameGroupTitle: 'Переименовать группу',
+        deleteGroup: 'Удалить группу',
+        deleteGroupTitle: 'Удалить группу?',
+        deleteGroupMessage: 'Сессии из этой группы будут возвращены в основной список.',
     },
 
     commandPalette: {
