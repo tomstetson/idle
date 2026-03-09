@@ -443,14 +443,37 @@ export async function claudeRemoteLauncher(session: Session): Promise<'switch' |
         // Clean up permission handler
         permissionHandler.reset();
 
-        // Reset Terminal
+        // === TTY input buffer flush sequence ===
+        // Order matters: remove listeners -> drain buffer -> raw mode off -> unmount Ink -> pause
+        // This prevents raw-mode bytes from surviving the transition and corrupting
+        // the Claude child process stdin when switching to local mode.
+
+        // 1. Remove all stdin listeners BEFORE changing raw mode
+        //    This stops Ink/useInput from processing any buffered keystrokes
+        process.stdin.removeAllListeners('data');
         process.stdin.off('data', abort);
+
+        // 2. Drain the TTY input buffer while still in raw mode
+        //    Any bytes buffered during the 100ms delay or keystroke window are discarded
+        if (process.stdin.isTTY && process.stdin.readable) {
+            while (process.stdin.read() !== null) {
+                // Discard buffered raw-mode bytes
+            }
+        }
+
+        // 3. Now switch raw mode off (cooked mode) — buffer is already empty
         if (process.stdin.isTTY) {
             process.stdin.setRawMode(false);
         }
+
+        // 4. Unmount Ink AFTER raw mode is off
         if (inkInstance) {
             inkInstance.unmount();
         }
+
+        // 5. Pause stdin for clean handoff to claudeLocal
+        process.stdin.pause();
+
         messageBuffer.clear();
 
         // Resolve abort future

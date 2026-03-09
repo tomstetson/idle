@@ -184,6 +184,15 @@ export async function claudeLocal(opts: {
 
     // Spawn the process
     try {
+        // Drain any residual bytes from stdin before handing it to the child process.
+        // When switching from remote mode, raw-mode keystrokes may still be buffered.
+        // Reading them here prevents garbled input from reaching the Claude child.
+        if (process.stdin.readable) {
+            while (process.stdin.read() !== null) {
+                // Discard buffered bytes
+            }
+        }
+
         // Start the interactive process
         process.stdin.pause();
         await new Promise<void>((r, reject) => {

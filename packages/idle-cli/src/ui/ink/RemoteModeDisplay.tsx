@@ -51,18 +51,17 @@ export const RemoteModeDisplay: React.FC<RemoteModeDisplayProps> = ({ messageBuf
         }, 15000) // 15 seconds timeout
     }, [resetConfirmation])
 
-    useInput(useCallback(async (input, key) => {
+    useInput(useCallback((input, key) => {
         // Don't process input if action is in progress
         if (actionInProgress) return
-        
+
         // Handle Ctrl-C
         if (key.ctrl && input === 'c') {
             if (confirmationMode === 'exit') {
                 // Second Ctrl-C, exit
                 resetConfirmation()
                 setActionInProgress('exiting')
-                // Small delay to show the status message
-                await new Promise(resolve => setTimeout(resolve, 100))
+                // Call immediately — no delay that would let keystrokes buffer in raw mode
                 onExit?.()
             } else {
                 // First Ctrl-C, show confirmation
@@ -77,8 +76,7 @@ export const RemoteModeDisplay: React.FC<RemoteModeDisplayProps> = ({ messageBuf
                 // Second space, switch to local
                 resetConfirmation()
                 setActionInProgress('switching')
-                // Small delay to show the status message
-                await new Promise(resolve => setTimeout(resolve, 100))
+                // Call immediately — no delay that would let keystrokes buffer in raw mode
                 onSwitchToLocal?.()
             } else {
                 // First space, show confirmation
