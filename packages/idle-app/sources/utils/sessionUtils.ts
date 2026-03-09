@@ -62,11 +62,13 @@ export function useSessionStatus(session: Session): SessionStatus {
         };
     }
 
+    // Show relative activity time for idle online sessions (e.g., "online · just now")
+    const activityTime = formatLastSeen(session.activeAt, false);
     return {
         state: 'waiting',
         isConnected: true,
-        statusText: t('status.online'),
-        shouldShowStatus: false,
+        statusText: t('status.onlineWithActivity', { time: activityTime }),
+        shouldShowStatus: true,
         statusColor: '#34C759',
         statusDotColor: '#34C759'
     };

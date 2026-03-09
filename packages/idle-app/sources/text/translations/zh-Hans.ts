@@ -80,6 +80,7 @@ export const zhHans: TranslationStructure = {
         disconnected: '已断开',
         error: '错误',
         online: '在线',
+        onlineWithActivity: ({ time }: { time: string }) => `在线 · ${time}`,
         offline: '离线',
         lastSeen: ({ time }: { time: string }) => `最后活跃时间 ${time}`,
         permissionRequired: '需要权限',

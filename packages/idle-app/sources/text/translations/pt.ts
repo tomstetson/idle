@@ -78,6 +78,7 @@ export const pt: TranslationStructure = {
         disconnected: 'desconectado',
         error: 'erro',
         online: 'online',
+        onlineWithActivity: ({ time }: { time: string }) => `online · ${time}`,
         offline: 'offline',
         lastSeen: ({ time }: { time: string }) => `visto por último ${time}`,
         permissionRequired: 'permissão necessária',

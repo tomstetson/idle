@@ -107,6 +107,7 @@ export const it: TranslationStructure = {
         disconnected: 'disconnesso',
         error: 'errore',
         online: 'online',
+        onlineWithActivity: ({ time }: { time: string }) => `online · ${time}`,
         offline: 'offline',
         lastSeen: ({ time }: { time: string }) => `visto l'ultima volta ${time}`,
         permissionRequired: 'permesso richiesto',

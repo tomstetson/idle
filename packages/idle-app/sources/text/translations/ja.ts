@@ -110,6 +110,7 @@ export const ja: TranslationStructure = {
         disconnected: '切断済み',
         error: 'エラー',
         online: 'オンライン',
+        onlineWithActivity: ({ time }: { time: string }) => `オンライン · ${time}`,
         offline: 'オフライン',
         lastSeen: ({ time }: { time: string }) => `最終アクセス: ${time}`,
         permissionRequired: '権限が必要です',

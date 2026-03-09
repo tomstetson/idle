@@ -79,6 +79,7 @@ export const zhHant: TranslationStructure = {
         disconnected: '已中斷連線',
         error: '錯誤',
         online: '線上',
+        onlineWithActivity: ({ time }: { time: string }) => `線上 · ${time}`,
         offline: '離線',
         lastSeen: ({ time }: { time: string }) => `最後活躍時間 ${time}`,
         permissionRequired: '需要權限',

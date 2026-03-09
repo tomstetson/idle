@@ -399,6 +399,7 @@ export const ru: TranslationStructure = {
         disconnected: 'отключено',
         error: 'ошибка',
         online: 'online',
+        onlineWithActivity: ({ time }: { time: string }) => `online · ${time}`,
         offline: 'offline',
         lastSeen: ({ time }: { time: string }) => `в сети ${time}`,
         permissionRequired: 'требуется разрешение',

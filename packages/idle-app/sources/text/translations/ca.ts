@@ -78,6 +78,7 @@ export const ca: TranslationStructure = {
         disconnected: 'desconnectat',
         error: 'error',
         online: 'en línia',
+        onlineWithActivity: ({ time }: { time: string }) => `en línia · ${time}`,
         offline: 'fora de línia',
         lastSeen: ({ time }: { time: string }) => `vist per última vegada ${time}`,
         permissionRequired: 'permís requerit',

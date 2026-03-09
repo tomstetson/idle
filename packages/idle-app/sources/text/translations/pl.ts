@@ -89,6 +89,7 @@ export const pl: TranslationStructure = {
         disconnected: 'rozłączono',
         error: 'błąd',
         online: 'online',
+        onlineWithActivity: ({ time }: { time: string }) => `online · ${time}`,
         offline: 'offline',
         lastSeen: ({ time }: { time: string }) => `ostatnio widziano ${time}`,
         permissionRequired: 'wymagane uprawnienie',
