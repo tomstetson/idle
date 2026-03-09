@@ -628,7 +628,19 @@ export const ja: TranslationStructure = {
             title: '言語',
             footer: ({ count }: { count: number }) => `${count}言語が利用可能`,
             autoDetect: '自動検出',
-        }
+        },
+        // BYOK API key settings
+        apiKeyTitle: 'APIキー',
+        apiKeyDescription: '自分のElevenLabs APIキーを使用して音声機能を利用できます。キーはエンドツーエンドで暗号化されます。',
+        apiKeyLabel: 'ElevenLabs APIキー',
+        apiKeyPlaceholder: 'ElevenLabs APIキーを入力',
+        apiKeySave: 'キーを保存',
+        apiKeyDelete: 'キーを削除',
+        apiKeyRegistered: 'キーが有効です',
+        apiKeyNotRegistered: 'キー未登録 — プラットフォームキーを使用中',
+        apiKeySaved: 'APIキーが保存されました',
+        apiKeyDeleted: 'APIキーが削除されました',
+        apiKeyEmpty: 'APIキーを入力してください',
     },
 
     settingsAccount: {

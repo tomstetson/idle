@@ -598,7 +598,19 @@ export const zhHans: TranslationStructure = {
             title: '语言',
             footer: ({ count }: { count: number }) => `${count} 种可用语言`,
             autoDetect: '自动检测',
-        }
+        },
+        // BYOK API key settings
+        apiKeyTitle: 'API 密钥',
+        apiKeyDescription: '使用您自己的 ElevenLabs API 密钥来启用语音功能。您的密钥采用端到端加密。',
+        apiKeyLabel: 'ElevenLabs API 密钥',
+        apiKeyPlaceholder: '输入您的 ElevenLabs API 密钥',
+        apiKeySave: '保存密钥',
+        apiKeyDelete: '删除密钥',
+        apiKeyRegistered: '您的密钥已激活',
+        apiKeyNotRegistered: '未注册密钥 — 使用平台密钥',
+        apiKeySaved: 'API 密钥保存成功',
+        apiKeyDeleted: 'API 密钥已删除',
+        apiKeyEmpty: '请输入 API 密钥',
     },
 
     settingsAccount: {

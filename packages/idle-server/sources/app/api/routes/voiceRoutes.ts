@@ -1,6 +1,9 @@
 import { z } from "zod";
 import { type Fastify } from "../types";
 import { log } from "@/utils/log";
+import { db } from "@/storage/db";
+import { decryptString } from "@/modules/encrypt";
+import * as privacyKit from "privacy-kit";
 
 export function voiceRoutes(app: Fastify) {
     app.post('/v1/voice/token', {
@@ -73,11 +76,28 @@ export function voiceRoutes(app: Fastify) {
             }
         }
 
-        // Check if 11Labs API key is configured
-        const elevenLabsApiKey = process.env.ELEVENLABS_API_KEY;
+        // Check for user's BYOK ElevenLabs key first, fall back to platform key
+        let elevenLabsApiKey: string | undefined;
+
+        // PGlite + Prisma 6 Bytes bug: read token via raw SQL, not Prisma select
+        const tokenResults = await db.$queryRawUnsafe<Array<{ val: string | null }>>(
+            `SELECT encode("token", 'base64') as "val" FROM "ServiceAccountToken" WHERE "accountId" = $1 AND "vendor" = $2`,
+            userId, 'elevenlabs'
+        );
+        if (tokenResults[0]?.val) {
+            const tokenBytes = privacyKit.decodeBase64(tokenResults[0].val);
+            elevenLabsApiKey = decryptString(['user', userId, 'vendors', 'elevenlabs', 'token'], tokenBytes);
+            log({ module: 'voice' }, `Using BYOK ElevenLabs key for user ${userId}`);
+        }
+
+        // Fall back to platform key
         if (!elevenLabsApiKey) {
-            log({ module: 'voice' }, 'Missing 11Labs API key');
-            return reply.code(400).send({ allowed: false, error: 'Missing 11Labs API key on the server' });
+            elevenLabsApiKey = process.env.ELEVENLABS_API_KEY;
+        }
+
+        if (!elevenLabsApiKey) {
+            log({ module: 'voice' }, 'No ElevenLabs API key available (no BYOK key and no platform key)');
+            return reply.code(400).send({ allowed: false, error: 'No ElevenLabs API key configured. Add your own key in Voice settings.' });
         }
 
         // Get 11Labs conversation token

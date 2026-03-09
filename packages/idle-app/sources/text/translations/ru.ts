@@ -606,7 +606,19 @@ export const ru: TranslationStructure = {
             title: 'Языки',
             footer: ({ count }: { count: number }) => `Доступно ${count} ${plural({ count, one: 'язык', few: 'языка', many: 'языков' })}`,
             autoDetect: 'Автоопределение',
-        }
+        },
+        // BYOK API key settings
+        apiKeyTitle: 'API-ключ',
+        apiKeyDescription: 'Используйте свой собственный API-ключ ElevenLabs для голосовых функций. Ваш ключ зашифрован сквозным шифрованием.',
+        apiKeyLabel: 'API-ключ ElevenLabs',
+        apiKeyPlaceholder: 'Введите ваш API-ключ ElevenLabs',
+        apiKeySave: 'Сохранить ключ',
+        apiKeyDelete: 'Удалить ключ',
+        apiKeyRegistered: 'Ваш ключ активен',
+        apiKeyNotRegistered: 'Ключ не зарегистрирован — используется ключ платформы',
+        apiKeySaved: 'API-ключ успешно сохранён',
+        apiKeyDeleted: 'API-ключ удалён',
+        apiKeyEmpty: 'Пожалуйста, введите API-ключ',
     },
 
     settingsAccount: {

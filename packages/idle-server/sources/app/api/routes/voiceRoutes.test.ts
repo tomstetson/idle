@@ -8,6 +8,24 @@ vi.mock("../../../utils/log", () => ({
     log: vi.fn()
 }));
 
+// Mock the database — BYOK lookup uses raw SQL query
+const dbQueryMock = vi.fn();
+vi.mock("../../../storage/db", () => ({
+    db: {
+        $queryRawUnsafe: (...args: any[]) => dbQueryMock(...args),
+    }
+}));
+
+// Mock the encrypt module
+vi.mock("../../../modules/encrypt", () => ({
+    decryptString: vi.fn((_path: string[], _bytes: Uint8Array) => "decrypted-byok-key")
+}));
+
+// Mock privacy-kit
+vi.mock("privacy-kit", () => ({
+    decodeBase64: vi.fn((b64: string) => new Uint8Array([1, 2, 3]))
+}));
+
 // Track fetch calls for ElevenLabs API
 const fetchMock = vi.fn();
 vi.stubGlobal("fetch", fetchMock);
@@ -37,8 +55,11 @@ describe("voiceRoutes", () => {
     let app: Fastify;
     const originalEnv = { ...process.env };
 
-    beforeEach(() => {
+    beforeEach(async () => {
         fetchMock.mockReset();
+        // Default: no BYOK key registered (empty result from DB)
+        dbQueryMock.mockReset();
+        dbQueryMock.mockResolvedValue([]);
         process.env.ELEVENLABS_API_KEY = "test-api-key";
         // Alpha mode — no subscription required by default
         delete process.env.IDLE_REQUIRE_SUBSCRIPTION;
@@ -108,7 +129,7 @@ describe("voiceRoutes", () => {
         expect(response.statusCode).toBe(400);
         const body = response.json();
         expect(body.allowed).toBe(false);
-        expect(body.error).toContain("11Labs API key");
+        expect(body.error).toContain("ElevenLabs API key");
     });
 
     it("returns 400 when ElevenLabs token fetch fails", async () => {

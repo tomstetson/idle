@@ -597,7 +597,19 @@ export const zhHant: TranslationStructure = {
             title: '語言',
             footer: ({ count }: { count: number }) => `${count} 種可用語言`,
             autoDetect: '自動偵測',
-        }
+        },
+        // BYOK API key settings
+        apiKeyTitle: 'API 金鑰',
+        apiKeyDescription: '使用您自己的 ElevenLabs API 金鑰來啟用語音功能。您的金鑰採用端到端加密。',
+        apiKeyLabel: 'ElevenLabs API 金鑰',
+        apiKeyPlaceholder: '輸入您的 ElevenLabs API 金鑰',
+        apiKeySave: '儲存金鑰',
+        apiKeyDelete: '刪除金鑰',
+        apiKeyRegistered: '您的金鑰已啟用',
+        apiKeyNotRegistered: '未註冊金鑰 — 使用平台金鑰',
+        apiKeySaved: 'API 金鑰儲存成功',
+        apiKeyDeleted: 'API 金鑰已刪除',
+        apiKeyEmpty: '請輸入 API 金鑰',
     },
 
     settingsAccount: {

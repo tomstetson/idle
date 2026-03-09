@@ -596,7 +596,19 @@ export const ca: TranslationStructure = {
             title: 'Idiomes',
             footer: ({ count }: { count: number }) => `${count} ${plural({ count, singular: 'idioma', plural: 'idiomes' })} disponibles`,
             autoDetect: 'Detecta automàticament',
-        }
+        },
+        // BYOK API key settings
+        apiKeyTitle: 'Clau API',
+        apiKeyDescription: 'Utilitza la teva pròpia clau API d\'ElevenLabs per a les funcions de veu. La teva clau està xifrada d\'extrem a extrem.',
+        apiKeyLabel: 'Clau API d\'ElevenLabs',
+        apiKeyPlaceholder: 'Introdueix la teva clau API d\'ElevenLabs',
+        apiKeySave: 'Desa la clau',
+        apiKeyDelete: 'Elimina la clau',
+        apiKeyRegistered: 'La teva clau està activa',
+        apiKeyNotRegistered: 'Sense clau registrada — s\'utilitza la clau de la plataforma',
+        apiKeySaved: 'Clau API desada correctament',
+        apiKeyDeleted: 'Clau API eliminada',
+        apiKeyEmpty: 'Si us plau, introdueix una clau API',
     },
 
     settingsAccount: {
