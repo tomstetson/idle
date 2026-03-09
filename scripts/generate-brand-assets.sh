@@ -95,9 +95,9 @@ echo "  splash-icon.png (200x200)"
 gen_logotype_svg() {
   local bg_color="$1" mark_color="$2" text_color="$3"
   cat <<SVG
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 340 130">
-  <rect width="340" height="130" fill="${bg_color}"/>
-  <g transform="translate(6,4) scale(0.119)">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 80">
+  <rect width="300" height="80" fill="${bg_color}"/>
+  <g transform="translate(4,4) scale(0.07)">
     <!-- Top bar -->
     <rect x="200" y="280" width="624" height="16" rx="3" fill="${mark_color}" opacity="0.55"/>
     <circle cx="195" cy="288" r="4" fill="${mark_color}" opacity="0.35"/>
@@ -113,8 +113,8 @@ gen_logotype_svg() {
     <!-- Cursor -->
     <path d="M536,448 C540,442 544,442 548,448 C552,462 554,486 554,512 C554,538 552,562 548,576 C544,582 540,582 536,576 C532,562 530,538 530,512 C530,486 532,462 536,448 Z" fill="${mark_color}"/>
   </g>
-  <text x="136" y="96" fill="${text_color}" font-family="sans-serif"
-        font-weight="700" font-size="80" letter-spacing="-2">idle</text>
+  <text x="84" y="57" fill="${text_color}" font-family="sans-serif"
+        font-weight="700" font-size="50" letter-spacing="-1.5">idle</text>
 </svg>
 SVG
 }
