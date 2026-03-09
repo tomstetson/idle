@@ -62,13 +62,13 @@ Your code. Your privacy. Your Claude Code companion.
 ## URLs
 
 ### Privacy Policy
-https://github.com/tomstetson/idle/blob/main/PRIVACY.md
+https://github.com/Northglass-Labs/idle/blob/main/PRIVACY.md
 
 ### Support / Contact
-https://github.com/tomstetson/idle/issues
+https://github.com/Northglass-Labs/idle/issues
 
 ### Website / Marketing
-https://github.com/tomstetson/idle
+https://github.com/Northglass-Labs/idle
 
 ## Additional Google Play Requirements
 

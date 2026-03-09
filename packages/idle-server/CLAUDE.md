@@ -5,7 +5,7 @@ This document contains the development guidelines and instructions for the Idle 
 ## Project Overview
 
 **Name**: idle-server  
-**Repository**: https://github.com/tomstetson/idle  
+**Repository**: https://github.com/Northglass-Labs/idle  
 **License**: MIT  
 **Language**: TypeScript  
 **Runtime**: Node.js 20  

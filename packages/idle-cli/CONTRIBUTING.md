@@ -10,7 +10,7 @@
 ## Getting Started
 
 ```bash
-git clone https://github.com/tomstetson/idle.git
+git clone https://github.com/Northglass-Labs/idle.git
 cd idle-cli
 yarn install
 yarn build

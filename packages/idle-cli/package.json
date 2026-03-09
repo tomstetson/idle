@@ -5,9 +5,9 @@
   "author": "Northglass LLC",
   "license": "MIT",
   "type": "module",
-  "homepage": "https://github.com/tomstetson/idle",
-  "bugs": "https://github.com/tomstetson/idle/issues",
-  "repository": "tomstetson/idle",
+  "homepage": "https://github.com/Northglass-Labs/idle",
+  "bugs": "https://github.com/Northglass-Labs/idle/issues",
+  "repository": "Northglass-Labs/idle",
   "bin": {
     "idle": "./bin/idle.mjs",
     "idle-mcp": "./bin/idle-mcp.mjs"

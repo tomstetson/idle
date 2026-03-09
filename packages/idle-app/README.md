@@ -65,8 +65,8 @@ On your computer, run `Idle` instead of `claude` or `Idle codex` instead of `cod
 
 ## 📦 Project Components
 
-- **[idle-cli](https://github.com/tomstetson/idle)** - Command-line interface for Claude Code and Codex
-- **[idle-server](https://github.com/tomstetson/idle-server)** - Backend server for encrypted sync
+- **[idle-cli](https://github.com/Northglass-Labs/idle)** - Command-line interface for Claude Code and Codex
+- **[idle-server](https://github.com/Northglass-Labs/idle-server)** - Backend server for encrypted sync
 - **idle-coder** - This mobile client (you are here)
 
 ## 🏠 Who We Are
@@ -77,7 +77,7 @@ We're engineers scattered across Bay Area coffee shops and hacker houses, consta
 
 - **[Documentation Website](https://northglass.io/docs/)** - Learn how to use Idle Coder effectively
 - **[CONTRIBUTING.md](CONTRIBUTING.md)** - Development setup including iOS, Android, and macOS desktop variant builds
-- **[Edit docs on GitHub](https://github.com/tomstetson/idle)** - Help improve our documentation and guides
+- **[Edit docs on GitHub](https://github.com/Northglass-Labs/idle)** - Help improve our documentation and guides
 
 ## License
 

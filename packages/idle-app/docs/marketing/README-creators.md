@@ -41,7 +41,7 @@ Idle Coder is an open-source mobile app that lets developers control AI coding a
 
 - Clearly say "Idle Coder" in the video or caption
 - Mention it's free and open source
-- Include link to github.com/tomstetson/idle
+- Include link to github.com/Northglass-Labs/idle
 - Show actual usage (QR code connection, mobile control, push notifications)
 - Emphasize running on YOUR hardware, not cloud servers
 - Compare to paid alternatives ($50/month or $600/year competitors)
@@ -66,7 +66,7 @@ Idle Coder is an open-source mobile app that lets developers control AI coding a
 
 ## Resources
 
-- GitHub: https://github.com/tomstetson/idle
+- GitHub: https://github.com/Northglass-Labs/idle
 - Website: https://northglass.io
 - iOS App: https://apps.apple.com/us/app/Idle-claude-code-client/id6748571505
 - Android App: https://play.google.com/store/apps/details?id=com.northglass.idle

@@ -1,7 +1,7 @@
 {
   "name": "idle-server",
   "version": "0.1.1",
-  "repository": "tomstetson/idle",
+  "repository": "Northglass-Labs/idle",
   "author": "Northglass LLC",
   "license": "MIT",
   "private": true,

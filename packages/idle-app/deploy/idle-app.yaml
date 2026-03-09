@@ -14,7 +14,7 @@ spec:
     spec:
       containers:
       - name: idle-app
-        image: ghcr.io/tomstetson/idle-app:{version}
+        image: ghcr.io/Northglass-Labs/idle-app:{version}
         ports:
         - containerPort: 80
         livenessProbe:

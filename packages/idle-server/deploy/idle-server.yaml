@@ -23,7 +23,7 @@ spec:
     spec:
       containers:
       - name: idle
-        image: ghcr.io/tomstetson/idle-server:{version}
+        image: ghcr.io/Northglass-Labs/idle-server:{version}
         ports:
         - containerPort: 3005
         env:

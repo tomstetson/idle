@@ -26,7 +26,7 @@ If `progress.md` exists and has in-progress tasks, resume those before starting 
 
 ```bash
 # Clone and install
-git clone https://github.com/tomstetson/idle.git
+git clone https://github.com/Northglass-Labs/idle.git
 cd idle
 yarn install
 
