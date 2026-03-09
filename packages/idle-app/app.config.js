@@ -42,7 +42,7 @@ export default {
             adaptiveIcon: {
                 foregroundImage: "./sources/assets/images/icon-adaptive.png",
                 monochromeImage: "./sources/assets/images/icon-monochrome.png",
-                backgroundColor: "#0A0F1A"
+                backgroundColor: "#0A0A0A"
             },
             permissions: [
                 "android.permission.RECORD_AUDIO",
@@ -133,9 +133,9 @@ export default {
                 'expo-splash-screen',
                 {
                     ios: {
-                        backgroundColor: "#E8EDF2",
+                        backgroundColor: "#FAFAFA",
                         dark: {
-                            backgroundColor: "#0A0F1A",
+                            backgroundColor: "#0A0A0A",
                         }
                     },
                     android: {
