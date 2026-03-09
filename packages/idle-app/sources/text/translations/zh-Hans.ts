@@ -961,5 +961,13 @@ export const zhHans: TranslationStructure = {
         friendRequestGeneric: '新的好友请求',
         friendAccepted: ({ name }: { name: string }) => `您现在与 ${name} 成为了好友`,
         friendAcceptedGeneric: '好友请求已接受',
-    }
+    },
+
+    home: {
+        create: '创建',
+        newSession: '新会话',
+        newGroup: '新分组',
+        newGroupTitle: '创建分组',
+        newGroupMessage: '输入会话分组的名称',
+    },
 } as const;

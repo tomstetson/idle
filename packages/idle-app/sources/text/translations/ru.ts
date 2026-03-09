@@ -983,7 +983,15 @@ export const ru: TranslationStructure = {
             confirm: 'Удалить',
             cancel: 'Отмена',
         },
-    }
+    },
+
+    home: {
+        create: 'Создать',
+        newSession: 'Новая сессия',
+        newGroup: 'Новая группа',
+        newGroupTitle: 'Создать группу',
+        newGroupMessage: 'Введите название для группы сессий',
+    },
 } as const;
 
 export type TranslationsRu = typeof ru;

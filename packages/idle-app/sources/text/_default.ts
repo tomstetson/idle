@@ -960,7 +960,15 @@ export const en = {
             confirm: 'Delete',
             cancel: 'Cancel',
         },
-    }
+    },
+
+    home: {
+        create: 'Create',
+        newSession: 'New Session',
+        newGroup: 'New Group',
+        newGroupTitle: 'Create Group',
+        newGroupMessage: 'Enter a name for the session group',
+    },
 } as const;
 
 export type Translations = typeof en;

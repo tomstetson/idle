@@ -962,5 +962,13 @@ export const ja: TranslationStructure = {
         friendRequestGeneric: '新しい友達リクエスト',
         friendAccepted: ({ name }: { name: string }) => `${name}さんと友達になりました`,
         friendAcceptedGeneric: '友達リクエストが承認されました',
-    }
+    },
+
+    home: {
+        create: '作成',
+        newSession: '新しいセッション',
+        newGroup: '新しいグループ',
+        newGroupTitle: 'グループを作成',
+        newGroupMessage: 'セッショングループの名前を入力してください',
+    },
 } as const;

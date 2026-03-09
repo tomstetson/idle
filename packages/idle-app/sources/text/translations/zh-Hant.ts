@@ -961,5 +961,13 @@ export const zhHant: TranslationStructure = {
             confirm: '刪除',
             cancel: '取消',
         },
-    }
+    },
+
+    home: {
+        create: '建立',
+        newSession: '新工作階段',
+        newGroup: '新群組',
+        newGroupTitle: '建立群組',
+        newGroupMessage: '輸入工作階段群組的名稱',
+    },
 } as const;

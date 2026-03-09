@@ -40,8 +40,8 @@ import { fetchFeed } from './apiFeed';
 import { FeedItem } from './feedTypes';
 import { UserProfile } from './friendTypes';
 import { resolveMessageModeMeta } from './messageMeta';
-import { loadSessionOrder, saveSessionOrder, getCachedSessionOrder } from './sessionOrderPersistence';
-import { moveSessionToTop as moveSessionToTopPure } from './sessionOrder';
+import { loadSessionOrder, saveSessionOrder, getCachedSessionOrder, getCachedSessionOrderV2, saveSessionOrderV2 } from './sessionOrderPersistence';
+import { moveSessionToTop as moveSessionToTopPure, createGroup, moveSessionToGroup as moveSessionToGroupPure } from './sessionOrder';
 
 type V3GetSessionMessagesResponse = {
     messages: ApiMessage[];
@@ -815,6 +815,38 @@ class Sync {
         const newOrder = moveSessionToTopPure(currentOrder, sessionId);
         await saveSessionOrder(this.credentials, this.encryption, newOrder);
         // Re-apply sessions so the list rebuilds with the new order
+        const state = storage.getState();
+        state.applySessions(Object.values(state.sessions));
+    }
+
+    /**
+     * Create a new session group and persist it to the encrypted KV store.
+     * Returns the generated group ID.
+     */
+    public createSessionGroup = async (name: string): Promise<string> => {
+        const id = randomUUID();
+        const order = getCachedSessionOrderV2();
+        const updated = createGroup(order, id, name);
+        if (this.credentials) {
+            await saveSessionOrderV2(this.credentials, this.encryption, updated);
+        }
+        // Re-apply sessions so the list rebuilds with the new group
+        const state = storage.getState();
+        state.applySessions(Object.values(state.sessions));
+        return id;
+    }
+
+    /**
+     * Move a session into a group (or back to ungrouped if groupId is null).
+     * Persists the updated order to the encrypted KV store.
+     */
+    public moveSessionToGroup = async (sessionId: string, groupId: string | null): Promise<void> => {
+        const order = getCachedSessionOrderV2();
+        const updated = moveSessionToGroupPure(order, sessionId, groupId);
+        if (this.credentials) {
+            await saveSessionOrderV2(this.credentials, this.encryption, updated);
+        }
+        // Re-apply sessions so the list rebuilds
         const state = storage.getState();
         state.applySessions(Object.values(state.sessions));
     }

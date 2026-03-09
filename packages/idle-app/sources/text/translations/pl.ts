@@ -984,7 +984,15 @@ export const pl: TranslationStructure = {
             confirm: 'Usuń',
             cancel: 'Anuluj',
         },
-    }
+    },
+
+    home: {
+        create: 'Utwórz',
+        newSession: 'Nowa sesja',
+        newGroup: 'Nowa grupa',
+        newGroupTitle: 'Utwórz grupę',
+        newGroupMessage: 'Wprowadź nazwę grupy sesji',
+    },
 } as const;
 
 export type TranslationsPl = typeof pl;

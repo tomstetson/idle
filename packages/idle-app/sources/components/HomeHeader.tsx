@@ -10,6 +10,8 @@ import { getServerInfo } from '@/sync/serverConfig';
 import { IdleLogoMark } from '@/brand/IdleLogoMark';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { t } from '@/text';
+import { Modal } from '@/modal';
+import { sync } from '@/sync/sync';
 
 const stylesheet = StyleSheet.create((theme, runtime) => ({
     headerButton: {
@@ -117,9 +119,35 @@ function HeaderRight() {
     const styles = stylesheet;
     const { theme } = useUnistyles();
 
+    const handlePress = React.useCallback(() => {
+        Modal.alert(
+            t('home.create'),
+            undefined,
+            [
+                {
+                    text: t('home.newSession'),
+                    onPress: () => router.push('/new')
+                },
+                {
+                    text: t('home.newGroup'),
+                    onPress: async () => {
+                        const name = await Modal.prompt(
+                            t('home.newGroupTitle'),
+                            t('home.newGroupMessage')
+                        );
+                        if (name && name.trim()) {
+                            sync.createSessionGroup(name.trim());
+                        }
+                    }
+                },
+                { text: t('common.cancel'), style: 'cancel' }
+            ]
+        );
+    }, [router]);
+
     return (
         <Pressable
-            onPress={() => router.push('/new')}
+            onPress={handlePress}
             hitSlop={15}
             style={styles.headerButton}
         >

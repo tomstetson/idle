@@ -959,7 +959,15 @@ export const ca: TranslationStructure = {
         friendRequestGeneric: 'Nova sol·licitud d\'amistat',
         friendAccepted: ({ name }: { name: string }) => `Ara ets amic de ${name}`,
         friendAcceptedGeneric: 'Sol·licitud d\'amistat acceptada',
-    }
+    },
+
+    home: {
+        create: 'Crear',
+        newSession: 'Nova sessió',
+        newGroup: 'Nou grup',
+        newGroupTitle: 'Crear grup',
+        newGroupMessage: 'Introdueix un nom per al grup de sessions',
+    },
 } as const;
 
 export type TranslationsCa = typeof ca;

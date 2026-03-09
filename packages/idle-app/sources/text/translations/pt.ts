@@ -959,7 +959,15 @@ export const pt: TranslationStructure = {
         friendRequestGeneric: 'Novo pedido de amizade',
         friendAccepted: ({ name }: { name: string }) => `Agora você é amigo de ${name}`,
         friendAcceptedGeneric: 'Pedido de amizade aceito',
-    }
+    },
+
+    home: {
+        create: 'Criar',
+        newSession: 'Nova sessão',
+        newGroup: 'Novo grupo',
+        newGroupTitle: 'Criar grupo',
+        newGroupMessage: 'Introduza um nome para o grupo de sessões',
+    },
 } as const;
 
 export type TranslationsPt = typeof pt;
