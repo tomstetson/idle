@@ -1,5 +1,21 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
-  <!-- Idle Arc: brushstroke half-enso -->
-  <path d="M96 384 C96 176 160 64 256 64 C352 64 416 176 416 384"
-        stroke="#FAFAFA" stroke-width="48" stroke-linecap="round" fill="none"/>
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024">
+  <!-- Idle prompt mark: brush chevron + cursor between bars with ink splatter -->
+  <!-- Top bar with splatter -->
+  <rect x="200" y="280" width="624" height="16" rx="3" fill="currentColor" opacity="0.3"/>
+  <circle cx="195" cy="288" r="4" fill="currentColor" opacity="0.2"/>
+  <circle cx="830" cy="285" r="5" fill="currentColor" opacity="0.15"/>
+  <circle cx="835" cy="295" r="3" fill="currentColor" opacity="0.2"/>
+  <circle cx="188" cy="280" r="3" fill="currentColor" opacity="0.15"/>
+  <!-- Bottom bar with splatter -->
+  <rect x="200" y="728" width="624" height="16" rx="3" fill="currentColor" opacity="0.3"/>
+  <circle cx="192" cy="736" r="4" fill="currentColor" opacity="0.2"/>
+  <circle cx="832" cy="732" r="3" fill="currentColor" opacity="0.18"/>
+  <circle cx="828" cy="745" r="4" fill="currentColor" opacity="0.15"/>
+  <!-- Bold brush chevron -->
+  <path d="M300,420 C308,412 320,416 344,434 C378,460 412,488 436,508 C444,514 444,518 436,524 C412,544 378,572 344,598 C320,616 308,620 300,612 C294,606 302,596 320,582 C354,558 388,532 414,514 C418,512 418,512 414,510 C388,492 354,466 320,442 C302,428 294,418 300,420 Z" fill="currentColor"/>
+  <!-- Splatter near chevron -->
+  <circle cx="456" cy="498" r="3" fill="currentColor" opacity="0.3"/>
+  <circle cx="462" cy="530" r="2" fill="currentColor" opacity="0.25"/>
+  <!-- Cursor line -->
+  <path d="M536,448 C540,442 544,442 548,448 C552,462 554,486 554,512 C554,538 552,562 548,576 C544,582 540,582 536,576 C532,562 530,538 530,512 C530,486 532,462 536,448 Z" fill="currentColor"/>
 </svg>

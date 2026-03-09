@@ -3,8 +3,8 @@
  * Use currentColor so parent can set color (e.g. theme.colors.header.tint).
  */
 
-/** Logo mark: arc (brushstroke half-enso). 24x24 viewBox. */
-export const logoMarkSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round"><path d="M5 16 C5 8.5 8 4 12 4 C16 4 19 8.5 19 16"/></svg>`;
+/** Logo mark: prompt (brush chevron + cursor between bars with splatter). 24x24 viewBox. */
+export const logoMarkSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none"><rect x="4" y="5.5" width="16" height="0.5" rx="0.25" fill="currentColor" opacity="0.3"/><rect x="4" y="18" width="16" height="0.5" rx="0.25" fill="currentColor" opacity="0.3"/><circle cx="3.8" cy="5.7" r="0.12" fill="currentColor" opacity="0.2"/><circle cx="20.3" cy="5.6" r="0.15" fill="currentColor" opacity="0.18"/><circle cx="3.7" cy="18.2" r="0.12" fill="currentColor" opacity="0.2"/><circle cx="20.2" cy="18.4" r="0.15" fill="currentColor" opacity="0.16"/><path d="M6.5 9.5 C6.7 9.3 7 9.3 7.5 9.7 C8.3 10.3 9.2 11 10 11.8 C10.3 12 10.4 12.1 10.2 12.2 C9.6 12.7 8.6 13.5 7.8 14.1 C7.2 14.5 6.8 14.7 6.6 14.5 C6.5 14.3 6.6 14.1 7.2 13.6 C8 13 8.8 12.4 9.5 12 C8.8 11.6 8 11 7.2 10.4 C6.6 9.9 6.5 9.7 6.5 9.5 Z" fill="currentColor"/><circle cx="10.8" cy="11.8" r="0.15" fill="currentColor" opacity="0.3"/><circle cx="11" cy="12.4" r="0.1" fill="currentColor" opacity="0.25"/><path d="M12.8 10.2 C12.9 10 13 10 13.1 10.2 C13.2 10.5 13.3 11 13.3 12 C13.3 13 13.2 13.5 13.1 13.8 C13 14 12.9 14 12.8 13.8 C12.7 13.5 12.6 13 12.6 12 C12.6 11 12.7 10.5 12.8 10.2 Z" fill="currentColor"/></svg>`;
 
 /** Inbox / tray icon. 24×24. */
 export const tabInboxSvg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 8h16v11a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V8z"/><path d="M4 8l2.5-4h11L20 8"/><path d="M9 13h6"/></svg>`;
