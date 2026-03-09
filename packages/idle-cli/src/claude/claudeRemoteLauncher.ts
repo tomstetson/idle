@@ -451,10 +451,9 @@ export async function claudeRemoteLauncher(session: Session): Promise<'switch' |
         // 1. Remove all stdin listeners BEFORE changing raw mode
         //    This stops Ink/useInput from processing any buffered keystrokes
         process.stdin.removeAllListeners('data');
-        process.stdin.off('data', abort);
 
         // 2. Drain the TTY input buffer while still in raw mode
-        //    Any bytes buffered during the 100ms delay or keystroke window are discarded
+        //    Any bytes buffered during the raw-mode transition window are discarded
         if (process.stdin.isTTY && process.stdin.readable) {
             while (process.stdin.read() !== null) {
                 // Discard buffered raw-mode bytes
