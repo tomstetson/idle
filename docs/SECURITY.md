@@ -108,7 +108,7 @@ When you add a new device (e.g., connecting your phone to your laptop's CLI):
 
 - **TLS everywhere**: All traffic encrypted in transit via Cloudflare (HTTPS/WSS)
 - **Cloudflare WAF**: Access restricted by IP allowlist (configurable per deployment)
-- **No direct VPS access**: Backend port (3005) not exposed — only reachable through Nginx reverse proxy
+- **No direct VPS access**: Backend port not exposed — only reachable through Nginx reverse proxy
 - **WebSocket authenticated**: Every Socket.IO connection requires a valid token at handshake; unauthenticated connections are immediately disconnected
 
 ## Limitations and Known Gaps

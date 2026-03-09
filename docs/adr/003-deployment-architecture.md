@@ -11,7 +11,7 @@ Accepted
 ## Context
 Idle has two deployable components: a Node.js WebSocket server (idle-server) and a static web app (idle-app, built with Expo). Both need public HTTPS endpoints. The project is alpha-stage, single developer, budget-constrained, and serving one user.
 
-An IONOS VPS (`releasingphish` / 198.71.58.100, 2GB RAM, $5/month) was already provisioned for tomstetson.com. Cloudflare (free plan) already handles DNS for northglass.io.
+An IONOS VPS (2GB RAM, $5/month) was already provisioned. Cloudflare (free plan) already handles DNS for northglass.io.
 
 ## Decision
 Run everything on the single IONOS VPS behind Cloudflare:

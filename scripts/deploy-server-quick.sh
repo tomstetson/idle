@@ -24,7 +24,7 @@ yarn workspace idle-server test
 echo "[4/4] Deploying to VPS..."
 
 # Read VPS config from environment or use defaults
-VPS_HOST="${VPS_HOST:-releasingphish-root}"
+VPS_HOST="${VPS_HOST:?Set VPS_HOST to your SSH host alias (e.g., export VPS_HOST=your-vps)}"
 
 # Run git/yarn as deployer (same as CI) to avoid ownership conflicts with root
 ssh "$VPS_HOST" 'cd /var/www/idle-server && sudo -u deployer git pull origin main && sudo -u deployer yarn install --frozen-lockfile && sudo systemctl restart idle-server'

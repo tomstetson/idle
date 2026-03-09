@@ -7,7 +7,7 @@
 | `idle.northglass.io` | Web client | React Native app compiled to web (Expo static export). Full app — session list, message view, permissions, settings. Served by Nginx as static files. |
 | `idle-api.northglass.io` | Backend API | Node.js server. REST endpoints (auth, sessions, files) + WebSocket relay (Socket.IO). All devices connect here. |
 
-Both subdomains point to the same IONOS VPS (198.71.58.100) via Cloudflare DNS (proxied). There is no marketing/landing page — `idle.northglass.io` IS the product.
+Both subdomains point to the same VPS via Cloudflare DNS (proxied). There is no marketing/landing page — `idle.northglass.io` IS the product.
 
 ## System Overview
 
@@ -226,21 +226,19 @@ graph TD
 | Web App | React Native (Expo) | idle.northglass.io (Nginx static) | PWA with manifest, installable |
 | CLI | Node.js / TypeScript | npm (idle-coder) | Wraps Claude Code subprocess |
 | Server | Node.js / Fastify / Socket.IO | idle-api.northglass.io | Standalone mode (PGlite) |
-| Database | PGlite (embedded Postgres) | VPS local storage | `/var/www/idle-server/data/pglite` |
-| VPS | Ubuntu 24.04, 2 vCPU, 2GB RAM | IONOS (198.71.58.100) | Also hosts tomstetson.com |
-| DNS/CDN | Cloudflare (proxied) | Free plan | Full SSL mode, WAF IP-locked |
-| CI/CD | GitHub Actions | 2 workflows | deploy-server.yml, deploy-webapp.yml |
+| Database | PGlite (embedded Postgres) | VPS local storage | Embedded, no external DB needed |
+| DNS/CDN | Cloudflare (proxied) | Free plan | Full SSL mode |
+| CI/CD | GitHub Actions | 5 workflows | test, typecheck, deploy-server, deploy-webapp, cli-smoke |
 
-### Cloudflare Configuration
+### Security Hardening
 
-- **SSL/TLS**: Full mode (Cloudflare terminates HTTPS, proxies HTTP to VPS origin)
-- **WAF**: IP allowlist restricts access to home IP — both subdomains return 403 to other IPs
+The production deployment uses standard Linux hardening:
+
+- **Firewall**: Only ports 22, 80, 443 exposed
+- **systemd isolation**: `ProtectSystem=strict`, `NoNewPrivileges=yes`, `PrivateTmp=yes`
+- **Least privilege**: Deploy user with limited sudoers (systemctl restart/status only)
+- **Reverse proxy**: Application port not externally exposed — Nginx reverse proxy only
+- **Cloudflare WAF**: IP allowlist available for restricting access during alpha/beta
 - **WebSocket**: Enabled at Cloudflare network settings for Socket.IO passthrough
-- **DNS Records**: A records for `idle` and `api.idle` → 198.71.58.100 (proxied)
 
-### VPS Security Hardening
-
-- **Firewall (ufw)**: Ports 22, 80, 443 only
-- **systemd service**: `User=deployer`, `ProtectSystem=strict`, `NoNewPrivileges=yes`, `PrivateTmp=yes`
-- **No root access**: Deployer user with limited sudoers (systemctl restart/status only)
-- **Port 3005**: Not externally exposed — Nginx reverse proxy only
+See [deployment.md](deployment.md) for full self-hosting setup instructions.

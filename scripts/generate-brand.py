@@ -2,14 +2,16 @@
 """
 Generate Idle brand package.
 
-Concept: Terminal cursor at rest. A blinking cursor waiting for input = "idle".
-Style: Brutalist/pixel, hackery, clean, minimalist. Block-art aesthetic
-       with Northglass identity.
+Concept: Prompt mark — a calligraphic chevron and cursor between horizontal bars.
+Style: Calligraphic terminal aesthetic with ink-splatter texture. Northglass identity.
+
+The mark represents a terminal prompt (">") drawn with brush-stroke curves, a thin
+cursor line, and two subtle horizontal rules. Small ink-splatter dots add texture.
 
 Produces all app icons, splash screens, logotype, and favicon.
 """
 
-from PIL import Image, ImageDraw, ImageFont
+from PIL import Image, ImageDraw
 import os
 import math
 
@@ -21,14 +23,127 @@ GITHUB_DIR = os.path.join(REPO, ".github")
 BLACK = (20, 20, 22)         # Near-black for backgrounds
 WHITE = (255, 255, 255)
 CURSOR_GREEN = (0, 255, 65)  # Terminal green
-DARK_BG = (30, 30, 32)       # Dark mode bg
-LIGHT_BG = (245, 245, 245)   # Light mode bg
 TRANSPARENT = (0, 0, 0, 0)
 
+
 # ─────────────────────────────────────────────────
-# Pixel art letter definitions (7 rows x variable cols)
-# Each letter is a list of 7 strings, '#' = filled, '.' = empty
-# Thick, blocky, geometric pixel art style
+# Brand mark drawing — matches the SVG in svgAssets.ts
+# Elements: horizontal bars, brush chevron, cursor line, ink dots
+# ─────────────────────────────────────────────────
+
+def draw_brand_mark(draw, cx, cy, mark_size, fg_color, bar_opacity=0.3, dot_opacity=0.25):
+    """
+    Draw the Idle prompt mark centered at (cx, cy).
+    mark_size: the bounding box size (maps to SVG viewBox 0 0 24 24).
+    fg_color: base foreground color (the mark uses this + opacity variants).
+    """
+    s = mark_size / 24.0  # scale factor from SVG units
+
+    # Origin (top-left of SVG viewBox mapped to canvas)
+    ox = cx - mark_size / 2
+    oy = cy - mark_size / 2
+
+    # Semi-transparent color helpers
+    def rgba(color, alpha):
+        return color + (int(255 * alpha),)
+
+    bar_color = rgba(fg_color, bar_opacity)
+    dot_color = rgba(fg_color, dot_opacity)
+
+    # ── Horizontal bars (top and bottom rules) ──
+    bar_h = max(1, int(0.5 * s))
+    bar_x0 = ox + 4 * s
+    bar_x1 = ox + 20 * s
+
+    # Top bar
+    draw.rectangle([bar_x0, oy + 5.5 * s, bar_x1, oy + 5.5 * s + bar_h], fill=bar_color)
+    # Bottom bar
+    draw.rectangle([bar_x0, oy + 18 * s, bar_x1, oy + 18 * s + bar_h], fill=bar_color)
+
+    # ── Ink splatter dots near bar endpoints ──
+    def dot(x, y, r, alpha=dot_opacity):
+        c = rgba(fg_color, alpha)
+        rx = int(r * s)
+        if rx < 1:
+            rx = 1
+        draw.ellipse([ox + x * s - rx, oy + y * s - rx,
+                       ox + x * s + rx, oy + y * s + rx], fill=c)
+
+    dot(3.8, 5.7, 0.5, 0.2)
+    dot(20.3, 5.6, 0.6, 0.18)
+    dot(3.7, 18.2, 0.5, 0.2)
+    dot(20.2, 18.4, 0.6, 0.16)
+    # Dots near chevron
+    dot(10.8, 11.8, 0.6, 0.3)
+    dot(11.0, 12.4, 0.4, 0.25)
+
+    # ── Brush-stroke chevron (">") ──
+    # Approximate the SVG cubic beziers with a polygon that has organic thickness
+    chevron_points = []
+    # The chevron has an outer path going right then back, with slight curve
+    # Top arm: from (6.5, 9.5) curving to tip (9.5, 12) then back to (6.6, 14.5)
+    # We draw it as a filled polygon with slight width variation for brush feel
+    steps = 20
+    for i in range(steps + 1):
+        t = i / steps
+        if t <= 0.5:
+            # Top arm: (6.5, 9.5) → (9.5, 12.0)
+            u = t * 2
+            x = 6.5 + u * 3.0
+            y = 9.5 + u * 2.5
+            # Add slight outward curve (brush pressure)
+            x += math.sin(u * math.pi) * 0.3
+            y -= math.sin(u * math.pi) * 0.15
+        else:
+            # Bottom arm: (9.5, 12.0) → (6.6, 14.5)
+            u = (t - 0.5) * 2
+            x = 9.5 - u * 2.9
+            y = 12.0 + u * 2.5
+            x += math.sin(u * math.pi) * 0.3
+            y += math.sin(u * math.pi) * 0.15
+
+        chevron_points.append((ox + x * s, oy + y * s))
+
+    # Draw as filled polygon (the stroke width comes from the path itself)
+    if len(chevron_points) >= 3:
+        # Thicken: create inner path offset inward
+        inner_points = []
+        for i in range(len(chevron_points)):
+            px, py = chevron_points[i]
+            # Offset toward center of mark
+            dx = cx - px
+            dy = cy - py
+            dist = math.sqrt(dx * dx + dy * dy) or 1
+            thickness = 0.7 * s  # brush thickness in SVG units
+            inner_points.append((px + dx / dist * thickness, py + dy / dist * thickness))
+
+        # Combine outer + reversed inner to make a filled stroke shape
+        filled = chevron_points + list(reversed(inner_points))
+        draw.polygon(filled, fill=fg_color)
+
+    # ── Cursor line (thin vertical bar) ──
+    cursor_w = max(1, int(0.7 * s))
+    cursor_x = ox + 12.8 * s
+    cursor_y0 = oy + 10.2 * s
+    cursor_y1 = oy + 13.8 * s
+    # Slight taper at ends (narrower at top/bottom)
+    draw.rectangle([cursor_x - cursor_w // 2, cursor_y0,
+                     cursor_x + cursor_w // 2, cursor_y1], fill=fg_color)
+
+
+def draw_rounded_rect(draw, bbox, radius, fill):
+    """Draw a rounded rectangle."""
+    x0, y0, x1, y1 = bbox
+    draw.rectangle([x0 + radius, y0, x1 - radius, y1], fill=fill)
+    draw.rectangle([x0, y0 + radius, x1, y1 - radius], fill=fill)
+    draw.pieslice([x0, y0, x0 + 2 * radius, y0 + 2 * radius], 180, 270, fill=fill)
+    draw.pieslice([x1 - 2 * radius, y0, x1, y0 + 2 * radius], 270, 360, fill=fill)
+    draw.pieslice([x0, y1 - 2 * radius, x0 + 2 * radius, y1], 90, 180, fill=fill)
+    draw.pieslice([x1 - 2 * radius, y1 - 2 * radius, x1, y1], 0, 90, fill=fill)
+
+
+# ─────────────────────────────────────────────────
+# Pixel art letter definitions for logotype
 # ─────────────────────────────────────────────────
 
 PIXEL_LETTERS = {
@@ -74,12 +189,12 @@ PIXEL_LETTERS = {
 def draw_pixel_text(draw, text, x, y, block_size, color, gap=None):
     """Draw pixel-art text. Returns total width drawn."""
     if gap is None:
-        gap = block_size  # Gap between letters
+        gap = block_size
     cursor_x = x
     for ch in text:
         letter = PIXEL_LETTERS.get(ch)
         if letter is None:
-            cursor_x += block_size * 2  # space
+            cursor_x += block_size * 2
             continue
         for row_idx, row in enumerate(letter):
             for col_idx, cell in enumerate(row):
@@ -94,55 +209,28 @@ def draw_pixel_text(draw, text, x, y, block_size, color, gap=None):
     return cursor_x - gap - x
 
 
-def draw_rounded_rect(draw, bbox, radius, fill):
-    """Draw a rounded rectangle."""
-    x0, y0, x1, y1 = bbox
-    draw.rectangle([x0 + radius, y0, x1 - radius, y1], fill=fill)
-    draw.rectangle([x0, y0 + radius, x1, y1 - radius], fill=fill)
-    draw.pieslice([x0, y0, x0 + 2 * radius, y0 + 2 * radius], 180, 270, fill=fill)
-    draw.pieslice([x1 - 2 * radius, y0, x1, y0 + 2 * radius], 270, 360, fill=fill)
-    draw.pieslice([x0, y1 - 2 * radius, x0 + 2 * radius, y1], 90, 180, fill=fill)
-    draw.pieslice([x1 - 2 * radius, y1 - 2 * radius, x1, y1], 0, 90, fill=fill)
-
-
 # ─────────────────────────────────────────────────
-# Icon: Terminal window with blinking cursor
+# Icon: Prompt mark on dark background
 # ─────────────────────────────────────────────────
 
 def generate_app_icon():
     """
     icon.png — 1024x1024.
-    Dark rounded square (terminal window) with a bright green block cursor.
-    Minimal, instant recognition.
+    Dark rounded square with the brand mark in terminal green.
     """
     size = 1024
     img = Image.new("RGBA", (size, size), TRANSPARENT)
     draw = ImageDraw.Draw(img)
 
-    # Dark rounded rectangle background (with margin for app store rounding)
     margin = 24
     corner_r = 180
     draw_rounded_rect(draw, [margin, margin, size - margin, size - margin],
                       corner_r, BLACK)
 
-    # Blinking block cursor — centered, slightly left-of-center for visual interest
-    # The cursor is THE brand mark
-    cursor_w = 120
-    cursor_h = 280
-    cx = size // 2 - cursor_w // 2 - 20  # slightly left
-    cy = size // 2 - cursor_h // 2 + 30  # slightly below center (terminal feel)
-    draw.rectangle([cx, cy, cx + cursor_w, cy + cursor_h], fill=CURSOR_GREEN)
-
-    # Subtle prompt hint: a small ">" to the left of cursor
-    prompt_size = 80
-    px = cx - 180
-    py = cy + (cursor_h - prompt_size) // 2
-    # Draw ">" as two lines
-    draw.polygon([
-        (px, py),
-        (px + prompt_size, py + prompt_size // 2),
-        (px, py + prompt_size)
-    ], fill=(80, 80, 84))
+    # Brand mark centered, using green for dark background
+    draw_brand_mark(draw, size // 2, size // 2 + 10,
+                    mark_size=480, fg_color=CURSOR_GREEN,
+                    bar_opacity=0.25, dot_opacity=0.2)
 
     path = os.path.join(IMAGES_DIR, "icon.png")
     img.save(path, "PNG", optimize=True)
@@ -153,18 +241,15 @@ def generate_app_icon():
 def generate_notification_icon(app_icon):
     """
     icon-notification.png — 96x96.
-    Simplified: just the cursor on transparent bg.
+    Simplified mark on transparent bg.
     """
     size = 96
     img = Image.new("RGBA", (size, size), TRANSPARENT)
     draw = ImageDraw.Draw(img)
 
-    # Just the cursor block
-    cursor_w = 24
-    cursor_h = 56
-    cx = size // 2 - cursor_w // 2
-    cy = size // 2 - cursor_h // 2 + 4
-    draw.rectangle([cx, cy, cx + cursor_w, cy + cursor_h], fill=CURSOR_GREEN)
+    draw_brand_mark(draw, size // 2, size // 2,
+                    mark_size=72, fg_color=CURSOR_GREEN,
+                    bar_opacity=0.3, dot_opacity=0.2)
 
     path = os.path.join(IMAGES_DIR, "icon-notification.png")
     img.save(path, "PNG", optimize=True)
@@ -174,28 +259,15 @@ def generate_notification_icon(app_icon):
 def generate_adaptive_icon():
     """
     icon-adaptive.png — 1024x1024, foreground for Android adaptive icons.
-    Content in inner 66% safe zone. Transparent background.
+    Content in inner 66% safe zone.
     """
     size = 1024
     img = Image.new("RGBA", (size, size), TRANSPARENT)
     draw = ImageDraw.Draw(img)
 
-    # Cursor in the safe zone center
-    cursor_w = 100
-    cursor_h = 240
-    cx = size // 2 - cursor_w // 2 - 16
-    cy = size // 2 - cursor_h // 2 + 24
-    draw.rectangle([cx, cy, cx + cursor_w, cy + cursor_h], fill=CURSOR_GREEN)
-
-    # Prompt ">"
-    prompt_size = 68
-    px = cx - 150
-    py = cy + (cursor_h - prompt_size) // 2
-    draw.polygon([
-        (px, py),
-        (px + prompt_size, py + prompt_size // 2),
-        (px, py + prompt_size)
-    ], fill=(80, 80, 84))
+    draw_brand_mark(draw, size // 2, size // 2,
+                    mark_size=420, fg_color=CURSOR_GREEN,
+                    bar_opacity=0.25, dot_opacity=0.2)
 
     path = os.path.join(IMAGES_DIR, "icon-adaptive.png")
     img.save(path, "PNG", optimize=True)
@@ -205,27 +277,15 @@ def generate_adaptive_icon():
 def generate_monochrome_icon():
     """
     icon-monochrome.png — 1024x1024.
-    White cursor silhouette on transparent. Android applies themed colors.
+    White mark on transparent. Android applies themed colors.
     """
     size = 1024
     img = Image.new("RGBA", (size, size), TRANSPARENT)
     draw = ImageDraw.Draw(img)
 
-    # Simple cursor block + prompt as white shapes
-    cursor_w = 100
-    cursor_h = 240
-    cx = size // 2 - cursor_w // 2 - 16
-    cy = size // 2 - cursor_h // 2 + 24
-    draw.rectangle([cx, cy, cx + cursor_w, cy + cursor_h], fill=WHITE)
-
-    prompt_size = 68
-    px = cx - 150
-    py = cy + (cursor_h - prompt_size) // 2
-    draw.polygon([
-        (px, py),
-        (px + prompt_size, py + prompt_size // 2),
-        (px, py + prompt_size)
-    ], fill=WHITE)
+    draw_brand_mark(draw, size // 2, size // 2,
+                    mark_size=420, fg_color=WHITE,
+                    bar_opacity=0.3, dot_opacity=0.25)
 
     path = os.path.join(IMAGES_DIR, "icon-monochrome.png")
     img.save(path, "PNG", optimize=True)
@@ -235,20 +295,17 @@ def generate_monochrome_icon():
 def generate_favicon():
     """
     favicon.png — 48x48.
-    Dark square with green cursor. Reads well at small sizes.
+    Dark square with brand mark.
     """
     size = 48
     img = Image.new("RGBA", (size, size), TRANSPARENT)
     draw = ImageDraw.Draw(img)
 
-    # Dark background
     draw_rounded_rect(draw, [0, 0, size - 1, size - 1], 8, BLACK)
 
-    # Cursor
-    cw, ch = 8, 20
-    cx = size // 2 - cw // 2
-    cy = size // 2 - ch // 2 + 2
-    draw.rectangle([cx, cy, cx + cw, cy + ch], fill=CURSOR_GREEN)
+    draw_brand_mark(draw, size // 2, size // 2,
+                    mark_size=36, fg_color=CURSOR_GREEN,
+                    bar_opacity=0.3, dot_opacity=0.2)
 
     path = os.path.join(IMAGES_DIR, "favicon.png")
     img.save(path, "PNG", optimize=True)
@@ -262,32 +319,20 @@ def generate_favicon():
 def generate_splash_screens():
     """
     splash-android-light.png / dark.png — 288x288.
-    Centered brand mark (cursor + prompt) on solid backgrounds.
-    Expo handles the background color; this is just the centered image.
+    Centered brand mark on transparent background.
+    Expo handles the background color.
     """
-    for variant, bg, cursor_color, prompt_color in [
-        ("light", TRANSPARENT, BLACK, (160, 160, 164)),
-        ("dark", TRANSPARENT, CURSOR_GREEN, (80, 80, 84)),
+    for variant, fg_color in [
+        ("light", BLACK),
+        ("dark", CURSOR_GREEN),
     ]:
         size = 288
-        img = Image.new("RGBA", (size, size), bg)
+        img = Image.new("RGBA", (size, size), TRANSPARENT)
         draw = ImageDraw.Draw(img)
 
-        # Cursor
-        cw, ch = 36, 84
-        cx = size // 2 - cw // 2
-        cy = size // 2 - ch // 2 + 8
-        draw.rectangle([cx, cy, cx + cw, cy + ch], fill=cursor_color)
-
-        # Prompt ">"
-        ps = 24
-        px = cx - 52
-        py = cy + (ch - ps) // 2
-        draw.polygon([
-            (px, py),
-            (px + ps, py + ps // 2),
-            (px, py + ps)
-        ], fill=prompt_color)
+        draw_brand_mark(draw, size // 2, size // 2 + 4,
+                        mark_size=180, fg_color=fg_color,
+                        bar_opacity=0.3, dot_opacity=0.25)
 
         path = os.path.join(IMAGES_DIR, f"splash-android-{variant}.png")
         img.save(path, "PNG", optimize=True)
@@ -301,17 +346,16 @@ def generate_splash_screens():
 def generate_logotype_github():
     """
     .github/logotype-dark.png — Pixel-art "IDLE" for README.
-    Dark blocks on transparent bg, brutalist pixel-art style.
+    Dark blocks on transparent bg.
     """
     block_size = 18
     letter_gap = block_size * 2
     rows = 7
 
-    # Calculate total width
     total_w = 0
     for ch in "IDLE":
         total_w += len(PIXEL_LETTERS[ch][0]) * block_size + letter_gap
-    total_w -= letter_gap  # no trailing gap
+    total_w -= letter_gap
 
     h = rows * block_size
     padding = 30
@@ -329,7 +373,7 @@ def generate_logotype_github():
 def generate_logotype_app_variants():
     """
     In-app logotype images at 1x, 2x, 3x.
-    These are shown on auth/login screens.
+    Shown on auth/login screens.
     """
     for variant, fg_color, suffix in [
         ("dark", BLACK, "logotype-dark"),
@@ -361,35 +405,25 @@ def generate_logotype_app_variants():
 
 
 # ─────────────────────────────────────────────────
-# Logo mark variants (small square logo for in-app use)
+# Logo mark variants (small square for in-app use)
 # ─────────────────────────────────────────────────
 
 def generate_logo_marks():
     """
     logo-black.png / logo-white.png — Small square logo mark.
-    The cursor icon without the terminal window background.
+    The prompt mark without background.
     """
-    for variant, cursor_color, prompt_color in [
-        ("black", BLACK, (120, 120, 124)),
-        ("white", WHITE, (200, 200, 204)),
+    for variant, fg_color in [
+        ("black", BLACK),
+        ("white", WHITE),
     ]:
         size = 120
         img = Image.new("RGBA", (size, size), TRANSPARENT)
         draw = ImageDraw.Draw(img)
 
-        cw, ch = 20, 48
-        cx = size // 2 - cw // 2
-        cy = size // 2 - ch // 2 + 4
-        draw.rectangle([cx, cy, cx + cw, cy + ch], fill=cursor_color)
-
-        ps = 16
-        px = cx - 34
-        py = cy + (ch - ps) // 2
-        draw.polygon([
-            (px, py),
-            (px + ps, py + ps // 2),
-            (px, py + ps)
-        ], fill=prompt_color)
+        draw_brand_mark(draw, size // 2, size // 2,
+                        mark_size=96, fg_color=fg_color,
+                        bar_opacity=0.3, dot_opacity=0.25)
 
         path = os.path.join(IMAGES_DIR, f"logo-{variant}.png")
         img.save(path, "PNG", optimize=True)
@@ -398,51 +432,33 @@ def generate_logo_marks():
 
 def generate_root_logo():
     """
-    Replace repo root logo.png with the new brand mark.
-    1024x1024, dark bg with green cursor — the canonical brand image.
+    Root logo.png — 1024x1024.
+    Dark circle background with green brand mark.
     """
     size = 1024
     img = Image.new("RGBA", (size, size), TRANSPARENT)
     draw = ImageDraw.Draw(img)
 
-    # Full dark circle background
     draw.ellipse([40, 40, size - 40, size - 40], fill=BLACK)
 
-    # Cursor
-    cw, ch = 100, 240
-    cx = size // 2 - cw // 2
-    cy = size // 2 - ch // 2 + 24
-    draw.rectangle([cx, cy, cx + cw, cy + ch], fill=CURSOR_GREEN)
-
-    # Prompt
-    ps = 68
-    px = cx - 150
-    py = cy + (ch - ps) // 2
-    draw.polygon([
-        (px, py),
-        (px + ps, py + ps // 2),
-        (px, py + ps)
-    ], fill=(80, 80, 84))
+    draw_brand_mark(draw, size // 2, size // 2 + 10,
+                    mark_size=480, fg_color=CURSOR_GREEN,
+                    bar_opacity=0.25, dot_opacity=0.2)
 
     path = os.path.join(REPO, "logo.png")
     img.save(path, "PNG", optimize=True)
     print(f"  logo.png ({size}x{size}) [repo root]")
 
-    # Also copy to packages/idle-app/logo.png
     app_path = os.path.join(REPO, "packages", "idle-app", "logo.png")
     if os.path.exists(app_path):
         img.save(app_path, "PNG", optimize=True)
         print(f"  packages/idle-app/logo.png (copy)")
 
 
-# ─────────────────────────────────────────────────
-# GitHub mascot replacement
-# ─────────────────────────────────────────────────
-
 def generate_github_mascot():
     """
     .github/mascot.png — 1024x1024.
-    Same as root logo — the canonical brand image.
+    Same as root logo.
     """
     size = 1024
     img = Image.new("RGBA", (size, size), TRANSPARENT)
@@ -450,28 +466,14 @@ def generate_github_mascot():
 
     draw.ellipse([40, 40, size - 40, size - 40], fill=BLACK)
 
-    cw, ch = 100, 240
-    cx = size // 2 - cw // 2
-    cy = size // 2 - ch // 2 + 24
-    draw.rectangle([cx, cy, cx + cw, cy + ch], fill=CURSOR_GREEN)
-
-    ps = 68
-    px = cx - 150
-    py = cy + (ch - ps) // 2
-    draw.polygon([
-        (px, py),
-        (px + ps, py + ps // 2),
-        (px, py + ps)
-    ], fill=(80, 80, 84))
+    draw_brand_mark(draw, size // 2, size // 2 + 10,
+                    mark_size=480, fg_color=CURSOR_GREEN,
+                    bar_opacity=0.25, dot_opacity=0.2)
 
     path = os.path.join(GITHUB_DIR, "mascot.png")
     img.save(path, "PNG", optimize=True)
     print(f"  mascot.png ({size}x{size})")
 
-
-# ─────────────────────────────────────────────────
-# Favicon for active state (existing file, replace)
-# ─────────────────────────────────────────────────
 
 def generate_favicon_active():
     """favicon-active.png — 48x48 with green glow to indicate active session."""
@@ -481,15 +483,14 @@ def generate_favicon_active():
 
     draw_rounded_rect(draw, [0, 0, size - 1, size - 1], 8, BLACK)
 
-    # Cursor with green glow effect (draw slightly larger green rect behind)
-    cw, ch = 8, 20
-    cx = size // 2 - cw // 2
-    cy = size // 2 - ch // 2 + 2
-    # Glow
-    glow = (0, 255, 65, 80)
-    draw.rectangle([cx - 3, cy - 3, cx + cw + 3, cy + ch + 3], fill=glow)
-    # Cursor
-    draw.rectangle([cx, cy, cx + cw, cy + ch], fill=CURSOR_GREEN)
+    # Glow behind mark
+    glow = (0, 255, 65, 60)
+    draw.ellipse([size // 2 - 14, size // 2 - 14,
+                   size // 2 + 14, size // 2 + 14], fill=glow)
+
+    draw_brand_mark(draw, size // 2, size // 2,
+                    mark_size=36, fg_color=CURSOR_GREEN,
+                    bar_opacity=0.3, dot_opacity=0.2)
 
     path = os.path.join(IMAGES_DIR, "favicon-active.png")
     img.save(path, "PNG", optimize=True)
@@ -499,8 +500,8 @@ def generate_favicon_active():
 def main():
     print("=" * 50)
     print("  IDLE BRAND PACKAGE GENERATOR")
-    print("  Concept: Terminal cursor at rest")
-    print("  Style: Brutalist / hackery / minimal")
+    print("  Concept: Prompt mark (chevron + cursor)")
+    print("  Style: Calligraphic terminal / Northglass")
     print("=" * 50)
     print()
 

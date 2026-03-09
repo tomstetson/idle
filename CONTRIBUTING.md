@@ -19,7 +19,7 @@ If `progress.md` exists and has in-progress tasks, resume those before starting 
 
 - **Node.js 20+**
 - **Yarn 1.22** (NOT Yarn Berry — this is classic Yarn with workspaces)
-- **SSH access to VPS** (only needed for deploy — `releasingphish-root` host alias)
+- **SSH access to VPS** (only needed for deploy — see [deployment.md](docs/deployment.md))
 - Git remote `upstream` pointing to `https://github.com/slopus/happy.git`
 
 ## Quick Start
@@ -144,15 +144,16 @@ Push to `main`. The GitHub Actions workflows handle the rest:
 - **Server changes** (`packages/idle-server/`, `packages/idle-wire/`): `deploy-server.yml` runs typecheck + tests, then SSH deploys
 - **Web app changes** (`packages/idle-app/`): `deploy-webapp.yml` builds the Expo static export and deploys to VPS nginx
 
-Both require GitHub secrets: `VPS_SSH_KEY`, `VPS_HOST`, `VPS_USER`.
+Both require GitHub secrets for SSH access (see workflow files for details).
 
 ### Infrastructure
 
-- **Server**: IONOS VPS (198.71.58.100), systemd service `idle-server`, port 3005
-- **Web app**: Static Expo export at `/var/www/idle-app/` served by nginx
+- **Server**: VPS with systemd service, behind Nginx reverse proxy
+- **Web app**: Static Expo export served by Nginx
 - **DNS/SSL**: Cloudflare (idle.northglass.io, idle-api.northglass.io)
-- **WAF**: Cloudflare IP-locked to home IP
-- **Logs**: `ssh releasingphish-root 'sudo journalctl -u idle-server -n 50 --no-pager'`
+- **WAF**: Cloudflare with configurable IP allowlist
+
+See [deployment.md](docs/deployment.md) for full infrastructure details and self-hosting instructions.
 
 ## Syncing Upstream
 
@@ -197,14 +198,10 @@ test: add E2E tests for auth flow
 
 ### Co-Author Trailers
 
-Include these trailers when Claude generates the commit:
+Include this trailer when Claude generates the commit:
 
 ```
-Generated with [Claude Code](https://claude.ai/code)
-via [Happy](https://happy.engineering)
-
 Co-Authored-By: Claude <noreply@anthropic.com>
-Co-Authored-By: Happy <yesreply@happy.engineering>
 ```
 
 ### Pre-Commit Hooks
@@ -225,25 +222,13 @@ const bytes = Buffer.from(data, 'base64');
 const bytes = new Uint8Array(Buffer.from(data, 'base64'));
 ```
 
-### IONOS VPS File Transfer
-
-rsync fails on this VPS (connection drops). Always use tar+ssh:
-
-```bash
-tar czf - dist/ | ssh releasingphish-root "cd /var/www/idle-app && tar xzf -"
-```
-
 ### Cloudflare Bot Fight Mode
 
-Bot Fight Mode blocks CLI (non-browser) requests to the API. It's disabled globally on idle-api.northglass.io. If CLI auth starts failing with 403s, check if someone re-enabled it.
+Bot Fight Mode blocks CLI (non-browser) requests to the API. If CLI auth starts failing with 403s, check if it's been re-enabled on `idle-api.northglass.io`.
 
 ### macOS vs Linux sed
 
-macOS requires `sed -i ''` (empty string argument), Linux requires `sed -i` (no argument). Scripts that run in both environments (local + CI) need to handle this. CI runs on Linux.
-
-### VPS sudoers
-
-The deploy user needs `!requiretty` and `!use_pty` in sudoers config. NOPASSWD commands must use wildcard `*` if extra args (like `--no-pager`) are appended by systemd.
+macOS requires `sed -i ''` (empty string argument), Linux requires `sed -i` (no argument). Scripts that run in both environments (local + CI) need to handle this.
 
 ### Build Order
 
@@ -265,7 +250,7 @@ All packages use `@/` aliased to `src/` (or `sources/`) via tsconfig paths. Don'
 
 ## Code Style
 
-Inherited from upstream Happy:
+Established conventions:
 
 - Strict TypeScript — no `any` without justification
 - Named exports preferred over default exports

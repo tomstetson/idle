@@ -52,6 +52,9 @@ CLAUDE.local.md
 
 # Development planning notes (keep local, don't commit)
 notes/
+
+# Internal operations runbooks (contain infrastructure details)
+docs/runbooks/
 # ralphex progress logs
 progress*.txt
 

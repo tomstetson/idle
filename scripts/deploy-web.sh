@@ -7,7 +7,7 @@ set -euo pipefail
 # Run from repo root: ./scripts/deploy-web.sh
 #
 # Prerequisites:
-#   - SSH access to releasingphish-root
+#   - VPS_HOST env var set to your SSH host alias
 #   - idle-wire must be built (script handles this)
 
 echo "=== Deploy Web: idle.northglass.io ==="
@@ -24,7 +24,8 @@ npx expo export --platform web
 cd ../..
 
 echo "[4/4] Syncing to VPS..."
-rsync -avz --delete packages/idle-app/dist/ releasingphish-root:/var/www/idle-app/
+VPS_HOST="${VPS_HOST:?Set VPS_HOST to your SSH host alias (e.g., export VPS_HOST=your-vps)}"
+rsync -avz --delete packages/idle-app/dist/ "$VPS_HOST":/var/www/idle-app/
 
 echo ""
 echo "=== Web deploy complete! ==="

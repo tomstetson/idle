@@ -33,7 +33,7 @@ The web deploy script (`scripts/deploy-web.sh`) handles the full pipeline: build
 - **Combined deploy**: `yarn deploy:all` updates both native (preview) and web in one step
 - **TestFlight requires explicit production push**: `yarn ota:production` — intentionally separate since production pushes need deliberate action
 - **Web deploys are fast**: ~15 seconds (export + rsync), no CI/CD pipeline
-- **VPS dependency**: Web deploy requires SSH access to `releasingphish-root`
+- **VPS dependency**: Web deploy requires SSH access to the VPS (set `VPS_HOST` env var)
 
 ## Alternatives Considered
 
