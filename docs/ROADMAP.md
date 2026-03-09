@@ -117,6 +117,16 @@
 - [x] Fix 404 handler auth header logging (NEW-3) — log only UA, not full headers
 - [x] Pin Mermaid CDN version (NEW-4) — pinned to 11.12.1
 - [x] App Store Connect API script — scripts/check-testflight.sh
+- [x] Brand v3 prompt mark — brush chevron + cursor between bars with ink splatter
+- [x] Northglass font stack — Space Grotesk (headings), Inter (body), JetBrains Mono (code)
+- [x] Transparent logotype PNGs (RGBA) — fixes white box on dark theme
+- [x] Fix logotype theme inversion — dark mode now loads correct variant
+- [x] Web deploy pipeline — scripts/deploy-web.sh, ADR-008, yarn deploy:web
+- [x] Security: console.log data leak — sync.ts decrypted content moved to file logger
+- [x] Security: DEK cache only writes on fresh key generation (prevents resume corruption)
+- [x] Blinking green terminal dot on login logotype
+- [x] Restore page "secret key" button styled as visible button
+- [x] Header mark container fix (32→44px, mark 38px)
 
 ## Phase 4: Future
 - [ ] UI redesign pass — modernize layout, typography, interaction patterns
@@ -128,3 +138,6 @@
 - [ ] Evaluate managed DB if VPS gets constrained
 - [ ] Publish full package suite to npm
 - [ ] PostHog activation with privacy policy
+- [ ] Validate "server configuration" option works on web and app
+- [ ] Session groups (name-only, drag to group)
+- [ ] Hold-to-reorder with grip icon (replace swipe UX)

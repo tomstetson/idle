@@ -22,6 +22,10 @@ Mobile and web client for Claude Code, forked from Happy Engineering. Monorepo w
 | `docs/monitoring.md` | Health endpoints, metrics, server logs, troubleshooting | Operations, debugging |
 | `docs/plans/2026-03-08-alpha-v1.0-implementation.md` | Alpha v1.0 release plan (Phases A-G) | Understanding alpha release scope |
 | `scripts/check-testflight.sh` | App Store Connect API script to check TestFlight build status | Checking build/review status |
+| `scripts/deploy-web.sh` | Build + deploy web app to idle.northglass.io (expo export + rsync) | Web deployments |
+| `scripts/generate-brand-assets.sh` | Generate PNG brand assets from SVG (logotype, icons, favicons) | Updating brand visuals |
+| `docs/adr/008-web-deploy-strategy.md` | ADR for web deployment (OTA ≠ web, separate deploy targets) | Understanding deploy architecture |
+| `docs/security/delta-security-audit.md` | Security audit delta (HIGH: 4/4 fixed, MEDIUM: 10/17 fixed) | Security review |
 | `docs/` | Protocol specs, plans, runbooks | Deep dives on wire protocol or encryption format |
 
 ## Packages
