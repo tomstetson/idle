@@ -93,10 +93,9 @@ echo "  splash-icon.png (200x200)"
 # Uses a scaled-down version of the mark in a 600x200 frame
 # Args: $1=bg-color, $2=mark-color, $3=text-color
 gen_logotype_svg() {
-  local bg_color="$1" mark_color="$2" text_color="$3"
+  local mark_color="$1" text_color="$2"
   cat <<SVG
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 300 80">
-  <rect width="300" height="80" fill="${bg_color}"/>
   <g transform="translate(4,4) scale(0.07)">
     <!-- Top bar -->
     <rect x="200" y="280" width="624" height="16" rx="3" fill="${mark_color}" opacity="0.55"/>
@@ -119,15 +118,15 @@ gen_logotype_svg() {
 SVG
 }
 
-# logotype-dark: light text on dark bg (for dark backgrounds / GitHub README)
-gen_logotype_svg "#0A0A0A" "#FAFAFA" "#FAFAFA" > "$TMP_DIR/logotype-dark.svg"
+# logotype-dark: light mark + text on transparent bg (for dark backgrounds)
+gen_logotype_svg "#FAFAFA" "#FAFAFA" > "$TMP_DIR/logotype-dark.svg"
 rsvg-convert -w 600 -h 200 "$TMP_DIR/logotype-dark.svg" -o "$ASSETS_DIR/logotype-dark.png"
 rsvg-convert -w 1200 -h 400 "$TMP_DIR/logotype-dark.svg" -o "$ASSETS_DIR/logotype-dark@2x.png"
 rsvg-convert -w 1800 -h 600 "$TMP_DIR/logotype-dark.svg" -o "$ASSETS_DIR/logotype-dark@3x.png"
 echo "  logotype-dark.png (@1x, @2x, @3x)"
 
-# logotype-light: dark text on light bg (for light backgrounds)
-gen_logotype_svg "#FAFAFA" "#0A0A0A" "#0A0A0A" > "$TMP_DIR/logotype-light.svg"
+# logotype-light: dark mark + text on transparent bg (for light backgrounds)
+gen_logotype_svg "#0A0A0A" "#0A0A0A" > "$TMP_DIR/logotype-light.svg"
 rsvg-convert -w 600 -h 200 "$TMP_DIR/logotype-light.svg" -o "$ASSETS_DIR/logotype-light.png"
 rsvg-convert -w 1200 -h 400 "$TMP_DIR/logotype-light.svg" -o "$ASSETS_DIR/logotype-light@2x.png"
 rsvg-convert -w 1800 -h 600 "$TMP_DIR/logotype-light.svg" -o "$ASSETS_DIR/logotype-light@3x.png"
