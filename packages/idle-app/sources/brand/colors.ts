@@ -1,20 +1,29 @@
 /**
- * Idle brand color palette.
- * Used for logo, marketing, and optional theme overrides.
- * App semantic colors live in theme.ts and reference these where appropriate.
+ * Idle brand color palette — Northglass monochrome.
+ * No color accents. White is the only accent.
+ * Values match live northglass.io (src/styles/global.css).
  */
 export const idleBrandColors = {
-  /** Deep dark primary — replaced old teal #0D3B47 with ink */
-  ink: '#0A0F1A',
-  /** Warm accent — replaced old cyan #00C9B1 and amber #E8B84C */
-  amber: '#C9A84C',
-  /** Mid-tone neutral — replaced old slate600 #475569 */
-  silver: '#8B949E',
-  /** Light neutral — replaced old slate400 #94A3B8 */
-  frost: '#C8D1DB',
-  /** Light surface — replaced old paper #F8FAFC */
-  glass: '#E8EDF2',
-  white: '#FFFFFF',
+  /** Primary background */
+  black: '#0A0A0A',
+  /** Elevated surfaces */
+  elevated: '#111111',
+  /** Secondary surfaces */
+  surface: '#141414',
+  /** Hover states */
+  subtle: '#1A1A1A',
+  /** Disabled backgrounds, subtle dividers */
+  muted: '#1F1F1F',
+  /** Card borders, input borders */
+  border: '#2A2A2A',
+  /** Primary text, headings, accent */
+  white: '#FAFAFA',
+  /** Body text */
+  secondary: '#C0C0C0',
+  /** Captions, timestamps */
+  gray: '#888888',
+  /** Disabled text */
+  disabled: '#505050',
 } as const;
 
 export type IdleBrandColors = typeof idleBrandColors;
