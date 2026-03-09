@@ -73,11 +73,11 @@ Security is not an afterthought. Session data is encrypted client-side before it
 
 ## About
 
-Idle is built by [Northglass Labs](https://northglass.io), a one-person open-source studio in Eastern Pennsylvania. We build small, focused tools for developers and security teams. Idle is free, will stay free, and ships under the MIT license. If you find it useful, that's the whole point.
+Idle is built by [Northglass Labs](https://northglass.io), a security and software studio in Eastern Pennsylvania. Born from a decade of incident response and information security work, we build the tools we kept wishing existed — small, focused, and open source by default. No telemetry, no tracking, no enterprise sales pitch. Just software that works.
 
-## Credits
+## Acknowledgments
 
-Idle is forked from [Happy Engineering](https://github.com/slopus/happy) by Slopus. Their work on the core architecture, the CLI wrapper, encrypted relay protocol, and real-time sync, made this project possible. We've since diverged to harden security, improve scalability, and build features the upstream project hasn't prioritized, but the foundation is theirs.
+Idle builds on ideas and core concepts from [Happy Engineering](https://github.com/slopus/happy) by Slopus.
 
 ## Contributing
 
