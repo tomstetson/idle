@@ -7,6 +7,7 @@ export interface VoiceTokenResponse {
     allowed: boolean;
     token?: string;
     agentId?: string;
+    error?: string;
 }
 
 export async function fetchVoiceToken(
@@ -39,13 +40,10 @@ export async function fetchVoiceToken(
     });
 
     if (!response.ok) {
-        // 400 means the endpoint doesn't exist yet on this server.
-        // Allow voice anyway to not break users on experimental/custom servers
-        // that haven't been updated with the token endpoint yet.
-        if (response.status === 400) {
-            return { allowed: true };
-        }
-        throw new Error(`Voice token request failed: ${response.status}`);
+        const errorBody = await response.json().catch(() => ({}));
+        const errorMessage = (errorBody as any).error || `Voice service error: ${response.status}`;
+        console.error(`[Voice] Token request failed: ${response.status}`, errorMessage);
+        return { allowed: false, error: errorMessage };
     }
 
     return await response.json();

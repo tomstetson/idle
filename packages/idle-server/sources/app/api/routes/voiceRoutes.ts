@@ -29,18 +29,19 @@ export function voiceRoutes(app: Fastify) {
         log({ module: 'voice' }, `Voice token request from user ${userId}`);
 
         const isDevelopment = process.env.NODE_ENV === 'development' || process.env.ENV === 'dev';
+        const requireSubscription = process.env.IDLE_REQUIRE_SUBSCRIPTION === 'true';
 
-        // Production requires RevenueCat key
-        if (!isDevelopment && !revenueCatPublicKey) {
-            log({ module: 'voice' }, 'Production environment requires RevenueCat public key');
-            return reply.code(400).send({ 
-                allowed: false,
-                error: 'RevenueCat public key required'
-            });
-        }
+        // Subscription check — only when explicitly enabled via env var
+        // During alpha, voice is free for all authenticated users
+        if (requireSubscription && !isDevelopment) {
+            if (!revenueCatPublicKey) {
+                log({ module: 'voice' }, 'Subscription required but no RevenueCat public key provided');
+                return reply.code(400).send({
+                    allowed: false,
+                    error: 'Subscription required'
+                });
+            }
 
-        // Check subscription in production
-        if (!isDevelopment && revenueCatPublicKey) {
             const response = await fetch(
                 `https://api.revenuecat.com/v1/subscribers/${userId}`,
                 {
@@ -54,7 +55,7 @@ export function voiceRoutes(app: Fastify) {
 
             if (!response.ok) {
                 log({ module: 'voice' }, `RevenueCat check failed for user ${userId}: ${response.status}`);
-                return reply.send({ 
+                return reply.send({
                     allowed: false,
                     agentId
                 });
@@ -62,10 +63,10 @@ export function voiceRoutes(app: Fastify) {
 
             const data = await response.json() as any;
             const proEntitlement = data.subscriber?.entitlements?.active?.pro;
-            
+
             if (!proEntitlement) {
                 log({ module: 'voice' }, `User ${userId} does not have active subscription`);
-                return reply.send({ 
+                return reply.send({
                     allowed: false,
                     agentId
                 });

@@ -44,7 +44,8 @@ class RealtimeVoiceSessionImpl implements VoiceSession {
             
             await conversationInstance.startSession(sessionConfig);
         } catch (error) {
-            console.error('Failed to start realtime session:', error);
+            const message = error instanceof Error ? error.message : 'Unknown error';
+            console.error('Failed to start realtime session:', message);
             storage.getState().setRealtimeStatus('error');
         }
     }
@@ -107,13 +108,18 @@ export const RealtimeVoiceSession: React.FC = () => {
             console.log('Realtime message:', data);
         },
         onError: (error) => {
-            // Log but don't block app - voice features will be unavailable
-            // This prevents initialization errors from showing "Terminals error" on startup
-            console.warn('Realtime voice not available:', error);
-            // Don't set error status during initialization - just set disconnected
-            // This allows the app to continue working without voice features
-            storage.getState().setRealtimeStatus('disconnected');
-            storage.getState().setRealtimeMode('idle', true); // immediate mode change
+            const currentStatus = storage.getState().realtimeStatus;
+            console.error('Realtime voice error:', error);
+
+            if (currentStatus === 'connecting' || currentStatus === 'connected') {
+                // User-initiated session failed — surface the error
+                storage.getState().setRealtimeStatus('error');
+            } else {
+                // Initialization error (e.g., component mount, no active session)
+                // Don't set error status — just stay disconnected so the app works normally
+                storage.getState().setRealtimeStatus('disconnected');
+            }
+            storage.getState().setRealtimeMode('idle', true);
         },
         onStatusChange: (data) => {
             console.log('Realtime status change:', data);

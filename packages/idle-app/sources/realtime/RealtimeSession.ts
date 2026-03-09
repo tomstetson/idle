@@ -30,7 +30,8 @@ export async function startRealtimeSession(sessionId: string, initialContext?: s
     const agentId = __DEV__ ? config.elevenLabsAgentIdDev : config.elevenLabsAgentIdProd;
     
     if (!agentId) {
-        console.error('Agent ID not configured');
+        console.error('[Voice] ElevenLabs agent ID not configured — check app config');
+        Modal.alert(t('common.error'), t('errors.voiceServiceUnavailable'));
         return;
     }
     
@@ -58,6 +59,14 @@ export async function startRealtimeSession(sessionId: string, initialContext?: s
         console.log('[Voice] fetchVoiceToken allowed:', response.allowed);
 
         if (!response.allowed) {
+            // If the server returned an error message, show it directly
+            // instead of presenting a paywall (e.g., missing API key, server misconfigured)
+            if (response.error) {
+                console.error('[Voice] Not allowed:', response.error);
+                Modal.alert(t('common.error'), t('errors.voiceServiceUnavailable'));
+                return;
+            }
+            // No error message means subscription-gated — present paywall
             console.log('[Voice] Not allowed, presenting paywall...');
             const result = await sync.presentPaywall();
             console.log('[Voice] Paywall result:', result);
