@@ -1,5 +1,6 @@
 import * as privacyKit from "privacy-kit";
 import { log } from "@/utils/log";
+import { db } from "@/storage/db";
 
 const TOKEN_CACHE_TTL = 60 * 60 * 1000; // 1 hour
 const TOKEN_CACHE_MAX_SIZE = 10_000;
@@ -7,6 +8,14 @@ const TOKEN_TTL_DAYS = process.env.IDLE_TOKEN_TTL_DAYS
     ? parseInt(process.env.IDLE_TOKEN_TTL_DAYS, 10)
     : 30;
 const TOKEN_TTL_MS = TOKEN_TTL_DAYS * 24 * 60 * 60 * 1000;
+
+const ACCOUNT_CACHE_TTL = 5 * 60 * 1000; // 5 minutes — short enough to catch deletions quickly
+const ACCOUNT_CACHE_MAX_SIZE = 10_000;
+
+interface AccountCacheEntry {
+    exists: boolean;
+    cachedAt: number;
+}
 
 interface TokenCacheEntry {
     userId: string;
@@ -23,6 +32,7 @@ interface AuthTokens {
 
 class AuthModule {
     private tokenCache = new Map<string, TokenCacheEntry>();
+    private accountCache = new Map<string, AccountCacheEntry>();
     private tokens: AuthTokens | null = null;
     
     async init(): Promise<void> {
@@ -159,7 +169,47 @@ class AuthModule {
     invalidateToken(token: string): void {
         this.tokenCache.delete(token);
     }
-    
+
+    /**
+     * Check if an account still exists in the DB, with in-memory cache.
+     * Returns false for deleted accounts so the auth middleware can return 401
+     * instead of letting requests through to fail with FK constraint errors.
+     */
+    async verifyAccountExists(userId: string): Promise<boolean> {
+        const cached = this.accountCache.get(userId);
+        if (cached && (Date.now() - cached.cachedAt < ACCOUNT_CACHE_TTL)) {
+            return cached.exists;
+        }
+
+        // Cache miss or expired — query DB
+        const account = await db.account.findUnique({
+            where: { id: userId },
+            select: { id: true },
+        });
+        const exists = account !== null;
+
+        // Evict oldest entry if cache is full
+        if (this.accountCache.size >= ACCOUNT_CACHE_MAX_SIZE) {
+            let oldestKey: string | null = null;
+            let oldestTime = Infinity;
+            for (const [key, entry] of this.accountCache.entries()) {
+                if (entry.cachedAt < oldestTime) {
+                    oldestTime = entry.cachedAt;
+                    oldestKey = key;
+                }
+            }
+            if (oldestKey) this.accountCache.delete(oldestKey);
+        }
+
+        this.accountCache.set(userId, { exists, cachedAt: Date.now() });
+        return exists;
+    }
+
+    /** Remove a user from the account existence cache (call on account deletion). */
+    invalidateAccountCache(userId: string): void {
+        this.accountCache.delete(userId);
+    }
+
     getCacheStats(): { size: number; oldestEntry: number | null } {
         if (this.tokenCache.size === 0) {
             return { size: 0, oldestEntry: null };
