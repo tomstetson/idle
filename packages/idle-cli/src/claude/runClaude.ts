@@ -256,7 +256,8 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
         logger.debug('[START] Failed to report to daemon (may not be running):', error);
     }
 
-    // Extract SDK metadata in background and update session when ready
+    // Extract SDK metadata in background and update session when ready.
+    // Pass workingDirectory so project-specific custom commands are discovered.
     extractSDKMetadataAsync(async (sdkMetadata) => {
         logger.debug('[start] SDK metadata extracted, updating session:', sdkMetadata);
         try {
@@ -271,7 +272,7 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
         } catch (error) {
             logger.debug('[start] Failed to update session metadata:', error);
         }
-    });
+    }, workingDirectory);
 
     // Create realtime session
     const session = api.sessionSyncClient(response);

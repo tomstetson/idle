@@ -14,21 +14,27 @@ export interface SDKMetadata {
 }
 
 /**
- * Extract SDK metadata by running a minimal query and capturing the init message
+ * Extract SDK metadata by running a minimal query and capturing the init message.
+ * Pass `cwd` so Claude Code discovers project-specific custom commands
+ * from `.claude/commands/` directories.
+ * @param cwd - Working directory for the SDK query (defaults to process.cwd())
  * @returns SDK metadata containing tools and slash commands
  */
-export async function extractSDKMetadata(): Promise<SDKMetadata> {
+export async function extractSDKMetadata(cwd?: string): Promise<SDKMetadata> {
     const abortController = new AbortController()
-    
+
     try {
-        logger.debug('[metadataExtractor] Starting SDK metadata extraction')
-        
-        // Run SDK with minimal tools allowed
+        const resolvedCwd = cwd || process.cwd()
+        logger.debug(`[metadataExtractor] Starting SDK metadata extraction (cwd: ${resolvedCwd})`)
+
+        // Run SDK with minimal tools allowed, passing cwd so project-specific
+        // custom commands from .claude/commands/ are discovered
         const sdkQuery = query({
             prompt: 'hello',
             options: {
                 allowedTools: ['Bash(echo)'],
                 maxTurns: 1,
+                cwd: resolvedCwd,
                 abort: abortController.signal
             }
         })
@@ -68,11 +74,13 @@ export async function extractSDKMetadata(): Promise<SDKMetadata> {
 }
 
 /**
- * Extract SDK metadata asynchronously without blocking
- * Fires the extraction and updates metadata when complete
+ * Extract SDK metadata asynchronously without blocking.
+ * Fires the extraction and updates metadata when complete.
+ * @param onComplete - Callback invoked with extracted metadata
+ * @param cwd - Working directory for the SDK query (defaults to process.cwd())
  */
-export function extractSDKMetadataAsync(onComplete: (metadata: SDKMetadata) => void): void {
-    extractSDKMetadata()
+export function extractSDKMetadataAsync(onComplete: (metadata: SDKMetadata) => void, cwd?: string): void {
+    extractSDKMetadata(cwd)
         .then(metadata => {
             if (metadata.tools || metadata.slashCommands || metadata.commandDescriptions) {
                 onComplete(metadata)

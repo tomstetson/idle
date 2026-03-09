@@ -255,6 +255,7 @@ export type Metadata = {
   claudeSessionId?: string, // Claude Code session ID
   tools?: string[],
   slashCommands?: string[],
+  commandDescriptions?: Record<string, string>,
   homeDir: string,
   idleHomeDir: string,
   idleLibDir: string,
