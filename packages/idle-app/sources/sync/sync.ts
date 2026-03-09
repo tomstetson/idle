@@ -1761,7 +1761,7 @@ class Sync {
     }
 
     private handleUpdate = async (update: unknown) => {
-        log.log('🔄 Sync: handleUpdate called with:', JSON.stringify(update).substring(0, 300));
+        log.log('🔄 Sync: handleUpdate called with: ' + JSON.stringify(update).substring(0, 300));
         const validatedUpdate = ApiUpdateContainerSchema.safeParse(update);
         if (!validatedUpdate.success) {
             console.log('❌ Sync: Invalid update received:', validatedUpdate.error);
