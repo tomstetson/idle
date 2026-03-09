@@ -127,7 +127,7 @@ export const pt: TranslationStructure = {
         eula: 'EULA',
         supportUs: 'Nos apoie',
         supportUsSubtitlePro: 'Obrigado pelo seu apoio!',
-        supportUsSubtitle: 'Apoie o desenvolvimento do projeto',
+        supportUsSubtitle: 'Pague-nos um café',
         scanQrCodeToAuthenticate: 'Escaneie o código QR para autenticar',
         githubConnected: ({ login }: { login: string }) => `Conectado como @${login}`,
         connectGithubAccount: 'Conecte sua conta GitHub',

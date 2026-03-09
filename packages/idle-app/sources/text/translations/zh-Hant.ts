@@ -128,7 +128,7 @@ export const zhHant: TranslationStructure = {
         eula: '終端使用者授權協議',
         supportUs: '支援我們',
         supportUsSubtitlePro: '感謝您的支援！',
-        supportUsSubtitle: '支援專案開發',
+        supportUsSubtitle: '請我們喝杯咖啡',
         scanQrCodeToAuthenticate: '掃描 QR Code 進行驗證',
         githubConnected: ({ login }: { login: string }) => `已連結為 @${login}`,
         connectGithubAccount: '連結您的 GitHub 帳戶',

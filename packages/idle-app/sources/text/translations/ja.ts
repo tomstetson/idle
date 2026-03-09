@@ -159,7 +159,7 @@ export const ja: TranslationStructure = {
         eula: 'EULA',
         supportUs: '開発を支援',
         supportUsSubtitlePro: 'ご支援ありがとうございます！',
-        supportUsSubtitle: 'プロジェクト開発を支援',
+        supportUsSubtitle: 'コーヒーをおごってください',
         scanQrCodeToAuthenticate: 'QRコードをスキャンして認証',
         githubConnected: ({ login }: { login: string }) => `@${login}として接続中`,
         connectGithubAccount: 'GitHubアカウントを接続',

@@ -127,7 +127,7 @@ export const ca: TranslationStructure = {
         eula: 'EULA',
         supportUs: 'Dona\'ns suport',
         supportUsSubtitlePro: 'Gràcies pel teu suport!',
-        supportUsSubtitle: 'Dona suport al desenvolupament del projecte',
+        supportUsSubtitle: 'Convida\'ns a un cafè',
         scanQrCodeToAuthenticate: 'Escaneja el codi QR per autenticar-te',
         githubConnected: ({ login }: { login: string }) => `Connectat com a @${login}`,
         connectGithubAccount: 'Connecta el teu compte de GitHub',
