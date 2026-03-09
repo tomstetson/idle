@@ -1,144 +1,163 @@
-# Idle Brand Guide
+# Idle Brand Guide v2
 
-Idle is a Northglass Labs project. A remote client for Claude Code with end-to-end encryption and push notifications. This document defines the visual identity, aligned with the Northglass Labs parent brand.
-
----
-
-## 1. Relationship to Northglass
-
-Idle is the flagship product of Northglass Labs. It shares the Northglass color palette, typography, and design language, but has its own logo mark. Think of it as a product within a studio, not a sub-brand.
+Idle is a Northglass product. A remote client for Claude Code with end-to-end encryption and push notifications.
 
 ---
 
-## 2. Brand voice
+## 1. Identity
 
-Inherited from Northglass:
+Idle is the flagship product of Northglass LLC. It inherits the Northglass monochrome design language, typography, and voice. Idle is a product within a studio, not a sub-brand.
 
-- **Clear, not cute.** Features and states are explained plainly.
-- **Confident, not loud.** Security and reliability are stated, not shouted.
-- **Minimal, not cold.** UI copy is short and helpful. Empty states and errors are human.
-- **Register:** Casual but competent. Sounds like a developer's README, not a marketing page.
+**Brand voice** (inherited from Northglass):
+
+- Clear, not cute. Features and states are explained plainly.
+- Confident, not loud. Security and reliability are stated, not shouted.
+- Minimal, not cold. UI copy is short and helpful. Empty states and errors are human.
+- Register: casual but competent. Sounds like a developer's README, not a marketing page.
 
 ---
 
-## 3. Logo mark: The Bridge
+## 2. The Arc mark
 
-Two vertical bars connected by a curved arc. Represents the core product: bridging your terminal to your phone through an encrypted connection.
+A single brushstroke half-enso (open arc). The top half of a circle, drawn from lower-left to lower-right with rounded endpoints.
 
-- **Left bar:** your terminal (where the agent runs)
-- **Right bar:** your phone (where you monitor)
-- **Arc:** the encrypted connection Idle provides
+**What it represents:** The Northglass enso is a full circle. The Idle arc is the top half -- an incomplete circle, suggesting an ongoing process (your agent, working in the background while you are idle).
+
+**Variants:**
 
 ### In-app (monochrome, currentColor)
 
-Uses `currentColor` for theme tinting via react-native-svg. Renders in the header tint color.
+Uses `currentColor` so theme tinting works automatically via `react-native-svg`.
 
 ```svg
 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
-     stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <line x1="7" y1="10" x2="7" y2="20"/>
-  <line x1="17" y1="10" x2="17" y2="20"/>
-  <path d="M7 10 Q12 3 17 10" fill="none"/>
+     stroke-width="3" stroke-linecap="round">
+  <path d="M5 16 C5 8.5 8 4 12 4 C16 4 19 8.5 19 16"/>
 </svg>
 ```
 
-### Static assets (two-color)
+React component: `<IdleLogoMark size={24} color={theme.colors.header.tint} />`
 
-For app icons, favicons, and OG images:
+### Static assets (monochrome)
 
-- **Container:** ink (#0A0F1A) rounded rect
-- **Bars:** glass (#E8EDF2)
-- **Arc:** amber (#C9A84C)
+For app icons, favicons, and OG images. White arc on black background.
+
+- Container: `#0A0A0A` rounded rect
+- Arc stroke: `#FAFAFA`
+
+No color accents. No amber. No gradients.
 
 ### Wordmark
 
-"Idle" in Space Grotesk Bold (700), letter-spacing -0.5px. No "Labs" suffix.
+"idle" in lowercase Space Grotesk Bold (700), letter-spacing -0.02em. No "Labs" suffix, no "Northglass" prefix.
 
-### Rules
+React component: `<IdleWordmark fontSize={28} />`
 
-- Do not stretch, rotate, or change proportions.
-- Do not add effects (drop shadow, gradient) unless specified.
-- Mark alone in tight spaces. With wordmark when space allows.
-- Clear at 16x16px and up.
+SVG wordmark uses `letter-spacing="-1"` at 48px font-size (equivalent to -0.02em).
 
 ---
 
-## 4. Color palette
+## 3. Color palette
 
-Northglass Labs palette, shared across all Northglass products.
+Pure monochrome. No color accents. White is the only accent. Values match live northglass.io.
+
+### Core tokens
 
 | Token | Hex | Role |
 |-------|-----|------|
-| ink | `#0A0F1A` | Backgrounds, dark surfaces |
-| steel | `#1E2D3D` | Card backgrounds, containers |
-| iron | `#2A3A4A` | Borders, dividers |
-| silver | `#8B949E` | Secondary text, metadata |
-| frost | `#C8D1DB` | Body text |
-| glass | `#E8EDF2` | Headings, emphasis |
-| white | `#FFFFFF` | High-emphasis, hover states |
-| amber | `#C9A84C` | Primary accent: links, active states, status |
-| amber-dim | `#A07D35` | Muted amber: hover states, subtle accents |
+| black | `#0A0A0A` | Primary background |
+| elevated | `#111111` | Elevated surfaces |
+| surface | `#141414` | Secondary surfaces |
+| subtle | `#1A1A1A` | Hover states |
+| muted | `#1F1F1F` | Disabled backgrounds, subtle dividers |
+| border | `#2A2A2A` | Card borders, input borders |
+| white | `#FAFAFA` | Primary text, headings, accent |
+| secondary | `#C0C0C0` | Body text |
+| gray | `#888888` | Captions, timestamps |
+| disabled | `#505050` | Disabled text |
 
-### Usage in app themes
+### Theme usage
 
-- **Accent:** amber replaces the previous cyan for links, active tabs, and interactive elements.
-- **Dark theme surfaces:** ink (base), steel (elevated), iron (borders).
-- **Dark theme text:** frost (body), glass (headings), silver (secondary).
-- **Light theme:** glass/white backgrounds, ink text, amber accent.
-- **Semantic colors** (green for success, red for error) are unchanged.
+**Dark mode** (default):
+- Backgrounds: black (base), elevated (cards), surface (secondary panels)
+- Text: white (headings, emphasis), secondary (body), gray (captions), disabled (inactive)
+- Borders: border token for dividers and inputs
+- Accent: white -- interactive elements, links, active states use white, not a color
+
+**Light mode:**
+- Backgrounds: white (`#FAFAFA`) base, light grays for elevation
+- Text: black (`#0A0A0A`) primary, grays for secondary
+- Accent: black -- same principle, opposite polarity
+
+**Semantic colors** (green for success, red for error, yellow for warning) are the only non-monochrome values in the system. They are functional, not brand.
 
 Source: `packages/idle-app/sources/brand/colors.ts`
 
 ---
 
-## 5. Typography
+## 4. Typography
 
-| Role | Font | Weight |
-|------|------|--------|
-| Headings | Space Grotesk | 700 (Bold) |
-| Body / UI | Inter | 400 (Regular), 500 (Medium) |
-| Code / mono | JetBrains Mono | 400 (Regular), 500 (Medium) |
+| Role | Font | Weight | Notes |
+|------|------|--------|-------|
+| Headings | Space Grotesk | 700 (Bold) | Wordmark font |
+| Body / UI | Inter | 400, 500 | Regular and Medium |
+| Code / mono | JetBrains Mono | 400, 500 | Terminal output, code blocks |
 
 Source: `packages/idle-app/sources/constants/Typography.ts`
-
 Font files: `packages/idle-app/sources/assets/fonts/`
 
 ---
 
-## 6. Icons (in-app)
+## 5. Asset locations
 
-Tab bar icons (inbox, sessions, settings) use stroke-based SVGs with `currentColor`. They inherit theme colors automatically and need no brand-specific updates.
+### SVG source files
 
-Source: `packages/idle-app/sources/brand/svgAssets.ts`
+| Asset | Path |
+|-------|------|
+| Arc mark (512x512) | `packages/idle-app/sources/assets/images/idle/logo-mark.svg` |
+| Wordmark | `packages/idle-app/sources/assets/images/idle/logo-wordmark.svg` |
+| Lockup (mark + wordmark) | `packages/idle-app/sources/assets/images/idle/logo-lockup.svg` |
+
+### React components
+
+| Component | Export | Package |
+|-----------|--------|---------|
+| `IdleLogoMark` | Arc mark, takes `size` and `color` props | `idle-app/sources/brand/` |
+| `IdleWordmark` | Text wordmark, takes `fontSize` and `color` props | `idle-app/sources/brand/` |
+| `IdleTabIcon` | Tab bar icons (inbox, sessions, settings) | `idle-app/sources/brand/` |
+
+### Generated PNG assets
+
+| Asset | Path |
+|-------|------|
+| PWA icon 192 | `packages/idle-app/public/icon-192.png` |
+| PWA icon 512 | `packages/idle-app/public/icon-512.png` |
+| Apple touch icon | `packages/idle-app/public/apple-touch-icon.png` |
+| App icon (Expo) | `packages/idle-app/logo.png` |
+| Tauri icons | `packages/idle-app/src-tauri/icons/` |
+| GitHub logotype (dark) | `.github/logotype-dark.png` |
+| GitHub logotype (light) | `.github/logotype-light.png` |
+| GitHub header | `.github/header.png` |
+
+### In-app SVG strings
+
+All tab and mark SVGs are defined as string constants in `packages/idle-app/sources/brand/svgAssets.ts` and rendered via `SvgXml`. They use `currentColor` for theme integration.
 
 ---
 
-## 7. Asset inventory
+## 6. Usage rules
 
-| Asset | Format | Sizes | Path |
-|-------|--------|-------|------|
-| Bridge mark (mono) | SVG | 24x24 | `assets/images/idle/logo-mark.svg` |
-| Wordmark | SVG | 80x24 | `assets/images/idle/logo-wordmark.svg` |
-| App icon | PNG | 1024x1024 | `assets/images/icon.png` |
-| Favicon | PNG | 48x48 | `assets/images/favicon.png` |
-| Android adaptive | PNG | 1024x1024 | `assets/images/icon-adaptive.png` |
-| Android monochrome | PNG | 1024x1024 | `assets/images/icon-monochrome.png` |
-| Logotype (dark) | PNG | 1x, 2x, 3x | `assets/images/logotype-dark*.png` |
-| Logotype (light) | PNG | 1x, 2x, 3x | `assets/images/logotype-light*.png` |
-| GitHub logotype | PNG | 600x186 | `.github/logotype-dark.png` |
-| GitHub header | PNG | 1280x640 | `.github/header.png` |
-
-All paths relative to `packages/idle-app/sources/` unless noted otherwise.
-
-### Regenerating assets
-
-```bash
-./scripts/generate-brand-assets.sh
-```
+- Do not stretch, rotate, or change proportions of the arc mark.
+- Do not add effects (drop shadow, gradient, glow) unless specified in a design comp.
+- Do not add color to the mark or wordmark. The brand is monochrome.
+- Arc mark alone in tight spaces. With wordmark (lockup) when horizontal space allows.
+- Minimum size: 16x16px for the arc mark.
+- On dark backgrounds: white (`#FAFAFA`) mark. On light backgrounds: black (`#0A0A0A`) mark.
+- Never pair the arc with the old amber accent (`#C9A84C`) or blue-tinted darks (`#0A0F1A`). Those are v1, retired.
 
 ---
 
-## 8. Domains and identifiers
+## 7. Domains and identifiers
 
 | Property | Value |
 |----------|-------|
