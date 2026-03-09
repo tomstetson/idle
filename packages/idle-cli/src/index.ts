@@ -644,7 +644,7 @@ ${chalk.bold('Usage:')}
 
 ${chalk.bold('Examples:')}
   idle                    Start session
-  idle --yolo             Start with bypassing permissions
+  idle --yolo             Dangerously skip permissions
                             idle sugar for --dangerously-skip-permissions
   idle --chrome           Enable Chrome browser access for this session
   idle --no-chrome        Disable Chrome even if default is on
