@@ -336,7 +336,8 @@ export const ja: TranslationStructure = {
             notGitRepo: 'ワークツリーにはGitリポジトリが必要です',
             failed: ({ error }: { error: string }) => `ワークツリーの作成に失敗しました: ${error}`,
             success: 'ワークツリーが正常に作成されました',
-        }
+        },
+        loadingMachines: 'マシンを読み込み中...',
     },
 
     sessionHistory: {

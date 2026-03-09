@@ -304,7 +304,8 @@ export const pt: TranslationStructure = {
             notGitRepo: 'Worktrees requerem um repositório git',
             failed: ({ error }: { error: string }) => `Falha ao criar worktree: ${error}`,
             success: 'Worktree criado com sucesso',
-        }
+        },
+        loadingMachines: 'Carregando suas máquinas...',
     },
 
     sessionHistory: {

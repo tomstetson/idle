@@ -1,5 +1,5 @@
 import React, { useState, useMemo } from 'react';
-import { View, Text, Pressable, ScrollView, TextInput } from 'react-native';
+import { View, Text, Pressable, ScrollView, TextInput, ActivityIndicator } from 'react-native';
 import { StyleSheet, useUnistyles } from 'react-native-unistyles';
 import { Typography } from '@/constants/Typography';
 import { t } from '@/text';
@@ -692,6 +692,25 @@ export function NewSessionWizard({ onComplete, onCancel, initialPrompt = '' }: N
         }
         return '/home';
     });
+
+    // Sync selectedMachineId when machines load after mount (fixes first-launch race condition)
+    React.useEffect(() => {
+        if (selectedMachineId === '' && machines.length > 0) {
+            // Try recently used machine first
+            if (recentMachinePaths.length > 0) {
+                for (const recent of recentMachinePaths) {
+                    if (machines.find(m => m.id === recent.machineId)) {
+                        setSelectedMachineId(recent.machineId);
+                        setSelectedPath(recent.path || machines.find(m => m.id === recent.machineId)?.metadata?.homeDir || '/home');
+                        return;
+                    }
+                }
+            }
+            setSelectedMachineId(machines[0].id);
+            setSelectedPath(machines[0].metadata?.homeDir || '/home');
+        }
+    }, [machines, selectedMachineId, recentMachinePaths]);
+
     const [prompt, setPrompt] = useState<string>(initialPrompt);
     const [customPath, setCustomPath] = useState<string>('');
     const [showCustomPathInput, setShowCustomPathInput] = useState<boolean>(false);
@@ -1664,6 +1683,16 @@ export function NewSessionWizard({ onComplete, onCancel, initialPrompt = '' }: N
                 );
 
             case 'machine':
+                if (machines.length === 0) {
+                    return (
+                        <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', paddingVertical: 40 }}>
+                            <ActivityIndicator size="small" color={theme.colors.textSecondary} />
+                            <Text style={[styles.stepDescription, { marginTop: 12 }]}>
+                                {t('newSession.loadingMachines')}
+                            </Text>
+                        </View>
+                    );
+                }
                 return (
                     <View>
                         <Text style={styles.stepTitle}>Select Machine</Text>

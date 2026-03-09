@@ -303,7 +303,8 @@ export const en = {
             notGitRepo: 'Worktrees require a git repository',
             failed: ({ error }: { error: string }) => `Failed to create worktree: ${error}`,
             success: 'Worktree created successfully',
-        }
+        },
+        loadingMachines: 'Loading your machines...',
     },
 
     sessionHistory: {
