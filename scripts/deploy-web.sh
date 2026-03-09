@@ -24,8 +24,8 @@ npx expo export --platform web
 cd ../..
 
 echo "[4/4] Syncing to VPS..."
-VPS_HOST="${VPS_HOST:?Set VPS_HOST to your SSH host alias (e.g., export VPS_HOST=your-vps)}"
-rsync -avz --delete packages/idle-app/dist/ "$VPS_HOST":/var/www/idle-app/
+VPS_HOST="${VPS_HOST:-releasingphish-root}"
+rsync -avz --delete --chown=deployer:deployer packages/idle-app/dist/ "$VPS_HOST":/var/www/idle-app/
 
 echo ""
 echo "=== Web deploy complete! ==="
