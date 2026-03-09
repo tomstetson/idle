@@ -31,7 +31,7 @@ Idle lets you monitor and control Claude Code sessions from your phone. Run `idl
 **2. Install the CLI**
 
 ```bash
-npm install -g idle-coder
+npm install -g idle-coder@alpha
 ```
 
 **3. Run it**

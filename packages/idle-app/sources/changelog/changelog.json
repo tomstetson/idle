@@ -1,6 +1,23 @@
 {
   "entries": [
     {
+      "version": 7,
+      "date": "2026-03-09",
+      "summary": "Welcome to Idle Alpha v0.1.0 — a fresh start with a new identity. All packages have been unified at version 0.1.0, with a completely redesigned brand and improved security across the board.",
+      "changes": [
+        "Updated to brand v3 with the new prompt mark logo (brush chevron + cursor between bars)",
+        "Added custom Northglass font stack: Space Grotesk for headings, Inter for body text, JetBrains Mono for code",
+        "Fixed logotype display on dark theme with proper transparent PNG assets",
+        "Added blinking green terminal cursor animation on the login screen",
+        "Improved header mark layout with proper sizing and alignment",
+        "Fixed security issue where decrypted session content could leak to console logs",
+        "Fixed DEK cache to only write on fresh key generation, preventing session resume corruption",
+        "Deployed web app pipeline with one-command deploys to idle.northglass.io",
+        "Reset all package versions to v0.1.0 for clean alpha launch"
+      ],
+      "rawMarkdown": "## Version 7 - 2026-03-09\n\n\nWelcome to Idle Alpha v0.1.0 — a fresh start with a new identity. All packages have been unified at version 0.1.0, with a completely redesigned brand and improved security across the board.\n\n- Updated to brand v3 with the new prompt mark logo (brush chevron + cursor between bars)\n- Added custom Northglass font stack: Space Grotesk for headings, Inter for body text, JetBrains Mono for code\n- Fixed logotype display on dark theme with proper transparent PNG assets\n- Added blinking green terminal cursor animation on the login screen\n- Improved header mark layout with proper sizing and alignment\n- Fixed security issue where decrypted session content could leak to console logs\n- Fixed DEK cache to only write on fresh key generation, preventing session resume corruption\n- Deployed web app pipeline with one-command deploys to idle.northglass.io\n- Reset all package versions to v0.1.0 for clean alpha launch"
+    },
+    {
       "version": 6,
       "date": "2026-03-07",
       "summary": "This release brings a suite of quality-of-life improvements focused on better session management, richer message display, and smarter push notifications — making your Claude Code sessions feel more polished and responsive.",
@@ -82,5 +99,5 @@
       "rawMarkdown": "## Version 1 - 2025-05-12\n\n\nWelcome to Idle - your secure, encrypted mobile companion for Claude Code. This inaugural release establishes the foundation for private, powerful AI interactions on the go.\n\n- Implemented end-to-end encrypted session management ensuring complete privacy\n- Integrated intelligent voice assistant with natural conversation capabilities\n- Added experimental file manager with syntax highlighting and tree navigation\n- Built seamless real-time synchronization across all your devices\n- Established native support for iOS, Android, and responsive web interfaces"
     }
   ],
-  "latestVersion": 6
+  "latestVersion": 7
 }

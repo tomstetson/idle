@@ -1,5 +1,19 @@
 # Changelog
 
+## Version 7 - 2026-03-09
+
+Welcome to Idle Alpha v0.1.0 — a fresh start with a new identity. All packages have been unified at version 0.1.0, with a completely redesigned brand and improved security across the board.
+
+- Updated to brand v3 with the new prompt mark logo (brush chevron + cursor between bars)
+- Added custom Northglass font stack: Space Grotesk for headings, Inter for body text, JetBrains Mono for code
+- Fixed logotype display on dark theme with proper transparent PNG assets
+- Added blinking green terminal cursor animation on the login screen
+- Improved header mark layout with proper sizing and alignment
+- Fixed security issue where decrypted session content could leak to console logs
+- Fixed DEK cache to only write on fresh key generation, preventing session resume corruption
+- Deployed web app pipeline with one-command deploys to idle.northglass.io
+- Reset all package versions to v0.1.0 for clean alpha launch
+
 ## Version 6 - 2026-03-07
 
 This release brings a suite of quality-of-life improvements focused on better session management, richer message display, and smarter push notifications — making your Claude Code sessions feel more polished and responsive.
