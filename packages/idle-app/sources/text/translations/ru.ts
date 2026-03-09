@@ -370,6 +370,7 @@ export const ru: TranslationStructure = {
         renameSessionSubtitle: 'Изменить название сессии',
         renameSessionPrompt: 'Введите новое название сессии',
         failedToRenameSession: 'Не удалось переименовать сессию',
+        moveToTop: 'Переместить наверх',
     },
 
     components: {

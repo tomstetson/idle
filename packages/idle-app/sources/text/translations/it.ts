@@ -433,6 +433,7 @@ export const it: TranslationStructure = {
         renameSessionSubtitle: 'Modifica il titolo della sessione',
         renameSessionPrompt: 'Inserisci il nuovo nome della sessione',
         failedToRenameSession: 'Impossibile rinominare la sessione',
+        moveToTop: 'Sposta in cima',
 
     },
 

@@ -29,6 +29,7 @@ import { useIdleAction } from '@/hooks/useIdleAction';
 import { sessionDelete } from '@/sync/ops';
 import { IdleError } from '@/utils/errors';
 import { Modal } from '@/modal';
+import { sync } from '@/sync/sync';
 
 const stylesheet = StyleSheet.create((theme) => ({
     container: {
@@ -213,6 +214,13 @@ const stylesheet = StyleSheet.create((theme) => ({
         alignItems: 'center',
         justifyContent: 'center',
         backgroundColor: theme.colors.status.error,
+    },
+    swipeMoveToTopAction: {
+        width: 112,
+        height: '100%',
+        alignItems: 'center',
+        justifyContent: 'center',
+        backgroundColor: theme.colors.status.connecting,
     },
     swipeActionText: {
         marginTop: 4,
@@ -461,6 +469,11 @@ const SessionItem = React.memo(({ session, selected, isFirst, isLast, isSingle }
         );
     }, [performDelete]);
 
+    const handleMoveToTop = React.useCallback(() => {
+        swipeableRef.current?.close();
+        sync.moveSessionToTop(session.id);
+    }, [session.id]);
+
     const avatarId = React.useMemo(() => {
         return getSessionAvatarId(session);
     }, [session]);
@@ -557,12 +570,26 @@ const SessionItem = React.memo(({ session, selected, isFirst, isLast, isSingle }
         </Pressable>
     );
 
+    const renderLeftActions = () => (
+        <Pressable
+            style={styles.swipeMoveToTopAction}
+            onPress={handleMoveToTop}
+        >
+            <Ionicons name="arrow-up-outline" size={20} color="#FFFFFF" />
+            <Text style={styles.swipeActionText} numberOfLines={2}>
+                {t('sessionInfo.moveToTop')}
+            </Text>
+        </Pressable>
+    );
+
     return (
         <View style={containerStyles}>
             <Swipeable
                 ref={swipeableRef}
                 renderRightActions={renderRightActions}
+                renderLeftActions={renderLeftActions}
                 overshootRight={false}
+                overshootLeft={false}
                 enabled={!deletingSession}
             >
                 {itemContent}

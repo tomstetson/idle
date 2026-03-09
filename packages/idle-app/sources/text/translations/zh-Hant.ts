@@ -405,6 +405,7 @@ export const zhHant: TranslationStructure = {
         renameSessionSubtitle: '變更工作階段標題',
         renameSessionPrompt: '輸入新的工作階段名稱',
         failedToRenameSession: '重新命名工作階段失敗',
+        moveToTop: '移至頂部',
 
     },
 

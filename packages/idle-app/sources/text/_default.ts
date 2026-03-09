@@ -403,6 +403,7 @@ export const en = {
         renameSessionSubtitle: 'Change the session title',
         renameSessionPrompt: 'Enter new session name',
         failedToRenameSession: 'Failed to rename session',
+        moveToTop: 'Move to Top',
 
     },
 

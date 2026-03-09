@@ -436,6 +436,7 @@ export const ja: TranslationStructure = {
         renameSessionSubtitle: 'セッションのタイトルを変更',
         renameSessionPrompt: '新しいセッション名を入力',
         failedToRenameSession: 'セッション名の変更に失敗しました',
+        moveToTop: '一番上に移動',
 
     },
 

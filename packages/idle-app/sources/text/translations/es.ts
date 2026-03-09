@@ -404,6 +404,7 @@ export const es: TranslationStructure = {
         renameSessionSubtitle: 'Cambiar el título de la sesión',
         renameSessionPrompt: 'Introduce el nuevo nombre de la sesión',
         failedToRenameSession: 'Error al renombrar la sesión',
+        moveToTop: 'Mover arriba',
 
     },
 

@@ -40,6 +40,8 @@ import { fetchFeed } from './apiFeed';
 import { FeedItem } from './feedTypes';
 import { UserProfile } from './friendTypes';
 import { resolveMessageModeMeta } from './messageMeta';
+import { loadSessionOrder, saveSessionOrder, getCachedSessionOrder } from './sessionOrderPersistence';
+import { moveSessionToTop as moveSessionToTopPure } from './sessionOrder';
 
 type V3GetSessionMessagesResponse = {
     messages: ApiMessage[];
@@ -90,6 +92,7 @@ class Sync {
     private friendsSync: InvalidateSync;
     private friendRequestsSync: InvalidateSync;
     private feedSync: InvalidateSync;
+    private sessionOrderSync: InvalidateSync;
     private activityAccumulator: ActivityUpdateAccumulator;
     private pendingSettings: Partial<Settings> = loadPendingSettings();
     private appState: AppStateStatus = AppState.currentState;
@@ -113,6 +116,7 @@ class Sync {
         this.friendsSync = new InvalidateSync(this.fetchFriends);
         this.friendRequestsSync = new InvalidateSync(this.fetchFriendRequests);
         this.feedSync = new InvalidateSync(this.fetchFeed);
+        this.sessionOrderSync = new InvalidateSync(this.fetchSessionOrder);
 
         const registerPushToken = async () => {
             if (__DEV__) {
@@ -148,6 +152,7 @@ class Sync {
                 this.friendsSync.invalidate();
                 this.friendRequestsSync.invalidate();
                 this.feedSync.invalidate();
+                this.sessionOrderSync.invalidate();
             } else {
                 log.log(`📱 App state changed to: ${nextAppState}`);
                 this.maybeStartBackgroundSendWatchdog();
@@ -210,12 +215,16 @@ class Sync {
         this.friendRequestsSync.invalidate();
         this.artifactsSync.invalidate();
         this.feedSync.invalidate();
+        this.sessionOrderSync.invalidate();
         log.log('🔄 #init: All syncs invalidated, including artifacts');
 
-        // Wait for both sessions and machines to load, then mark as ready
+        // Wait for sessions, machines, and session order to load, then mark as ready.
+        // Session order must be loaded before sessions are rendered so the custom
+        // ordering is applied in buildSessionListViewData.
         Promise.all([
             this.sessionsSync.awaitQueue(),
-            this.machinesSync.awaitQueue()
+            this.machinesSync.awaitQueue(),
+            this.sessionOrderSync.awaitQueue()
         ]).then(() => {
             storage.getState().applyReady();
         }).catch((error) => {
@@ -783,6 +792,32 @@ class Sync {
 
     public getCredentials() {
         return this.credentials;
+    }
+
+    // Session order methods
+
+    private fetchSessionOrder = async () => {
+        if (!this.credentials) return;
+        const order = await loadSessionOrder(this.credentials, this.encryption);
+        // Re-apply sessions so the list rebuilds with the new order
+        if (order.length > 0) {
+            const state = storage.getState();
+            state.applySessions(Object.values(state.sessions));
+        }
+    }
+
+    /**
+     * Move a session to the top of its group in the session list.
+     * Persists the new order to the encrypted KV store.
+     */
+    public moveSessionToTop = async (sessionId: string) => {
+        if (!this.credentials) return;
+        const currentOrder = getCachedSessionOrder();
+        const newOrder = moveSessionToTopPure(currentOrder, sessionId);
+        await saveSessionOrder(this.credentials, this.encryption, newOrder);
+        // Re-apply sessions so the list rebuilds with the new order
+        const state = storage.getState();
+        state.applySessions(Object.values(state.sessions));
     }
 
     // Artifact methods

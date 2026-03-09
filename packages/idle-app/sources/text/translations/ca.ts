@@ -404,6 +404,7 @@ export const ca: TranslationStructure = {
         renameSessionSubtitle: 'Canviar el títol de la sessió',
         renameSessionPrompt: 'Introdueix el nou nom de la sessió',
         failedToRenameSession: 'Error en canviar el nom de la sessió',
+        moveToTop: 'Moure a dalt',
 
     },
 

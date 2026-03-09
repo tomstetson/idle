@@ -20,6 +20,8 @@ import { isMutableTool } from "@/components/tools/knownTools";
 import { projectManager } from "./projectManager";
 import { DecryptedArtifact } from "./artifactTypes";
 import { FeedItem } from "./feedTypes";
+import { applySessionOrder } from "./sessionOrder";
+import { getCachedSessionOrder } from "./sessionOrderPersistence";
 
 // Debounce timer for realtimeMode changes
 let realtimeModeDebounceTimer: ReturnType<typeof setTimeout> | null = null;
@@ -170,6 +172,12 @@ function buildSessionListViewData(
     activeSessions.sort((a, b) => b.updatedAt - a.updatedAt);
     inactiveSessions.sort((a, b) => b.updatedAt - a.updatedAt);
 
+    // Apply user's custom session order on top of the date sort.
+    // Custom-ordered sessions come first; new sessions (not yet in the order)
+    // stay at the end in their updatedAt position.
+    const customOrder = getCachedSessionOrder();
+    const orderedInactiveSessions = applySessionOrder(inactiveSessions, customOrder);
+
     // Build unified list view data
     const listData: SessionListViewItem[] = [];
 
@@ -181,7 +189,7 @@ function buildSessionListViewData(
     // Group inactive sessions by machine, then by date within each machine group
     const machineGroups = new Map<string, Session[]>();
 
-    for (const session of inactiveSessions) {
+    for (const session of orderedInactiveSessions) {
         const machineId = session.metadata?.machineId || 'unknown';
         let group = machineGroups.get(machineId);
         if (!group) {

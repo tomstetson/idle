@@ -415,6 +415,7 @@ export const pl: TranslationStructure = {
         renameSessionSubtitle: 'Zmień tytuł sesji',
         renameSessionPrompt: 'Wprowadź nową nazwę sesji',
         failedToRenameSession: 'Nie udało się zmienić nazwy sesji',
+        moveToTop: 'Przenieś na górę',
     },
 
     components: {

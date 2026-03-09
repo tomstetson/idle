@@ -406,6 +406,7 @@ export const zhHans: TranslationStructure = {
         renameSessionSubtitle: '更改会话标题',
         renameSessionPrompt: '输入新的会话名称',
         failedToRenameSession: '重命名会话失败',
+        moveToTop: '移至顶部',
 
     },
 
