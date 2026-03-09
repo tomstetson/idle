@@ -1,8 +1,10 @@
 <div align="center">
-  <img src="/.github/logotype-dark.png" width="200" alt="Idle"/>
+  <picture>
+    <source media="(prefers-color-scheme: dark)" srcset="/.github/logotype-dark.png"/>
+    <source media="(prefers-color-scheme: light)" srcset="/.github/logotype-light.png"/>
+    <img src="/.github/logotype-dark.png" width="180" alt="Idle"/>
+  </picture>
 </div>
-
-<br/>
 
 <p align="center">
 Remote client for Claude Code. End-to-end encrypted. Open source.
@@ -14,7 +16,7 @@ Remote client for Claude Code. End-to-end encrypted. Open source.
   <a href="https://northglass.io">Northglass Labs</a>
 </p>
 
-<img width="1280" alt="Idle — terminal to phone" src="/.github/header.png" />
+<img width="1280" alt="Idle — remote client for Claude Code" src="/.github/header.png" />
 
 ## What it does
 
