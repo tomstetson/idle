@@ -1,6 +1,18 @@
 import { db } from "@/storage/db";
 import * as privacyKit from "privacy-kit";
 
+// SQL identifier allowlists — prevents injection via table/column name interpolation.
+// All table/column names used in raw SQL must be listed here.
+const ALLOWED_TABLES = new Set(['Session', 'Machine', 'Artifact', 'UserKVStore', 'ServiceAccountToken', 'GithubUser']);
+const ALLOWED_COLUMNS = new Set(['id', 'accountId', 'dataEncryptionKey', 'header', 'body', 'value', 'token', 'tag']);
+
+function assertSafeIdentifier(name: string, kind: 'table' | 'column'): void {
+    const allowed = kind === 'table' ? ALLOWED_TABLES : ALLOWED_COLUMNS;
+    if (!allowed.has(name)) {
+        throw new Error(`Disallowed ${kind} name in raw SQL: ${name}`);
+    }
+}
+
 /**
  * Safely encode a Prisma Bytes field to base64 string.
  * Handles the PGlite + Prisma 6 bug where Bytes fields may be returned as:
@@ -40,6 +52,9 @@ export async function fetchBytesField(
     idValue: string,
     bytesColumn: string
 ): Promise<string | null> {
+    assertSafeIdentifier(table, 'table');
+    assertSafeIdentifier(idColumn, 'column');
+    assertSafeIdentifier(bytesColumn, 'column');
     const result = await db.$queryRawUnsafe<Array<{ val: string | null }>>(
         `SELECT encode("${bytesColumn}", 'base64') as "val" FROM "${table}" WHERE "${idColumn}" = $1`,
         idValue
@@ -53,6 +68,8 @@ export async function fetchBytesFieldMap(
     accountId: string,
     bytesColumn: string
 ): Promise<Map<string, string>> {
+    assertSafeIdentifier(table, 'table');
+    assertSafeIdentifier(bytesColumn, 'column');
     const results = await db.$queryRawUnsafe<Array<{ id: string; val: string | null }>>(
         `SELECT "id", encode("${bytesColumn}", 'base64') as "val" FROM "${table}" WHERE "accountId" = $1`,
         accountId
@@ -71,6 +88,11 @@ export async function fetchMultipleBytesFields(
     idValue: string,
     bytesColumns: string[]
 ): Promise<Record<string, string | null>> {
+    assertSafeIdentifier(table, 'table');
+    assertSafeIdentifier(idColumn, 'column');
+    for (const c of bytesColumns) {
+        assertSafeIdentifier(c, 'column');
+    }
     const selectCols = bytesColumns.map(c => `encode("${c}", 'base64') as "${c}"`).join(', ');
     const result = await db.$queryRawUnsafe<Array<Record<string, string | null>>>(
         `SELECT ${selectCols} FROM "${table}" WHERE "${idColumn}" = $1`,

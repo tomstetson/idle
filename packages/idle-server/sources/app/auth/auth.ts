@@ -33,7 +33,7 @@ interface AuthTokens {
 class AuthModule {
     private tokenCache = new Map<string, TokenCacheEntry>();
     private accountCache = new Map<string, AccountCacheEntry>();
-    private revokedTokens = new Set<string>(); // Survives cache eviction; cleared on restart
+    private revokedTokens = new Map<string, number>(); // token → expiresAt; auto-swept on revoke
     private tokens: AuthTokens | null = null;
     
     async init(): Promise<void> {
@@ -176,11 +176,22 @@ class AuthModule {
         this.tokenCache.delete(token);
     }
 
-    /** Permanently revoke a token (survives cache eviction until server restart). */
+    /** Permanently revoke a token. Auto-sweeps expired entries to prevent unbounded growth. */
     revokeToken(token: string): void {
         this.tokenCache.delete(token);
-        this.revokedTokens.add(token);
-        log({ module: 'auth' }, `Token revoked`);
+
+        // Store with expiry so we can sweep later (default: TOKEN_TTL from now)
+        this.revokedTokens.set(token, Date.now() + TOKEN_TTL_MS);
+
+        // Sweep expired revocations to bound memory growth
+        const now = Date.now();
+        for (const [t, expiresAt] of this.revokedTokens) {
+            if (now > expiresAt) {
+                this.revokedTokens.delete(t);
+            }
+        }
+
+        log({ module: 'auth' }, `Token revoked (${this.revokedTokens.size} active revocations)`);
     }
 
     /**

@@ -149,7 +149,8 @@ class ApiSocket {
     }
 
     send(event: string, data: any) {
-        this.socket!.emit(event, data);
+        if (!this.socket) return false;
+        this.socket.emit(event, data);
         return true;
     }
 

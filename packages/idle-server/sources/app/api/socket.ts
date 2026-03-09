@@ -150,6 +150,15 @@ export function startSocket(app: Fastify) {
         }
 
         const userId = verified.userId;
+
+        // Verify account still exists (mirrors HTTP auth middleware)
+        const accountExists = await auth.verifyAccountExists(userId);
+        if (!accountExists) {
+            log({ module: 'websocket' }, `Account not found for user: ${userId}`);
+            socket.emit('error', { message: 'Account not found' });
+            socket.disconnect();
+            return;
+        }
         log({ module: 'websocket' }, `Token verified: ${userId}, clientType: ${clientType || 'user-scoped'}, sessionId: ${sessionId || 'none'}, machineId: ${machineId || 'none'}, socketId: ${socket.id}`);
 
         // Per-user connection limit (A6-1)

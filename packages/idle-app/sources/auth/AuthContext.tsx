@@ -5,6 +5,7 @@ import * as Updates from 'expo-updates';
 import { clearPersistence } from '@/sync/persistence';
 import { Platform } from 'react-native';
 import { trackLogout } from '@/track';
+import { apiSocket } from '@/sync/apiSocket';
 
 interface AuthContextType {
     isAuthenticated: boolean;
@@ -38,6 +39,7 @@ export function AuthProvider({ children, initialCredentials }: { children: React
 
     const logout = async () => {
         trackLogout();
+        apiSocket.disconnect();
         clearPersistence();
         await TokenStorage.removeCredentials();
         

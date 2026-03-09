@@ -11,6 +11,10 @@ export interface AuthCredentials {
     secret: string;
 }
 
+// SECURITY: On web, credentials are stored in localStorage (plaintext, accessible to same-origin JS).
+// Native platforms use SecureStore (hardware-backed). Web is a secondary platform and this is an
+// accepted risk for alpha — the secret (E2E encryption root key) has no better web storage option
+// without requiring a user passphrase on every session.
 export const TokenStorage = {
     async getCredentials(): Promise<AuthCredentials | null> {
         if (Platform.OS === 'web') {
