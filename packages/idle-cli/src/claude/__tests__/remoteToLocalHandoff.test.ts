@@ -112,7 +112,7 @@ describe('remote-to-local handoff: TTY input buffer flush', () => {
             mockStdin.pushBytes(Buffer.from([0x20])); // buffered space
 
             // Step 1: Remove all listeners (matches claudeRemoteLauncher)
-            mockStdin.removeAllListeners('data');
+            mockStdin.removeAllListeners();
             expect(mockStdin.listenerCount('data')).toBe(0);
 
             // Step 2: Drain buffer
@@ -144,7 +144,7 @@ describe('remote-to-local handoff: TTY input buffer flush', () => {
             mockStdin.pushBytes(Buffer.from('garbled'));
 
             // Full teardown sequence
-            mockStdin.removeAllListeners('data');
+            mockStdin.removeAllListeners();
             while (mockStdin.read() !== null) { /* discard */ }
             mockStdin.setRawMode(false);
             mockStdin.pause();
@@ -230,7 +230,7 @@ describe('remote-to-local handoff: TTY input buffer flush', () => {
             // === Remote teardown (claudeRemoteLauncher finally block) ===
 
             // 1. Remove all listeners
-            mockStdin.removeAllListeners('data');
+            mockStdin.removeAllListeners();
 
             // 2. Drain buffer in raw mode
             const discarded: Buffer[] = [];

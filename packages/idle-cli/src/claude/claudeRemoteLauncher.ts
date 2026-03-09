@@ -444,15 +444,20 @@ export async function claudeRemoteLauncher(session: Session): Promise<'switch' |
         permissionHandler.reset();
 
         // === TTY input buffer flush sequence ===
-        // Order matters: remove listeners -> drain buffer -> raw mode off -> unmount Ink -> pause
+        // Order matters: remove ALL listeners -> yield to event loop -> drain buffer
+        //   -> raw mode off -> unmount Ink -> pause
         // This prevents raw-mode bytes from surviving the transition and corrupting
         // the Claude child process stdin when switching to local mode.
 
-        // 1. Remove all stdin listeners BEFORE changing raw mode
-        //    This stops Ink/useInput from processing any buffered keystrokes
-        process.stdin.removeAllListeners('data');
+        // 1. Remove ALL stdin listeners (not just 'data')
+        //    Ink may register 'readable', 'keypress', or other listeners internally
+        process.stdin.removeAllListeners();
 
-        // 2. Drain the TTY input buffer while still in raw mode
+        // 2. Yield to the event loop so any in-flight callbacks complete
+        //    Without this, Ink's queued event handlers may still fire after removeAllListeners
+        await new Promise<void>(resolve => setImmediate(resolve));
+
+        // 3. Drain the TTY input buffer while still in raw mode
         //    Any bytes buffered during the raw-mode transition window are discarded
         if (process.stdin.isTTY && process.stdin.readable) {
             while (process.stdin.read() !== null) {
@@ -460,17 +465,17 @@ export async function claudeRemoteLauncher(session: Session): Promise<'switch' |
             }
         }
 
-        // 3. Now switch raw mode off (cooked mode) — buffer is already empty
+        // 4. Now switch raw mode off (cooked mode) — buffer is already empty
         if (process.stdin.isTTY) {
             process.stdin.setRawMode(false);
         }
 
-        // 4. Unmount Ink AFTER raw mode is off
+        // 5. Unmount Ink AFTER raw mode is off
         if (inkInstance) {
             inkInstance.unmount();
         }
 
-        // 5. Pause stdin for clean handoff to claudeLocal
+        // 6. Pause stdin for clean handoff to claudeLocal
         process.stdin.pause();
 
         messageBuffer.clear();

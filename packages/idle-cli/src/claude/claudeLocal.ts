@@ -186,11 +186,16 @@ export async function claudeLocal(opts: {
     try {
         // Drain any residual bytes from stdin before handing it to the child process.
         // When switching from remote mode, raw-mode keystrokes may still be buffered.
-        // Reading them here prevents garbled input from reaching the Claude child.
+        // Yield first to let any lingering event loop callbacks complete.
+        await new Promise<void>(resolve => setImmediate(resolve));
         if (process.stdin.readable) {
             while (process.stdin.read() !== null) {
                 // Discard buffered bytes
             }
+        }
+        // Ensure raw mode is off before spawning child
+        if (process.stdin.isTTY && process.stdin.isRaw) {
+            process.stdin.setRawMode(false);
         }
 
         // Start the interactive process
