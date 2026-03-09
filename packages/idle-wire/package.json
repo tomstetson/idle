@@ -1,6 +1,6 @@
 {
   "name": "@northglass/idle-wire",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Shared message wire types and Zod schemas for Idle clients and services",
   "author": "Northglass LLC",
   "license": "MIT",

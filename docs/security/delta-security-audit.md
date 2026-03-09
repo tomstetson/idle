@@ -105,7 +105,16 @@ All original High findings confirmed fixed. 8 of 15 Medium findings resolved. 5 
 
 ## Recommendations
 
-1. **Before public launch:** Fix NEW-3 (404 header logging) and pin Mermaid version (NEW-4)
+1. ~~**Before public launch:** Fix NEW-3 (404 header logging) and pin Mermaid version (NEW-4)~~ **DONE** (verified 2026-03-09)
 2. **When enabling subscriptions:** Move RevenueCat key to server-side env var (NEW-2)
 3. **At scale:** Tighten rate limits, add challenge replay protection (A2-1)
 4. **Ongoing:** Monitor privacy-kit upstream for v1.0 (A9-2)
+
+## Re-Audit Verification (2026-03-09)
+
+Full re-audit performed across all 5 packages. Results:
+- **0 Critical, 0 High** — ready for public alpha
+- All NEW-3, NEW-4, NEW-5 confirmed fixed
+- All original High findings re-verified as fixed
+- Token verification gap confirmed patched
+- No new Critical/High vulnerabilities discovered

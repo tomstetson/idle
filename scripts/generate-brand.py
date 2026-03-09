@@ -3,8 +3,8 @@
 Generate Idle brand package.
 
 Concept: Terminal cursor at rest. A blinking cursor waiting for input = "idle".
-Style: Brutalist/pixel, hackery, clean, minimalist. Matches the upstream Happy
-       block-art aesthetic but with its own identity.
+Style: Brutalist/pixel, hackery, clean, minimalist. Block-art aesthetic
+       with Northglass identity.
 
 Produces all app icons, splash screens, logotype, and favicon.
 """
@@ -28,7 +28,7 @@ TRANSPARENT = (0, 0, 0, 0)
 # ─────────────────────────────────────────────────
 # Pixel art letter definitions (7 rows x variable cols)
 # Each letter is a list of 7 strings, '#' = filled, '.' = empty
-# Styled after the Happy logotype: thick, blocky, geometric
+# Thick, blocky, geometric pixel art style
 # ─────────────────────────────────────────────────
 
 PIXEL_LETTERS = {
@@ -301,7 +301,7 @@ def generate_splash_screens():
 def generate_logotype_github():
     """
     .github/logotype-dark.png — Pixel-art "IDLE" for README.
-    Dark blocks on transparent bg, matching Happy's brutalist style.
+    Dark blocks on transparent bg, brutalist pixel-art style.
     """
     block_size = 18
     letter_gap = block_size * 2

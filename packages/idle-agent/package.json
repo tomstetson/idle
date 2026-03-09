@@ -1,6 +1,6 @@
 {
   "name": "@northglass/agent",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "CLI client for controlling Idle Coder agents remotely",
   "author": "Northglass LLC",
   "license": "MIT",

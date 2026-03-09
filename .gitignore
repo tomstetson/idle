@@ -8,6 +8,7 @@ node_modules/
 dist/
 web-build/
 expo-env.d.ts
+/app.json
 /ios
 /android
 /packages/idle-app/ios
@@ -53,6 +54,11 @@ CLAUDE.local.md
 notes/
 # ralphex progress logs
 progress*.txt
+
+# Test reports and coverage
+**/playwright-report/
+**/test-results/
+**/coverage/
 
 # Added by ggshield
 .cache_ggshield

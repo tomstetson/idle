@@ -1,5 +1,16 @@
 # Changelog
 
+## Version 8 - 2026-03-09
+
+A cleanup and hardening release focused on polish, security verification, and removing upstream remnants for a cleaner alpha experience.
+
+- Fixed header logo sizing across all screens — the brand mark now displays at consistent size on phone, tablet, and sidebar views
+- Completed full security re-audit with zero critical or high-severity findings — all previous security patches verified
+- Removed upstream test data and developer references from CLI fixtures for cleaner codebase
+- Fixed server package metadata to point to correct repository
+- Polished changelog copy for professional in-app display
+- Updated brand generation scripts to reflect Idle's own design identity
+
 ## Version 7 - 2026-03-09
 
 Welcome to Idle Alpha v0.1.0 — a fresh start with a new identity. All packages have been unified at version 0.1.0, with a completely redesigned brand and improved security across the board.
@@ -32,10 +43,10 @@ This release brings a suite of quality-of-life improvements focused on better se
 
 This release expands AI agent support and refines the voice experience, while improving markdown rendering for a better chat experience.
 
-- We are working on adding Gemini support using ACP and hopefully fixing codex stability issues using the same approach soon! Stay tuned.
-- Removed model configurations from agents. We were not able to keep up with the models so for now we are removing the configuration from the mobile app. You can still configure it through your CLIs, idle will simply use defaults.
-- Elevenlabs ... is epxensive. Voice conversations will soon require a subscription after 3 free trials - we'll soon allow connecting your own ElevenLabs agent if you want to manage your own spendings.
-- Improved markdown table rendering in chat - no more ASCII pipes `|--|`, actual formatted tables (layout still needs work, but much better!)
+- Added experimental Gemini support via ACP protocol alongside improved Codex stability
+- Simplified model configuration — removed per-agent model settings in favor of CLI-side defaults for easier maintenance
+- Added BYOK (Bring Your Own Key) support for ElevenLabs voice — connect your own API key to manage voice conversation costs
+- Improved markdown table rendering in chat with properly formatted tables replacing ASCII pipes
 
 ## Version 4 - 2025-09-12
 

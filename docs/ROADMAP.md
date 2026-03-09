@@ -73,7 +73,7 @@ All pre-alpha milestones completed. Version numbers reset to v0.1.0 across all p
 - [x] Transparent logotype PNGs, theme-aware dark/light variants
 - [x] Web deploy pipeline — scripts/deploy-web.sh, ADR-008
 
-## Phase 4: Alpha v0.1.0 (Current)
+## Phase 4: Alpha v0.1.0 (Complete)
 
 All packages aligned at v0.1.0. Fresh start for public alpha.
 
@@ -84,7 +84,29 @@ All packages aligned at v0.1.0. Fresh start for public alpha.
 - [ ] Verify Settings Features screen (manual QA)
 - [ ] Validate permissions E2E on TestFlight device
 
-## Phase 5: Future
+## Phase 4.1: Alpha v0.1.1 (Current)
+
+Cleanup, security verification, and upstream remnant removal.
+
+- [x] Remove Happy Engineering references from CLI test fixtures
+- [x] Fix logo sizing consistency across all header components
+- [x] Full security re-audit — 0 critical/high findings
+- [x] Fix server package.json repository URL
+- [x] Polish changelog copy (v5 typos, professional tone)
+- [x] Clean brand generation script comments
+- [x] Update .gitignore (app.json, test reports, coverage)
+- [x] Sprint plan with experiential enhancement designs (docs/plans/)
+- [ ] Deploy web + OTA update
+- [ ] New TestFlight build (v0.1.1)
+- [ ] Expire old TestFlight builds in ASC
+
+## Phase 5: Experiential Enhancements (Planned)
+- [ ] Slash command discovery — mobile command palette, visual affordance
+- [ ] Session visual identity — deterministic gradient/icon per session
+- [ ] Session list status dots — surface connection state inline
+- [ ] Session detail badges — MCP tools, permission indicators
+
+## Phase 6: Future
 - [ ] UI redesign pass — modernize layout, typography, interaction patterns
 - [ ] Custom landing page (northglass.io/idle)
 - [ ] Image/file upload in sessions (deferred from pre-alpha)

@@ -33,11 +33,11 @@ const stylesheet = StyleSheet.create((theme, runtime) => ({
         position: 'relative',
     },
     logoContainer: {
-        width: 32,
+        width: 44,
     },
     logo: {
-        height: 24,
-        width: 24,
+        height: 38,
+        width: 38,
     },
     titleContainer: {
         position: 'absolute',
@@ -222,7 +222,7 @@ export const SidebarView = React.memo(() => {
                 <View style={[styles.header, { height: headerHeight }]}>
                     {/* Logo - always first */}
                     <View style={styles.logoContainer}>
-                        <IdleLogoMark size={24} color={theme.colors.header.tint} />
+                        <IdleLogoMark size={38} color={theme.colors.header.tint} />
                     </View>
 
                     {/* Left-justified title - in document flow, prevents overlap */}
