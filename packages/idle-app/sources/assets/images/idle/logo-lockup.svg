@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 80" fill="none">
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@700');
+    text { font-family: 'Space Grotesk', sans-serif; font-weight: 700; }
+  </style>
+  <!-- Arc mark -->
+  <path d="M16 60 C16 28 24 12 40 12 C56 12 64 28 64 60"
+        stroke="#FAFAFA" stroke-width="8" stroke-linecap="round" fill="none"/>
+  <!-- Wordmark -->
+  <text x="84" y="58" fill="#FAFAFA" font-size="52" letter-spacing="-1">idle</text>
+</svg>
