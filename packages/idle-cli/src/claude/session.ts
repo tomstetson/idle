@@ -4,6 +4,7 @@ import { EnhancedMode } from "./loop";
 import { logger } from "@/ui/logger";
 import type { JsRuntime } from "./runClaude";
 import type { SandboxConfig } from "@/persistence";
+import { persistSessionTag } from "./utils/sessionTagMap";
 
 export class Session {
     readonly path: string;
@@ -22,13 +23,18 @@ export class Session {
     /** JavaScript runtime to use for spawning Claude Code (default: 'node') */
     readonly jsRuntime: JsRuntime;
 
+    /** Tag used to create/lookup this Idle session on the server */
+    readonly sessionTag: string;
+    /** Idle server session ID */
+    readonly idleSessionId: string;
+
     sessionId: string | null;
     mode: 'local' | 'remote' = 'local';
     thinking: boolean = false;
-    
+
     /** Callbacks to be notified when session ID is found/changed */
     private sessionFoundCallbacks: ((sessionId: string) => void)[] = [];
-    
+
     /** Keep alive interval reference for cleanup */
     private keepAliveInterval: NodeJS.Timeout;
 
@@ -49,6 +55,10 @@ export class Session {
         hookSettingsPath: string,
         /** JavaScript runtime to use for spawning Claude Code (default: 'node') */
         jsRuntime?: JsRuntime,
+        /** Tag used to create/lookup this Idle session on the server */
+        sessionTag: string,
+        /** Idle server session ID */
+        idleSessionId: string,
     }) {
         this.path = opts.path;
         this.api = opts.api;
@@ -64,6 +74,8 @@ export class Session {
         this._onModeChange = opts.onModeChange;
         this.hookSettingsPath = opts.hookSettingsPath;
         this.jsRuntime = opts.jsRuntime ?? 'node';
+        this.sessionTag = opts.sessionTag;
+        this.idleSessionId = opts.idleSessionId;
 
         // Start keep alive
         this.client.keepAlive(this.thinking, this.mode);
@@ -105,14 +117,17 @@ export class Session {
      */
     onSessionFound = (sessionId: string) => {
         this.sessionId = sessionId;
-        
+
         // Update metadata with Claude Code session ID
         this.client.updateMetadata((metadata) => ({
             ...metadata,
             claudeSessionId: sessionId
         }));
         logger.debug(`[Session] Claude Code session ID ${sessionId} added to metadata`);
-        
+
+        // Persist mapping so future --resume can find this Idle session
+        persistSessionTag(sessionId, this.sessionTag, this.idleSessionId);
+
         // Notify all registered callbacks
         for (const callback of this.sessionFoundCallbacks) {
             callback(sessionId);

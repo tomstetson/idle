@@ -28,6 +28,8 @@ import { claudeLocal } from '@/claude/claudeLocal';
 import { createSessionScanner } from '@/claude/utils/sessionScanner';
 import { Session } from './session';
 import { applySandboxPermissionPolicy, resolveInitialClaudePermissionMode } from './utils/permissionMode';
+import { lookupTagByClaudeSessionId } from './utils/sessionTagMap';
+import { claudeFindLastSession } from './utils/claudeFindLastSession';
 
 /** JavaScript runtime to use for spawning Claude Code */
 export type JsRuntime = 'node' | 'bun'
@@ -45,12 +47,88 @@ export interface StartOptions {
     jsRuntime?: JsRuntime
 }
 
+/**
+ * Extract the Claude session ID from --resume args without modifying the args array.
+ * Returns the session ID if --resume <uuid> is found, null otherwise.
+ */
+export function extractResumeSessionId(claudeArgs?: string[]): string | null {
+    if (!claudeArgs) return null;
+    for (let i = 0; i < claudeArgs.length; i++) {
+        if (claudeArgs[i] === '--resume' || claudeArgs[i] === '-r') {
+            if (i + 1 < claudeArgs.length) {
+                const nextArg = claudeArgs[i + 1];
+                // Check if next arg looks like a session ID (not another flag, contains dashes)
+                if (!nextArg.startsWith('-') && nextArg.includes('-')) {
+                    return nextArg;
+                }
+            }
+        }
+    }
+    return null;
+}
+
+/**
+ * Check if claudeArgs contain a resume/continue flag (with or without an explicit session ID).
+ * Returns true for --resume, -r, --continue, or -c.
+ */
+export function hasResumeLikeFlag(claudeArgs?: string[]): boolean {
+    if (!claudeArgs) return false;
+    return claudeArgs.some(arg => arg === '--resume' || arg === '-r' || arg === '--continue' || arg === '-c');
+}
+
+/**
+ * Resolve the Claude session ID for session reuse.
+ *
+ * Handles three cases:
+ * 1. --resume <uuid> → extract the explicit session ID
+ * 2. Bare --resume / --continue → find the last Claude session in the working directory
+ * 3. No resume flags → returns null (fresh session)
+ *
+ * This runs before the Idle session is created so we can look up the saved tag
+ * and reuse the existing Idle session instead of creating an orphan.
+ */
+export function resolveResumeClaudeSessionId(claudeArgs: string[] | undefined, workingDirectory: string): string | null {
+    // Case 1: explicit --resume <uuid>
+    const explicit = extractResumeSessionId(claudeArgs);
+    if (explicit) return explicit;
+
+    // Case 2: bare --resume or --continue — resolve from local Claude session files
+    if (hasResumeLikeFlag(claudeArgs)) {
+        const lastSession = claudeFindLastSession(workingDirectory);
+        if (lastSession) {
+            logger.debug(`[resolveResumeClaudeSessionId] Bare resume/continue resolved to Claude session: ${lastSession}`);
+            return lastSession;
+        }
+    }
+
+    // Case 3: no resume flags
+    return null;
+}
+
 export async function runClaude(credentials: Credentials, options: StartOptions = {}): Promise<void> {
     logger.debug(`[CLAUDE] ===== CLAUDE MODE STARTING =====`);
     logger.debug(`[CLAUDE] This is the Claude agent, NOT Gemini`);
-    
+
     const workingDirectory = process.cwd();
-    const sessionTag = randomUUID();
+
+    // When resuming a Claude session, look up the Idle session tag from local mapping.
+    // This ensures getOrCreateSession returns the existing Idle session (with its chat history)
+    // instead of creating a brand new one.
+    // Handles: --resume <uuid>, bare --resume, --continue, -r, -c
+    const resumeClaudeSessionId = resolveResumeClaudeSessionId(options.claudeArgs, workingDirectory);
+    let sessionTag: string;
+    if (resumeClaudeSessionId) {
+        const existingTag = lookupTagByClaudeSessionId(resumeClaudeSessionId);
+        if (existingTag) {
+            sessionTag = existingTag;
+            logger.debug(`[CLAUDE] Resuming: reusing Idle session tag ${sessionTag} for Claude session ${resumeClaudeSessionId}`);
+        } else {
+            sessionTag = randomUUID();
+            logger.debug(`[CLAUDE] Resuming: no existing Idle session found for Claude session ${resumeClaudeSessionId}, using new tag ${sessionTag}`);
+        }
+    } else {
+        sessionTag = randomUUID();
+    }
 
     // Log environment info at startup
     logger.debugLargeJson('[START] Idle process started', getEnvironmentInfo());
@@ -479,7 +557,9 @@ export async function runClaude(credentials: Credentials, options: StartOptions 
         claudeArgs: options.claudeArgs,
         sandboxConfig,
         hookSettingsPath,
-        jsRuntime: options.jsRuntime
+        jsRuntime: options.jsRuntime,
+        sessionTag,
+        idleSessionId: response.id
     });
 
     // Cleanup session resources (intervals, callbacks) - prevents memory leak

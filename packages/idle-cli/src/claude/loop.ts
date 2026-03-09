@@ -42,6 +42,10 @@ interface LoopOptions {
     hookSettingsPath: string
     /** JavaScript runtime to use for spawning Claude Code (default: 'node') */
     jsRuntime?: JsRuntime
+    /** Tag used to create/lookup this Idle session on the server */
+    sessionTag: string
+    /** Idle server session ID */
+    idleSessionId: string
 }
 
 export async function loop(opts: LoopOptions): Promise<number> {
@@ -62,7 +66,9 @@ export async function loop(opts: LoopOptions): Promise<number> {
         sandboxConfig: opts.sandboxConfig,
         onModeChange: opts.onModeChange,
         hookSettingsPath: opts.hookSettingsPath,
-        jsRuntime: opts.jsRuntime
+        jsRuntime: opts.jsRuntime,
+        sessionTag: opts.sessionTag,
+        idleSessionId: opts.idleSessionId
     });
 
     opts.onSessionReady?.(session)
