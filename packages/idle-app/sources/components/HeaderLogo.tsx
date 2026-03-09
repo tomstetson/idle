@@ -11,12 +11,12 @@ export const HeaderLogo = React.memo(() => {
     const { theme } = useUnistyles();
     return (
         <View style={{
-            width: 32,
-            height: 32,
+            width: 44,
+            height: 44,
             alignItems: 'center',
             justifyContent: 'center',
         }}>
-            <IdleLogoMark size={24} color={theme.colors.header.tint} />
+            <IdleLogoMark size={38} color={theme.colors.header.tint} />
         </View>
     );
 });
