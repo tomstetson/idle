@@ -79,7 +79,6 @@ class Sync {
     private sessionMessageQueue = new Map<string, NormalizedMessage[]>();
     private sessionQueueProcessing = new Set<string>();
     private sessionMessageLocks = new Map<string, AsyncLock>();
-    private sessionDataKeys = new Map<string, Uint8Array>(); // Store session data encryption keys internally
     private machineDataKeys = new Map<string, Uint8Array>(); // Store machine data encryption keys internally
     private artifactDataKeys = new Map<string, Uint8Array>(); // Store artifact data encryption keys internally
     private settingsSync: InvalidateSync;
@@ -1103,7 +1102,7 @@ class Sync {
     private fetchMachines = async () => {
         if (!this.credentials) return;
 
-        console.log('📊 Sync: Fetching machines...');
+        log.log('📊 Sync: Fetching machines...');
         const API_ENDPOINT = getServerUrl();
         const response = await fetch(`${API_ENDPOINT}/v1/machines`, {
             headers: {
@@ -1118,7 +1117,7 @@ class Sync {
         }
 
         const data = await response.json();
-        console.log(`📊 Sync: Fetched ${Array.isArray(data) ? data.length : 0} machines from server`);
+        log.log(`📊 Sync: Fetched ${Array.isArray(data) ? data.length : 0} machines from server`);
         const machines = data as Array<{
             id: string;
             metadata: string;
@@ -1762,7 +1761,7 @@ class Sync {
     }
 
     private handleUpdate = async (update: unknown) => {
-        console.log('🔄 Sync: handleUpdate called with:', JSON.stringify(update).substring(0, 300));
+        log.log('🔄 Sync: handleUpdate called with:', JSON.stringify(update).substring(0, 300));
         const validatedUpdate = ApiUpdateContainerSchema.safeParse(update);
         if (!validatedUpdate.success) {
             console.log('❌ Sync: Invalid update received:', validatedUpdate.error);
@@ -1770,7 +1769,7 @@ class Sync {
             return;
         }
         const updateData = validatedUpdate.data;
-        console.log(`🔄 Sync: Validated update type: ${updateData.body.t}`);
+        log.log(`🔄 Sync: Validated update type: ${updateData.body.t}`);
 
         if (updateData.body.t === 'new-message') {
 
@@ -1843,7 +1842,7 @@ class Sync {
                     const currentLastSeq = this.sessionLastSeq.get(updateData.body.sid);
                     const incomingSeq = updateData.body.message.seq;
                     if (lastMessage && currentLastSeq !== undefined && incomingSeq === currentLastSeq + 1) {
-                        console.log('🔄 Sync: Applying message (fast path):', JSON.stringify(lastMessage));
+                        log.log('🔄 Sync: Applying message (fast path)');
                         this.enqueueMessages(updateData.body.sid, [lastMessage]);
                         this.sessionLastSeq.set(updateData.body.sid, incomingSeq);
                         let hasMutableTool = false;

@@ -43,10 +43,12 @@ export class ApiClient {
 
       // Reuse cached key on resume, generate fresh key for new sessions
       const cachedKey = lookupKeyByTag(opts.tag);
+      let keyIsNew = false;
       if (cachedKey) {
         encryptionKey = cachedKey;
       } else {
         encryptionKey = getRandomBytes(32);
+        keyIsNew = true;
       }
 
       // Encrypt key for server storage (server ignores this on existing sessions)
@@ -81,8 +83,8 @@ export class ApiClient {
       logger.debug(`Session created/loaded: ${response.data.session.id} (tag: ${opts.tag})`)
       let raw = response.data.session;
 
-      // Cache the DEK so resumed sessions reuse the same key
-      if (this.credential.encryption.type === 'dataKey') {
+      // Cache the DEK so resumed sessions reuse the same key (only for newly generated keys)
+      if (this.credential.encryption.type === 'dataKey' && keyIsNew) {
         cacheKeyForTag(opts.tag, encryptionKey);
       }
 
