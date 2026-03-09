@@ -327,6 +327,10 @@ export const pt: TranslationStructure = {
         resumeFailed: 'Falha ao retomar a sessão',
         machineGroupSessions: ({ count }: { count: number }) => count === 1 ? '1 sessão' : `${count} sessões`,
         unknownMachine: 'Máquina desconhecida',
+        actions: 'Ações da sessão',
+        moveToGroup: 'Mover para grupo...',
+        selectGroup: 'Selecionar grupo',
+        removeFromGroup: 'Remover do grupo',
     },
 
     commandPalette: {

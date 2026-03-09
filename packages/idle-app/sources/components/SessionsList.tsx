@@ -30,6 +30,7 @@ import { sessionDelete } from '@/sync/ops';
 import { IdleError } from '@/utils/errors';
 import { Modal } from '@/modal';
 import { sync } from '@/sync/sync';
+import { showSessionContextMenu } from './SessionContextMenu';
 
 const stylesheet = StyleSheet.create((theme) => ({
     container: {
@@ -497,6 +498,7 @@ const SessionItem = React.memo(({ session, selected, isFirst, isLast, isSingle }
                     navigateToSession(session.id);
                 }
             }}
+            onLongPress={() => showSessionContextMenu(session.id)}
         >
             <View style={styles.avatarContainer}>
                 <Avatar id={avatarId} size={48} monochrome={!sessionStatus.isConnected} flavor={session.metadata?.flavor} />

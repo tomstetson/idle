@@ -22,6 +22,7 @@ import { useNavigateToSession } from '@/hooks/useNavigateToSession';
 import { useIsTablet } from '@/utils/responsive';
 import { useIdleAction } from '@/hooks/useIdleAction';
 import { IdleError } from '@/utils/errors';
+import { showSessionContextMenu } from './SessionContextMenu';
 
 const stylesheet = StyleSheet.create((theme, runtime) => ({
     container: {
@@ -414,6 +415,7 @@ const CompactSessionRow = React.memo(({ session, machineName, selected, showBord
                     navigateToSession(session.id);
                 }
             }}
+            onLongPress={() => showSessionContextMenu(session.id)}
         >
             <View style={styles.avatarContainer}>
                 <Avatar id={avatarId} size={48} monochrome={!sessionStatus.isConnected} flavor={session.metadata?.flavor} />

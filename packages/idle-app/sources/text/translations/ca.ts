@@ -327,6 +327,10 @@ export const ca: TranslationStructure = {
         resumeFailed: 'No s\'ha pogut reprendre la sessió',
         machineGroupSessions: ({ count }: { count: number }) => count === 1 ? '1 sessió' : `${count} sessions`,
         unknownMachine: 'Màquina desconeguda',
+        actions: 'Accions de sessió',
+        moveToGroup: 'Moure a grup...',
+        selectGroup: 'Selecciona grup',
+        removeFromGroup: 'Treure del grup',
     },
 
     commandPalette: {

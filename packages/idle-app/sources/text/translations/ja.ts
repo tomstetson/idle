@@ -359,6 +359,10 @@ export const ja: TranslationStructure = {
         resumeFailed: 'セッションの再開に失敗しました',
         machineGroupSessions: ({ count }: { count: number }) => `${count} セッション`,
         unknownMachine: '不明なマシン',
+        actions: 'セッション操作',
+        moveToGroup: 'グループに移動...',
+        selectGroup: 'グループを選択',
+        removeFromGroup: 'グループから削除',
     },
 
     commandPalette: {

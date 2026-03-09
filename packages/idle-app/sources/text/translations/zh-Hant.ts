@@ -328,6 +328,10 @@ export const zhHant: TranslationStructure = {
         resumeFailed: '恢復工作階段失敗',
         machineGroupSessions: ({ count }: { count: number }) => `${count} 個工作階段`,
         unknownMachine: '未知機器',
+        actions: '工作階段操作',
+        moveToGroup: '移動到群組...',
+        selectGroup: '選擇群組',
+        removeFromGroup: '從群組中移除',
     },
 
     commandPalette: {

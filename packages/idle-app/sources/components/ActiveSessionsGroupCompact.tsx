@@ -22,6 +22,7 @@ import { useIsTablet } from '@/utils/responsive';
 import { ProjectGitStatus } from './ProjectGitStatus';
 import { useIdleAction } from '@/hooks/useIdleAction';
 import { IdleError } from '@/utils/errors';
+import { showSessionContextMenu } from './SessionContextMenu';
 
 const stylesheet = StyleSheet.create((theme, runtime) => ({
     container: {
@@ -378,6 +379,7 @@ const CompactSessionRow = React.memo(({ session, machineName, showMachineBadge, 
                     navigateToSession(session.id);
                 }
             }}
+            onLongPress={() => showSessionContextMenu(session.id)}
         >
             <View style={styles.sessionContent}>
                 {/* Title line with status */}

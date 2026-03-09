@@ -329,6 +329,10 @@ export const zhHans: TranslationStructure = {
         resumeFailed: '恢复会话失败',
         machineGroupSessions: ({ count }: { count: number }) => `${count} 个会话`,
         unknownMachine: '未知机器',
+        actions: '会话操作',
+        moveToGroup: '移动到分组...',
+        selectGroup: '选择分组',
+        removeFromGroup: '从分组中移除',
     },
 
     commandPalette: {

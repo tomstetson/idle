@@ -326,6 +326,10 @@ export const en = {
         resumeFailed: 'Failed to resume session',
         machineGroupSessions: ({ count }: { count: number }) => count === 1 ? '1 session' : `${count} sessions`,
         unknownMachine: 'Unknown Machine',
+        actions: 'Session Actions',
+        moveToGroup: 'Move to Group...',
+        selectGroup: 'Select Group',
+        removeFromGroup: 'Remove from Group',
     },
 
     commandPalette: {

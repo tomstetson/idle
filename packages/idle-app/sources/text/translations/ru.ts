@@ -424,6 +424,10 @@ export const ru: TranslationStructure = {
         resumeFailed: 'Не удалось возобновить сессию',
         machineGroupSessions: ({ count }: { count: number }) => count === 1 ? '1 сессия' : `${count} сессий`,
         unknownMachine: 'Неизвестная машина',
+        actions: 'Действия с сессией',
+        moveToGroup: 'Переместить в группу...',
+        selectGroup: 'Выберите группу',
+        removeFromGroup: 'Убрать из группы',
     },
 
     commandPalette: {
