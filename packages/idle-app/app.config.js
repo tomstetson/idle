@@ -14,7 +14,7 @@ export default {
     expo: {
         name,
         slug: "idle",
-        version: "1.6.2",
+        version: "1.7.0",
         runtimeVersion: "20",
         orientation: "default",
         icon: "./sources/assets/images/icon.png",
