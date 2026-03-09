@@ -334,6 +334,12 @@ function NewSessionWizard() {
     const [dismissedCLIWarnings, setDismissedCLIWarnings] = useSettingMutable('dismissedCLIWarnings');
     const attributionPromptAnswered = useSetting('attributionPromptAnswered');
 
+    // Guard against showing the attribution prompt more than once per component mount.
+    // The reactive useSetting('attributionPromptAnswered') may lag behind the
+    // sync.applySettings() write inside showAttributionPrompt(), causing the check
+    // to pass a second time before React re-renders with the updated value.
+    const attributionPromptShownRef = React.useRef(false);
+
     // Combined profiles (built-in + custom)
     const allProfiles = React.useMemo(() => {
         const builtInProfiles = DEFAULT_PROFILES.map(bp => getBuiltInProfile(bp.id)!);
@@ -1066,8 +1072,12 @@ function NewSessionWizard() {
                 }
             }
 
-            // Show attribution prompt on first session creation
-            if (!attributionPromptAnswered) {
+            // Show attribution prompt on first session creation.
+            // Both the setting AND the ref must agree — the ref prevents a race
+            // where the reactive useSetting value hasn't updated yet after the
+            // prompt was already shown and answered.
+            if (!attributionPromptAnswered && !attributionPromptShownRef.current) {
+                attributionPromptShownRef.current = true;
                 await showAttributionPrompt();
             }
 
