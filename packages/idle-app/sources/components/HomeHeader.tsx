@@ -152,7 +152,7 @@ function HeaderLeft() {
     const { theme } = useUnistyles();
     return (
         <View style={styles.logoContainer}>
-            <IdleLogoMark size={32} color={theme.colors.header.tint} />
+            <IdleLogoMark size={38} color={theme.colors.header.tint} />
         </View>
     );
 }

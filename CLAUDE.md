@@ -44,7 +44,28 @@ yarn workspace @northglass/idle-wire build
 
 # Quick-deploy server to VPS (bypasses CI)
 ./scripts/deploy-server-quick.sh
+
+# Deploy web app to idle.northglass.io (export + rsync to VPS)
+./scripts/deploy-web.sh              # from repo root
+yarn workspace idle-app deploy:web   # from anywhere
+
+# Deploy native OTA + web together
+yarn workspace idle-app deploy:all
+
+# Deploy OTA to TestFlight/production (separate, intentional)
+yarn workspace idle-app ota:production
 ```
+
+### Deploy Targets
+
+| Target | Command | Channel/Destination |
+|--------|---------|-------------------|
+| Web (idle.northglass.io) | `./scripts/deploy-web.sh` | Static files → VPS `/var/www/idle-app/` |
+| Native preview | `yarn ota` (from idle-app) | EAS Update → `preview` branch |
+| Native production (TestFlight) | `yarn ota:production` | EAS Update → `production` branch |
+| API server | `./scripts/deploy-server-quick.sh` | VPS systemd restart |
+
+**Note:** EAS OTA does not apply to web. Web requires a separate static export + deploy.
 
 ## Directory Structure
 
