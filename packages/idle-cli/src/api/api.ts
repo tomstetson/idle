@@ -38,12 +38,12 @@ export class ApiClient {
     let dataEncryptionKey: Uint8Array | null = null;
     let encryptionKey: Uint8Array;
     let encryptionVariant: 'legacy' | 'dataKey';
+    let keyIsNew = false;
     if (this.credential.encryption.type === 'dataKey') {
       encryptionVariant = 'dataKey';
 
       // Reuse cached key on resume, generate fresh key for new sessions
       const cachedKey = lookupKeyByTag(opts.tag);
-      let keyIsNew = false;
       if (cachedKey) {
         encryptionKey = cachedKey;
       } else {
