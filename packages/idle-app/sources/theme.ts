@@ -41,7 +41,7 @@ export const lightTheme = {
         text: '#000000',
         textDestructive: Platform.select({ ios: '#FF3B30', web: '#FF3B30', default: '#F44336' }),
         textSecondary: Platform.select({ ios: '#8E8E93', web: '#8E8E93', default: '#49454F' }),
-        textLink: '#C9A84C', // Northglass amber (brand accent)
+        textLink: '#0A0A0A',
         deleteAction: '#FF6B6B', // Delete/remove button color
         warningCritical: '#FF3B30',
         warning: '#8E8E93',
@@ -70,7 +70,7 @@ export const lightTheme = {
         },
         header: {
             background: '#ffffff',
-            tint: '#0A0F1A', // Northglass ink (brand)
+            tint: '#0A0A0A',
         },
         switch: {
             track: {
@@ -247,23 +247,22 @@ export const darkTheme = {
         // Main colors
         //
 
-        text: '#C8D1DB', // Northglass frost (primary text)
+        text: '#FAFAFA',
         textDestructive: Platform.select({ ios: '#FF453A', web: '#FF453A', default: '#F48FB1' }),
-        textSecondary: Platform.select({ ios: '#8B949E', web: '#8B949E', default: '#CAC4D0' }),
-        textLink: '#C9A84C', // Northglass amber (brand accent)
+        textSecondary: Platform.select({ ios: '#C0C0C0', web: '#C0C0C0', default: '#CAC4D0' }),
+        textLink: '#FAFAFA',
         deleteAction: '#FF6B6B', // Delete/remove button color (same in both themes)
         warningCritical: '#FF453A',
         warning: '#8E8E93',
         success: '#32D74B',
-        surface: Platform.select({ ios: '#0A0F1A', web: '#0A0F1A', default: '#0A0F1A' }),
+        surface: Platform.select({ ios: '#0A0A0A', web: '#0A0A0A', default: '#0A0A0A' }),
         surfaceRipple: 'rgba(255, 255, 255, 0.08)',
-        surfacePressed: '#1E2D3D',
-        surfaceSelected: '#1E2D3D',
-        surfacePressedOverlay: Platform.select({ ios: '#1E2D3D', web: '#1E2D3D', default: 'transparent' }),
-        // Northglass steel for elevated surfaces
-        surfaceHigh: Platform.select({ ios: '#1E2D3D', web: '#1E2D3D', default: '#1E2D3D' }),
-        surfaceHighest: Platform.select({ ios: '#2A3A4A', web: '#2A3A4A', default: '#2A3A4A' }),
-        divider: Platform.select({ ios: '#2A3A4A', web: '#2A3A4A', default: '#2A3A4A' }),
+        surfacePressed: '#111111',
+        surfaceSelected: '#111111',
+        surfacePressedOverlay: Platform.select({ ios: '#111111', web: '#111111', default: 'transparent' }),
+        surfaceHigh: Platform.select({ ios: '#111111', web: '#111111', default: '#111111' }),
+        surfaceHighest: Platform.select({ ios: '#1A1A1A', web: '#1A1A1A', default: '#1A1A1A' }),
+        divider: Platform.select({ ios: '#2A2A2A', web: '#2A2A2A', default: '#2A2A2A' }),
         shadow: {
             color: Platform.select({ default: '#000000', web: 'rgba(0, 0, 0, 0.1)' }),
             opacity: 0.1,
@@ -274,7 +273,7 @@ export const darkTheme = {
         //
 
         header: {
-            background: Platform.select({ ios: '#0A0F1A', web: '#0A0F1A', default: '#0A0F1A' }),
+            background: Platform.select({ ios: '#0A0A0A', web: '#0A0A0A', default: '#0A0A0A' }),
             tint: '#FFFFFF',
         },
         switch: {
@@ -288,7 +287,7 @@ export const darkTheme = {
             },
         },
         groupped: {
-            background: Platform.select({ ios: '#0A0F1A', web: '#0A0F1A', default: '#0A0F1A' }),
+            background: Platform.select({ ios: '#0A0A0A', web: '#0A0A0A', default: '#0A0A0A' }),
             chevron: Platform.select({ ios: '#48484A', web: '#48484A', default: '#CAC4D0' }),
             sectionTitle: Platform.select({ ios: '#8E8E93', web: '#8E8E93', default: '#CAC4D0' }),
         },
@@ -316,7 +315,7 @@ export const darkTheme = {
             }
         },
         input: {
-            background: Platform.select({ ios: '#1E2D3D', web: '#1E2D3D', default: '#1E2D3D' }),
+            background: Platform.select({ ios: '#111111', web: '#111111', default: '#111111' }),
             text: '#FFFFFF',
             placeholder: '#8E8E93',
         },
@@ -371,13 +370,13 @@ export const darkTheme = {
                 text: '#FFFFFF',
             },
             inactive: {
-                background: '#1E2D3D',
-                border: '#2A3A4A',
+                background: '#111111',
+                border: '#2A2A2A',
                 text: '#8E8E93',
             },
             selected: {
-                background: '#0A0F1A',
-                border: '#2A3A4A',
+                background: '#0A0A0A',
+                border: '#2A2A2A',
                 text: '#FFFFFF',
             },
         },
@@ -385,7 +384,7 @@ export const darkTheme = {
 
         // Diff view
         diff: {
-            outline: '#2A3A4A',
+            outline: '#2A2A2A',
             success: '#3FB950',
             error: '#F85149',
             // Traditional diff colors for dark mode
@@ -395,11 +394,11 @@ export const darkTheme = {
             removedBg: '#3F1B23',
             removedBorder: '#F85149',
             removedText: '#C9D1D9',
-            contextBg: '#0A0F1A',
-            contextText: '#8B949E',
-            lineNumberBg: '#0A0F1A',
+            contextBg: '#0A0A0A',
+            contextText: '#C0C0C0',
+            lineNumberBg: '#0A0A0A',
             lineNumberText: '#6E7681',
-            hunkHeaderBg: '#0A0F1A',
+            hunkHeaderBg: '#0A0A0A',
             hunkHeaderText: '#58A6FF',
             leadingSpaceDot: '#2A2A2A',
             inlineAddedBg: '#2A5A2A',
@@ -409,10 +408,10 @@ export const darkTheme = {
         },
 
         // Message View colors
-        userMessageBackground: '#1E2D3D',
+        userMessageBackground: '#111111',
         userMessageText: '#FFFFFF',
         agentMessageText: '#FFFFFF',
-        agentEventText: '#8B949E',
+        agentEventText: '#C0C0C0',
 
         // Code/Syntax colors (brighter for dark mode)
         syntaxKeyword: '#569CD6',
@@ -428,14 +427,14 @@ export const darkTheme = {
         syntaxDefault: '#D4D4D4',
 
         // Git status colors
-        gitBranchText: '#8E8E93',
-        gitFileCountText: '#8E8E93',
+        gitBranchText: '#C0C0C0',
+        gitFileCountText: '#C0C0C0',
         gitAddedText: '#34C759',
         gitRemovedText: '#FF453A',
 
         // Terminal/Command colors
         terminal: {
-            background: '#0A0F1A',
+            background: '#0A0A0A',
             prompt: '#32D74B',
             command: '#E0E0E0',
             stdout: '#E0E0E0',
